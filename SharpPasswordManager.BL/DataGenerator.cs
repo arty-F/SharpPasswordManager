@@ -11,15 +11,36 @@ namespace SharpPasswordManager.BL
         const string allowedСharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._ ";
         const string allowedСharactersNoSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+        private const int secondsInDay = 86400;
+        private readonly int createdDateRangeInDays;
+        private readonly int wordMinLength;
+        private readonly int wordMaxLength;
+        private readonly int passwordMinLength;
+        private readonly int passwordMaxLength;
+
+        /*----------------------------------------------------------------------------------------------------
+         * createdDateRangeInDays - range of randomly generated dates from <Now> to <Now + this value> in days.
+         * wordMinLength / wordMaxLength - generated characters min/max quantity. It used for generate logins and
+                descriptions.
+         * passwordMinLength / passwordMaxLength - generated characters min/max quantity. Used for generate
+                passwords.
+        ----------------------------------------------------------------------------------------------------*/
+        public DataGenerator(int createdDateRangeInDays = 365, int wordMinLength = 4, int wordMaxLength = 20, int passwordMinLength = 6, int passwordMaxLength = 18)
+        {
+            this.createdDateRangeInDays = createdDateRangeInDays;
+            this.wordMinLength = wordMinLength;
+            this.wordMaxLength = wordMaxLength;
+            this.passwordMinLength = passwordMinLength;
+            this.passwordMaxLength = passwordMaxLength;
+        }
+
         /*----------------------------------------------------------------------------------------------------
          * Generate random date from <Now> to <Plus one year>.
         ----------------------------------------------------------------------------------------------------*/
         public DateTime GenerateRandomDate()
         {
             Random rng = new Random();
-            int secondsInDay = 86400;
-            int daysInYear = 365;
-            return DateTime.Now.AddSeconds(rng.Next(secondsInDay)).AddDays(rng.Next(daysInYear));
+            return DateTime.Now.AddSeconds(rng.Next(secondsInDay)).AddDays(rng.Next(createdDateRangeInDays));
         }
 
         /*----------------------------------------------------------------------------------------------------
@@ -28,9 +49,7 @@ namespace SharpPasswordManager.BL
         ----------------------------------------------------------------------------------------------------*/
         public string GenerateRandomDescription()
         {
-            int minLength = 4;
-            int maxLength = 20;
-            return GetRandomString(minLength, maxLength);
+            return GetRandomString(wordMinLength, wordMaxLength);
         }
 
         /*----------------------------------------------------------------------------------------------------
@@ -45,20 +64,16 @@ namespace SharpPasswordManager.BL
                 // One word login emulation
                 case 0:
                 {
-                    int minLength = 4;
-                    int maxLength = 20;
-                    result = GetRandomString(minLength, maxLength, allowedСharactersNoSymbols);
+                    result = GetRandomString(wordMinLength, wordMaxLength, allowedСharactersNoSymbols);
                     break;
                 }
                 // Email login emulation
                 case 1:
                 {
-                    int minLength = 6;
-                    int maxLength = 12;
                     StringBuilder builder = new StringBuilder();
-                    builder.Append(GetRandomString(minLength, maxLength, allowedСharactersNoSymbols));
+                    builder.Append(GetRandomString(wordMinLength, wordMaxLength, allowedСharactersNoSymbols));
                     builder.Append("@");
-                    builder.Append(GetRandomString(minLength, maxLength, allowedСharactersNoSymbols));
+                    builder.Append(GetRandomString(wordMinLength, wordMaxLength, allowedСharactersNoSymbols));
                     builder.Append(".com");
                     result = builder.ToString();
                     break;
@@ -75,10 +90,8 @@ namespace SharpPasswordManager.BL
         ----------------------------------------------------------------------------------------------------*/
         public string GenerateRandomPassword()
         {
-            int minLength = 6;
-            int maxLength = 18;
             Random rng = new Random();
-            int rndLength = rng.Next(minLength, maxLength);
+            int rndLength = rng.Next(passwordMinLength, passwordMaxLength);
             return GenerateRandomPassword(rndLength);
         }
 
