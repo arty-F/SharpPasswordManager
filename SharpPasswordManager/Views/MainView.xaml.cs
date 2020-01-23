@@ -1,5 +1,4 @@
 ﻿using SharpPasswordManager.BL;
-using SharpPasswordManager.DL.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

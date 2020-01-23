@@ -4,11 +4,11 @@ using System.Text;
 
 namespace SharpPasswordManager.BL
 {
-    public interface IStorageController
+    public interface IStorageController<TModel>
     {
         void Initialize();
         string GetData(int index);
-        void PasteData(int index, int categoryId);
+        void PasteData(int index, int categoryId, string description, string login, DateTime date, string password);
         void DeleteData(int index);
         object GetCategories();
         void PasteCategory();
