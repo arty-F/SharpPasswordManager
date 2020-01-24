@@ -4,7 +4,8 @@ using System.Text;
 
 namespace SharpPasswordManager.BL
 {
-    public interface IStorageController<TModel>
+    //TODO REWORK TO GENERIC
+    public interface IStorageController
     {
         void Initialize();
         string GetData(int index);
