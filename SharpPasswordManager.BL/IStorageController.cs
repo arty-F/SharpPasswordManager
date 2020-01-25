@@ -4,16 +4,15 @@ using System.Text;
 
 namespace SharpPasswordManager.BL
 {
-    //TODO REWORK TO GENERIC
-    public interface IStorageController
+    public interface IStorageController<TModel>
     {
-        void Initialize();
-        string GetData(int index);
-        void PasteData(int index, int categoryId, string description, string login, DateTime date, string password);
-        void DeleteData(int index);
-        object GetCategories();
-        void PasteCategory();
-        void DeleteCategory(int id);
-        void RenameCategory(int id, string name);
+        TModel Get(int index);
+        void PasteAt(int index, TModel model);
+    }
+
+    public enum CryptographyMode : byte
+    {
+        Encrypt = 0,
+        Decrypt = 1
     }
 }

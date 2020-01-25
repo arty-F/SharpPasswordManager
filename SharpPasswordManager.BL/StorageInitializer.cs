@@ -11,12 +11,12 @@ namespace SharpPasswordManager.BL
     public class StorageInitializer<TModel> where TModel : class
     {
         private readonly IDataGenerator dataGenerator;
-        private readonly IEncryptor encryptor;
+        private readonly ICryptographer cryptographer;
 
-        public StorageInitializer(IDataGenerator dataGenerator, IEncryptor encryptor = null)
+        public StorageInitializer(IDataGenerator dataGenerator, ICryptographer cryptographer = null)
         {
             this.dataGenerator = dataGenerator;
-            this.encryptor = encryptor;
+            this.cryptographer = cryptographer;
         }
 
         /*----------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ namespace SharpPasswordManager.BL
                         else if (pInfo.PropertyType == typeof(string))
                         {
                             // Without encryption
-                            if (encryptor == null)
+                            if (cryptographer == null)
                             {
                                 switch (pInfo.Name)
                                 {
@@ -82,17 +82,17 @@ namespace SharpPasswordManager.BL
                                 {
                                     case "Login":
                                     {
-                                        prop.SetValue(model, encryptor.Encypt(dataGenerator.GenerateRandomLogin()));
+                                        prop.SetValue(model, cryptographer.Encypt(dataGenerator.GenerateRandomLogin()));
                                         break;
                                     }
                                     case "Password":
                                     {
-                                        prop.SetValue(model, encryptor.Encypt(dataGenerator.GenerateRandomPassword()));
+                                        prop.SetValue(model, cryptographer.Encypt(dataGenerator.GenerateRandomPassword()));
                                         break;
                                     }
                                     default:
                                     {
-                                        prop.SetValue(model, encryptor.Encypt(dataGenerator.GenerateRandomDescription()));
+                                        prop.SetValue(model, cryptographer.Encypt(dataGenerator.GenerateRandomDescription()));
                                         break;
                                     }
                                 }

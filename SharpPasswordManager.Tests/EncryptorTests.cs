@@ -16,7 +16,7 @@ namespace SharpPasswordManager.Tests
         [Test]
         public void Encrypt_ResultIsNotSimilar()
         {
-            IEncryptor encryptor = null;
+            ICryptographer encryptor = null;
 
             string password = "12345";
             string encryptedPassword = encryptor.Encypt(password);
@@ -27,7 +27,7 @@ namespace SharpPasswordManager.Tests
         [Test]
         public void Decrypt_ResultIsSimilar()
         {
-            IEncryptor encryptor = null;
+            ICryptographer encryptor = null;
 
             string password = "12345";
             string encryptedPassword = encryptor.Encypt(password);
