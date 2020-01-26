@@ -6,6 +6,9 @@ using System.Security.Cryptography;
 
 namespace SharpPasswordManager.BL
 {
+    /// <summary>
+    /// Generate specific random data for models.
+    /// </summary>
     public class DataGenerator : IDataGenerator
     {
         const string allowedСharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._ ";
@@ -18,13 +21,14 @@ namespace SharpPasswordManager.BL
         private readonly int passwordMinLength;
         private readonly int passwordMaxLength;
 
-        /*----------------------------------------------------------------------------------------------------
-         * createdDateRangeInDays - range of randomly generated dates from <Now> to <Now + this value> in days.
-         * wordMinLength / wordMaxLength - generated characters min/max quantity. It used for generate logins and
-                descriptions.
-         * passwordMinLength / passwordMaxLength - generated characters min/max quantity. Used for generate
-                passwords.
-        ----------------------------------------------------------------------------------------------------*/
+        /// <summary>
+        /// Create a new instance of DataGenerator.
+        /// </summary>
+        /// <param name="createdDateRangeInDays">Range of randomly generated dates from now to (now + this value) in days.</param>
+        /// <param name="wordMinLength">Generated characters minimal quantity. It used for generate logins and descriptions.</param>
+        /// <param name="wordMaxLength">Generated characters maximum quantity. It used for generate logins and descriptions.</param>
+        /// <param name="passwordMinLength">Generated characters minimal quantity. Used for generate passwords.</param>
+        /// <param name="passwordMaxLength">Generated characters maximal quantity. Used for generate passwords.</param>
         public DataGenerator(int createdDateRangeInDays = 365, int wordMinLength = 4, int wordMaxLength = 20, int passwordMinLength = 6, int passwordMaxLength = 18)
         {
             this.createdDateRangeInDays = createdDateRangeInDays;
@@ -34,27 +38,29 @@ namespace SharpPasswordManager.BL
             this.passwordMaxLength = passwordMaxLength;
         }
 
-        /*----------------------------------------------------------------------------------------------------
-         * Generate random date from <Now> to <Plus one year>.
-        ----------------------------------------------------------------------------------------------------*/
+        /// <summary>
+        /// Generate random datetime from now to to (now + this value) in days.
+        /// </summary>
+        /// <returns>Random generated datetime.</returns>
         public DateTime GenerateRandomDate()
         {
             Random rng = new Random();
             return DateTime.Now.AddSeconds(rng.Next(secondsInDay)).AddDays(rng.Next(createdDateRangeInDays));
         }
 
-        /*----------------------------------------------------------------------------------------------------
-         * Generate random string whose chars from <allowedСharacters> and lenght is in 
-         ( <maxLenght> : <maxLenght> ) range.
-        ----------------------------------------------------------------------------------------------------*/
+        /// <summary>
+        /// Generate random string whose lenght is in (minLenght : maxLenght) range.
+        /// </summary>
+        /// <returns>Random generated string.</returns>
         public string GenerateRandomDescription()
         {
             return GetRandomString(wordMinLength, wordMaxLength);
         }
 
-        /*----------------------------------------------------------------------------------------------------
-         * Generate random string of two types: one word string, and email address simulation string.
-        ----------------------------------------------------------------------------------------------------*/
+        /// <summary>
+        /// Generate random string of two types: one word string, and email address simulation string.
+        /// </summary>
+        /// <returns>Random generated string.</returns>
         public string GenerateRandomLogin()
         {
             Random rng = new Random();
@@ -84,10 +90,10 @@ namespace SharpPasswordManager.BL
             return result;
         }
 
-        /*----------------------------------------------------------------------------------------------------
-         * Defines random number between <minLenght> and <maxLenght>. Then call <GenerateRandomPassword> mathod
-         with defined random number.
-        ----------------------------------------------------------------------------------------------------*/
+        /// <summary>
+        /// Defines random number between minLenght and maxLenght. Then call <see cref="GenerateRandomPassword"/> method with defined random number as parameter and strongly random provider.
+        /// </summary>
+        /// <returns>Random generated password.</returns>
         public string GenerateRandomPassword()
         {
             Random rng = new Random();
@@ -95,9 +101,11 @@ namespace SharpPasswordManager.BL
             return GenerateRandomPassword(rndLength);
         }
 
-        /*----------------------------------------------------------------------------------------------------
-         * Generate random string whose chars from <allowedСharactersNoSymbols> and lenght is a parameter.
-        ----------------------------------------------------------------------------------------------------*/
+        /// <summary>
+        /// Generate random string password with strongly random provider.
+        /// </summary>
+        /// <param name="length">Lenght of generated string.</param>
+        /// <returns>Random generated password.</returns>
         public string GenerateRandomPassword(int length)
         {
             string result = "";
@@ -114,9 +122,8 @@ namespace SharpPasswordManager.BL
                     while (value > maxRandom)
                     {
                         if (buffer == null)
-                        {
                             buffer = new byte[1];
-                        }
+                        
                         rng.GetBytes(buffer);
                         value = buffer[0];
                     }
