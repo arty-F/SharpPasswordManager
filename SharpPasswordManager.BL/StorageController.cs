@@ -29,6 +29,17 @@ namespace SharpPasswordManager.BL
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="StorageController{TModel}"/>.
+        /// </summary>
+        /// <param name="modelList">Collection of models.</param>
+        /// <param name="cryptographer">Using for data encryption/decryption.</param>
+        public StorageController(List<TModel> modelList, ICryptographer cryptographer = null)
+        {
+            this.modelList = modelList;
+            this.cryptographer = cryptographer;
+        }
+
+        /// <summary>
         /// Return <see cref="TModel"/> instance by received index.
         /// </summary>
         /// <param name="index">Element index.</param>
@@ -146,6 +157,9 @@ namespace SharpPasswordManager.BL
         ----------------------------------------------------------------------------------------------------*/
         private void SaveChanges()
         {
+            if (path == null)
+                return;
+
             if (!File.Exists(path))
                 throw new FileNotFoundException($"{path} not found.");
 
