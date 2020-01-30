@@ -9,8 +9,8 @@ namespace SharpPasswordManager.BL
     /// </summary>
     public interface ICryptographer
     {
-        string Encypt(string str);
-        string Decrypt(string str);
+        (string data, byte[] iv) Encypt(string data);
+        string Decrypt((string data, byte[] iv) cortege);
     }
 
     /// <summary>

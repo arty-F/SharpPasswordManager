@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Security.Cryptography;
 using System.IO;
 
@@ -12,18 +10,14 @@ namespace SharpPasswordManager.BL
     public class Cryptographer : ICryptographer, IDisposable
     {
         private readonly byte[] key;
-        private readonly byte[] iv;
 
         private bool disposed = false;
 
-        public Cryptographer(byte[] key, byte[] iv)
+        public Cryptographer(byte[] key)
         {
             if (key == null || key.Length <= 0)
                 throw new ArgumentNullException("Key");
-            if (iv == null || iv.Length <= 0)
-                throw new ArgumentNullException("IV");
             this.key = key;
-            this.iv = iv;
         }
 
         #region Disposing
@@ -41,9 +35,6 @@ namespace SharpPasswordManager.BL
                 {
                     for (int i = 0; i < key.Length; i++)
                         key[i] = 0;
-                    
-                    for (int i = 0; i < iv.Length; i++)
-                        iv[i] = 0;
                 }
                 disposed = true;
             }
@@ -56,23 +47,56 @@ namespace SharpPasswordManager.BL
         #endregion
 
         /// <summary>
+        /// Return encrypted by aes alghoritm string and iv.
+        /// </summary>
+        /// <param name="data">String for encryption.</param>
+        public (string data, byte[] iv) Encypt(string data)
+        {
+            if (data == null || data.Length <= 0)
+                throw new ArgumentNullException("String");
+
+            byte[] encrypted;
+            byte[] iv;
+            using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
+            {
+                aesAlg.Key = key;
+                aesAlg.GenerateIV();
+                iv = aesAlg.IV;
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(data);
+                        }
+                        encrypted = msEncrypt.ToArray();
+                    }
+                }
+            }
+            return (Convert.ToBase64String(encrypted), iv);
+        }
+
+        /// <summary>
         /// Return decrypted by aes alghoritm string.
         /// </summary>
-        /// <param name="str">Encrypted string.</param>
+        /// <param name="cortege">Encrypted string and iv.</param>
         /// <returns></returns>
-        public string Decrypt(string str)
+        public string Decrypt((string data, byte[] iv) cortege)
         {
-            if (str == null || str.Length <= 0)
+            if (cortege.data == null || cortege.data.Length <= 0)
                 throw new ArgumentNullException("String");
 
             string decrypted = null;
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
                 aesAlg.Key = key;
-                aesAlg.IV = iv;
+                aesAlg.IV = cortege.iv;
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-                using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(str)))
+                using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cortege.data)))
                 {
                     using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
@@ -84,38 +108,6 @@ namespace SharpPasswordManager.BL
                 }
             }
             return decrypted;
-        }
-
-        /// <summary>
-        /// Return encrypted by aes alghoritm string.
-        /// </summary>
-        /// <param name="str">Encryption string.</param>
-        /// <returns></returns>
-        public string Encypt(string str)
-        {
-            if (str == null || str.Length <= 0)
-                throw new ArgumentNullException("String");
-
-            byte[] encrypted;
-            using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
-            {
-                aesAlg.Key = key;
-                aesAlg.IV = iv;
-
-                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-                using (MemoryStream msEncrypt = new MemoryStream())
-                {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                        {
-                            swEncrypt.Write(str);
-                        }
-                        encrypted = msEncrypt.ToArray();
-                    }
-                }
-            }
-            return Convert.ToBase64String(encrypted);
         }
     }
 }

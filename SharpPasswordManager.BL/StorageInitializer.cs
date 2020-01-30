@@ -1,10 +1,6 @@
-﻿using SharpPasswordManager.DL.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Reflection;
-using Microsoft.CSharp;
 
 namespace SharpPasswordManager.BL
 {
