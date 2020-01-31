@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.IO;
+using System.Text;
+using System.Linq;
 
 namespace SharpPasswordManager.BL
 {
@@ -10,7 +12,7 @@ namespace SharpPasswordManager.BL
     public class Cryptographer : ICryptographer, IDisposable
     {
         private readonly byte[] key;
-
+        private readonly int ivLength = 16;
         private bool disposed = false;
 
         public Cryptographer(byte[] key)
@@ -47,21 +49,23 @@ namespace SharpPasswordManager.BL
         #endregion
 
         /// <summary>
-        /// Return encrypted by aes alghoritm string and iv.
+        /// Return encrypted by aes alghoritm string with IV.
         /// </summary>
         /// <param name="data">String for encryption.</param>
-        public (string data, byte[] iv) Encypt(string data)
+        public string Encypt(string data)
         {
             if (data == null || data.Length <= 0)
                 throw new ArgumentNullException("String");
 
-            byte[] encrypted;
-            byte[] iv;
+            byte[] encryptedDataWithIV;
+            byte[] encryptedData;
+            byte[] iv = new byte[ivLength];
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
                 aesAlg.Key = key;
                 aesAlg.GenerateIV();
-                iv = aesAlg.IV;
+                Array.Copy(sourceArray: aesAlg.IV, destinationArray: iv, length: ivLength);
+                aesAlg.IV = iv;
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
                 using (MemoryStream msEncrypt = new MemoryStream())
@@ -72,31 +76,42 @@ namespace SharpPasswordManager.BL
                         {
                             swEncrypt.Write(data);
                         }
-                        encrypted = msEncrypt.ToArray();
+                        encryptedData = msEncrypt.ToArray();
+
+                        encryptedDataWithIV = iv.Concat(encryptedData).ToArray();
                     }
                 }
             }
-            return (Convert.ToBase64String(encrypted), iv);
+            return Convert.ToBase64String(encryptedDataWithIV);
         }
 
         /// <summary>
         /// Return decrypted by aes alghoritm string.
         /// </summary>
-        /// <param name="cortege">Encrypted string and iv.</param>
-        /// <returns></returns>
-        public string Decrypt((string data, byte[] iv) cortege)
+        /// <param name="data">Ecrypted string with IV.</param>
+        public string Decrypt(string data)
         {
-            if (cortege.data == null || cortege.data.Length <= 0)
+            if (data == null || data.Length <= 0)
                 throw new ArgumentNullException("String");
 
             string decrypted = null;
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
+
+
+                byte[] encryptedBytesWithIV = Convert.FromBase64String(data);
+
+                byte[] iv = new byte[ivLength];
+                byte[] encryptedData = new byte[encryptedBytesWithIV.Length - iv.Length];
+
+                Array.Copy(sourceArray: encryptedBytesWithIV, destinationArray: iv, length: ivLength);
+                Array.Copy(sourceArray: encryptedBytesWithIV, sourceIndex: ivLength, destinationArray: encryptedData, destinationIndex: 0, length: encryptedData.Length);
+
                 aesAlg.Key = key;
-                aesAlg.IV = cortege.iv;
+                aesAlg.IV = iv;
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-                using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cortege.data)))
+                using (MemoryStream msDecrypt = new MemoryStream(encryptedData))
                 {
                     using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
