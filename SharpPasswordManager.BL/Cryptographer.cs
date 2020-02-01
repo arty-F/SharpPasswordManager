@@ -6,20 +6,58 @@ using System.Linq;
 
 namespace SharpPasswordManager.BL
 {
+    /*-----------------------------------------------------------------------------
+     * Class using Aes for cryptography. When encrypting the first <ivLength> bytes
+     is non encrypted IV in encrypting result string. When decrypting, take first
+     <ivLength> bytes and using them as IV, then getting remaining part of encrypted
+     string, and decrypt it.
+     * Key for cryptographe reciving in class constructor as parameter. If key length
+     less than <keyLength> missing bytes will be appended with 0. If key length more
+     than <keyLength> extra byte will be discarded.
+    -----------------------------------------------------------------------------*/
     /// <summary>
     /// Used AesCryptoServiceProvider to encrypt/decrypt string data.
     /// </summary>
     public class Cryptographer : ICryptographer, IDisposable
     {
-        private readonly byte[] key;
+        private byte[] key;
         private readonly int ivLength = 16;
+        private readonly int keyLength = 16;
         private bool disposed = false;
 
         public Cryptographer(byte[] key)
         {
-            if (key == null || key.Length <= 0)
-                throw new ArgumentNullException("Key");
-            this.key = key;
+            ChangeKey(key);
+        }
+
+        /// <summary>
+        /// Change key for aes alghoritm and makes it suitable length.
+        /// </summary>
+        /// <param name="newKey">New key.</param>
+        public void ChangeKey(byte[] newKey)
+        {
+            byte[] requiredKey = new byte[keyLength];
+            if (newKey.Length < keyLength)
+            {
+                for (int i = 0; i < keyLength; i++)
+                {
+                    if (i < newKey.Length)
+                        requiredKey[i] = newKey[i];
+                    else
+                        requiredKey[i] = 0;
+                }
+            }
+            else if (newKey.Length > keyLength)
+            {
+                for (int i = 0; i < keyLength; i++)
+                {
+                    requiredKey[i] = newKey[i];
+                }
+            }
+            else
+                requiredKey = newKey;
+
+            key = requiredKey;
         }
 
         #region Disposing
@@ -97,8 +135,6 @@ namespace SharpPasswordManager.BL
             string decrypted = null;
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
-
-
                 byte[] encryptedBytesWithIV = Convert.FromBase64String(data);
 
                 byte[] iv = new byte[ivLength];

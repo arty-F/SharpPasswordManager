@@ -32,7 +32,7 @@ namespace SharpPasswordManager.Tests
         }
 
         [Test]
-        public void PasteGet_ModelPastedAtIndex()
+        public void PasteAt_ModelPastedAtIndex()
         {
             int index = modelsCount;
             DateTime expectedDate = new DateTime(2011, 11, 11);
@@ -47,7 +47,6 @@ namespace SharpPasswordManager.Tests
                 Assert.That(resultModel.Date, Is.EqualTo(expectedDate));
                 Assert.That(resultModel.String, Is.EqualTo(expectedString));
             });
-           
         }
     }
 }
