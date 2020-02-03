@@ -1,11 +1,6 @@
-﻿using SharpPasswordManager.BL;
-using SharpPasswordManager.DL.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,14 +15,14 @@ using System.Windows.Shapes;
 namespace SharpPasswordManager.Views
 {
     /// <summary>
-    /// Interaction logic for MainView.xaml
+    /// Interaction logic for PasswordCheckView.xaml
     /// </summary>
-    public partial class MainView : Window
+    public partial class PasswordCheckView : Window
     {
-        public MainView()
+        public PasswordCheckView()
         {
             InitializeComponent();
-            DataContext = new ViewModels.MainViewModel();
+            DataContext = new ViewModels.PasswordCheckViewModel();
         }
     }
 }
