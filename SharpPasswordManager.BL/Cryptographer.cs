@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.IO;
-using System.Text;
 using System.Linq;
 
 namespace SharpPasswordManager.BL
@@ -50,9 +49,7 @@ namespace SharpPasswordManager.BL
             else if (newKey.Length > keyLength)
             {
                 for (int i = 0; i < keyLength; i++)
-                {
                     requiredKey[i] = newKey[i];
-                }
             }
             else
                 requiredKey = newKey;

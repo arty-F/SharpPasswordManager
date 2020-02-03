@@ -7,6 +7,17 @@ using SharpPasswordManager.BL.Enums;
 
 namespace SharpPasswordManager.BL
 {
+    /*----------------------------------------------------------------------------------
+     * Exceptions:
+
+            FileNotFoundException - When handling all of <IStorageController> methods,
+                                    occurs when <modelList> not initialized and file
+                                    by <path> not found. May also occur when using
+                                    <PasteAt> method if the file cannot be found.
+
+            InvalidOperationException - When it is impossible to serealize/deserealize 
+                                        model list to a file by <path>.
+    ----------------------------------------------------------------------------------*/
     /// <summary>
     /// Manage models collection taken from file. Can get, paste and find count of models.
     /// </summary>
@@ -52,8 +63,7 @@ namespace SharpPasswordManager.BL
             if (cryptographer == null)
                 return modelList[ReceiveIndexInRange(index)];
             else
-                return ModelAfterCryptography(modelList[ReceiveIndexInRange(index)], CryptographyMode.Decrypt);
-
+                return ApplyCryptography(modelList[ReceiveIndexInRange(index)], CryptographyMode.Decrypt);
         }
 
         /// <summary>
@@ -68,7 +78,7 @@ namespace SharpPasswordManager.BL
             if (cryptographer == null)
                 modelList[ReceiveIndexInRange(index)] = model;
             else
-                modelList[ReceiveIndexInRange(index)] = ModelAfterCryptography(model, CryptographyMode.Encrypt);
+                modelList[ReceiveIndexInRange(index)] = ApplyCryptography(model, CryptographyMode.Encrypt);
 
             SaveChanges();
         }
@@ -96,12 +106,10 @@ namespace SharpPasswordManager.BL
         /*----------------------------------------------------------------------------------------------------
          * Deserealize file from <path> using binary formatter in to List<TModel>.
         ----------------------------------------------------------------------------------------------------*/
-        private List<TModel> ReceiveModels()
+        private void ReceiveModels()
         {
-            var list = new List<TModel>();
-
             if (!File.Exists(path))
-                throw new FileNotFoundException($"{path} not found.");
+                throw new FileNotFoundException(path);
 
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -111,13 +119,12 @@ namespace SharpPasswordManager.BL
             }
             catch (Exception)
             {
-                throw new InvalidCastException($"Impossible deserialize {path} file. Data was corrupted.");
+                throw new InvalidOperationException(path);
             }
             finally
             {
                 stream.Close();
             }
-            return list;
         }
 
         /*----------------------------------------------------------------------------------------------------
@@ -135,7 +142,7 @@ namespace SharpPasswordManager.BL
         /*----------------------------------------------------------------------------------------------------
          * Return a copy of <TModel> with encrypted/decrypted string properties.
         ----------------------------------------------------------------------------------------------------*/
-        private TModel ModelAfterCryptography(TModel model, CryptographyMode mode)
+        private TModel ApplyCryptography(TModel model, CryptographyMode mode)
         {
             dynamic cryptedModel = Activator.CreateInstance(typeof(TModel));
 
@@ -162,7 +169,7 @@ namespace SharpPasswordManager.BL
                 return;
 
             if (!File.Exists(path))
-                throw new FileNotFoundException($"{path} not found.");
+                throw new FileNotFoundException(path);
 
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream(path, FileMode.Open, FileAccess.Write, FileShare.Read);
@@ -172,7 +179,7 @@ namespace SharpPasswordManager.BL
             }
             catch (Exception)
             {
-                throw new InvalidOperationException($"Impossible serealize data to {path} file.");
+                throw new InvalidOperationException(path);
             }
             finally
             {

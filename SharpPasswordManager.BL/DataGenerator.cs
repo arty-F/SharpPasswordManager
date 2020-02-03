@@ -108,7 +108,7 @@ namespace SharpPasswordManager.BL
         /// <returns>Random generated password.</returns>
         public string GenerateRandomPassword(int length)
         {
-            string result = "";
+            string result;
             using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
             {
                 byte[] data = new byte[length];
