@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SharpPasswordManager.BL
+﻿namespace SharpPasswordManager.BL.Interfaces
 {
     /// <summary>
     /// Provides a mechanism to manage models collection.

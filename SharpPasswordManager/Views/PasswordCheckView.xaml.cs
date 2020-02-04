@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SharpPasswordManager.BL;
+using SharpPasswordManager.Handlers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +24,7 @@ namespace SharpPasswordManager.Views
         public PasswordCheckView()
         {
             InitializeComponent();
-            DataContext = new ViewModels.PasswordCheckViewModel();
+            DataContext = new ViewModels.PasswordCheckViewModel(new AppSettingsHandler(), new Autenticator(new Cryptographer()));
         }
     }
 }

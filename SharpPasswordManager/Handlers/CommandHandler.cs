@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace SharpPasswordManager.Handlers
@@ -25,9 +21,9 @@ namespace SharpPasswordManager.Handlers
             withParam = false;
         }
 
-        public CommandHandler(Action<object> actions, Func<object, bool> canExecute)
+        public CommandHandler(Action<object> action, Func<object, bool> canExecute)
         {
-            actionParam = actions;
+            actionParam = action;
             canExecuteParam = canExecute;
             withParam = true;
         }

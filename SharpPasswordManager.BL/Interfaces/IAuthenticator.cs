@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SharpPasswordManager.BL
+﻿namespace SharpPasswordManager.BL.Interfaces
 {
     /// <summary>
     /// Provides a mechanism to autentication.
     /// </summary>
-    interface IAuthenticator
+    public interface IAuthenticator
     {
-        bool Autenticate(string password);
+        bool Autenticate(string password, string encryptedPassword);
+        void ChangeKey(string newKey);
     }
 }

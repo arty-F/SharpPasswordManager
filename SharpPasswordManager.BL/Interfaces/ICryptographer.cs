@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SharpPasswordManager.BL
+﻿namespace SharpPasswordManager.BL.Interfaces
 {
     /// <summary>
     /// Provides a mechanism to data encryption/decryption.
@@ -11,6 +7,6 @@ namespace SharpPasswordManager.BL
     {
         string Encypt(string data);
         string Decrypt(string data);
-        void ChangeKey(byte[] newKey);
+        void ChangeKey(string newKey);
     }
 }

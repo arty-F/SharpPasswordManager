@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.IO;
 using System.Linq;
+using SharpPasswordManager.BL.Interfaces;
 
 namespace SharpPasswordManager.BL
 {
@@ -24,37 +25,19 @@ namespace SharpPasswordManager.BL
         private readonly int keyLength = 16;
         private bool disposed = false;
 
-        public Cryptographer(byte[] key)
+        /// <summary>
+        /// Create a new class instance. Key for aes algoritm will be generated automatically.
+        /// </summary>
+        public Cryptographer()
         {
-            ChangeKey(key);
         }
 
         /// <summary>
-        /// Change key for aes alghoritm and makes it suitable length.
+        /// Create a new class instance with recieved key value.
         /// </summary>
-        /// <param name="newKey">New key.</param>
-        public void ChangeKey(byte[] newKey)
+        public Cryptographer(string key)
         {
-            byte[] requiredKey = new byte[keyLength];
-            if (newKey.Length < keyLength)
-            {
-                for (int i = 0; i < keyLength; i++)
-                {
-                    if (i < newKey.Length)
-                        requiredKey[i] = newKey[i];
-                    else
-                        requiredKey[i] = 0;
-                }
-            }
-            else if (newKey.Length > keyLength)
-            {
-                for (int i = 0; i < keyLength; i++)
-                    requiredKey[i] = newKey[i];
-            }
-            else
-                requiredKey = newKey;
-
-            key = requiredKey;
+            ChangeKey(key);
         }
 
         #region Disposing
@@ -84,6 +67,42 @@ namespace SharpPasswordManager.BL
         #endregion
 
         /// <summary>
+        /// Change key for aes alghoritm and makes it suitable length.
+        /// </summary>
+        /// <param name="newKey">New key.</param>
+        public void ChangeKey(string newKey)
+        {
+            byte[] convertedKey = Convert.FromBase64String(EncodeTo64(newKey));
+            byte[] requiredKey = new byte[keyLength];
+            if (convertedKey.Length < keyLength)
+            {
+                for (int i = 0; i < keyLength; i++)
+                {
+                    if (i < convertedKey.Length)
+                        requiredKey[i] = convertedKey[i];
+                    else
+                        requiredKey[i] = 0;
+                }
+            }
+            else if (convertedKey.Length > keyLength)
+            {
+                for (int i = 0; i < keyLength; i++)
+                    requiredKey[i] = convertedKey[i];
+            }
+            else
+                requiredKey = convertedKey;
+
+            key = requiredKey;
+        }
+
+        private string EncodeTo64(string toEncode)
+        {
+            byte[] toEncodeAsBytes = System.Text.Encoding.ASCII.GetBytes(toEncode);
+            string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+            return returnValue;
+        }
+
+        /// <summary>
         /// Return encrypted by aes alghoritm string with IV.
         /// </summary>
         /// <param name="data">String for encryption.</param>
@@ -97,7 +116,11 @@ namespace SharpPasswordManager.BL
             byte[] iv = new byte[ivLength];
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
-                aesAlg.Key = key;
+                if (key != null)
+                    aesAlg.Key = key;
+                else
+                    aesAlg.GenerateKey();
+
                 aesAlg.GenerateIV();
                 Array.Copy(sourceArray: aesAlg.IV, destinationArray: iv, length: ivLength);
                 aesAlg.IV = iv;
@@ -140,7 +163,11 @@ namespace SharpPasswordManager.BL
                 Array.Copy(sourceArray: encryptedBytesWithIV, destinationArray: iv, length: ivLength);
                 Array.Copy(sourceArray: encryptedBytesWithIV, sourceIndex: ivLength, destinationArray: encryptedData, destinationIndex: 0, length: encryptedData.Length);
 
-                aesAlg.Key = key;
+                if (key != null)
+                    aesAlg.Key = key;
+                else
+                    aesAlg.GenerateKey();
+
                 aesAlg.IV = iv;
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);

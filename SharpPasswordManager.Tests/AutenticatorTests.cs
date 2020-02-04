@@ -8,11 +8,11 @@ namespace SharpPasswordManager.Tests
         [Test]
         public void Encrypt_ResultDifferentFromTheOriginal()
         {
-            string data = "12345";
+            string encryptedPassword = "12345";
             string password = "12345";
-            Autenticator autenticator = new Autenticator(data);
+            Autenticator autenticator = new Autenticator();
 
-            bool result = autenticator.Autenticate(password);
+            bool result = autenticator.Autenticate(password, encryptedPassword);
             bool expected = true;
 
             Assert.That(result, Is.EqualTo(expected));

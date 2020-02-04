@@ -1,4 +1,5 @@
-﻿using SharpPasswordManager.Handlers;
+﻿using SharpPasswordManager.BL.Interfaces;
+using SharpPasswordManager.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,42 +13,16 @@ namespace SharpPasswordManager.ViewModels
 {
     public class FirstLoadViewModel
     {
-        const string key = "Password";
+        const string passwordKey = "Password";
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
+        private readonly IAppSettingsHandler setting;
+        private readonly ICryptographer cryptographer;
 
-        public FirstLoadViewModel()
+        public FirstLoadViewModel(IAppSettingsHandler setting, ICryptographer cryptographer)
         {
-            //string value = "12345";
-            //var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            //var settings = configFile.AppSettings.Settings;
-            //if (settings[key] == null)
-            //{
-            //    settings.Add(key, value);
-            //    MessageBox.Show("add");
-            //}
-            //else
-            //{
-            //    settings[key].Value = value;
-            //    MessageBox.Show("edit");
-            //}
-            //configFile.Save(ConfigurationSaveMode.Modified);
-            //ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-
-
-            //var appSettings = ConfigurationManager.AppSettings;
-            //var password = appSettings.AllKeys.Where(k => k == "Password").FirstOrDefault();
-            //if (password == default)
-            //{
-            //    MessageBox.Show("bla");
-            //}
-
-
-
-            //foreach (var key in appSettings.AllKeys)
-            //{
-            //    MessageBox.Show($"Key: {key} Value: {appSettings[key]}");
-            //}
+            this.setting = setting;
+            this.cryptographer = cryptographer;
         }
 
         private ICommand createPassword;
@@ -60,9 +35,19 @@ namespace SharpPasswordManager.ViewModels
         }
         private void TryWritePassword()
         {
-            if (true)
+            if (Password == ConfirmPassword)
             {
-                //Password handler TryWrite()
+                string value = Password;
+                if (cryptographer != null)
+                {
+                    cryptographer.ChangeKey(value);
+                    value = cryptographer.Encypt(value);
+                }
+                setting.Write(passwordKey, value);
+            }
+            else
+            {
+                // Message box ?
                 throw new NotImplementedException();
             }
         }

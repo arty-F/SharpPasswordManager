@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SharpPasswordManager.BL;
+using SharpPasswordManager.Handlers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +24,7 @@ namespace SharpPasswordManager.Views
         public FirstLoadView()
         {
             InitializeComponent();
-            DataContext = new ViewModels.FirstLoadViewModel();
+            DataContext = new ViewModels.FirstLoadViewModel(new AppSettingsHandler(), new Cryptographer());
         }
     }
 }
