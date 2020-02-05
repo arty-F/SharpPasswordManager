@@ -16,10 +16,12 @@ namespace SharpPasswordManager.BL
 
         private const int secondsInDay = 86400;
         private readonly int createdDateRangeInDays;
+        private readonly int createdDateFutureMultiplier;
         private readonly int wordMinLength;
         private readonly int wordMaxLength;
         private readonly int passwordMinLength;
         private readonly int passwordMaxLength;
+        Random random = new Random();
 
         /// <summary>
         /// Create a new instance of DataGenerator.
@@ -29,23 +31,26 @@ namespace SharpPasswordManager.BL
         /// <param name="wordMaxLength">Generated characters maximum quantity. It used for generate logins and descriptions.</param>
         /// <param name="passwordMinLength">Generated characters minimal quantity. Used for generate passwords.</param>
         /// <param name="passwordMaxLength">Generated characters maximal quantity. Used for generate passwords.</param>
-        public DataGenerator(int createdDateRangeInDays = 365, int wordMinLength = 4, int wordMaxLength = 20, int passwordMinLength = 6, int passwordMaxLength = 18)
+        public DataGenerator(int createdDateRangeInDays = 365, int wordMinLength = 4, int wordMaxLength = 20, int passwordMinLength = 6, int passwordMaxLength = 18, int createdDateFutureMultiplier = 10)
         {
             this.createdDateRangeInDays = createdDateRangeInDays;
             this.wordMinLength = wordMinLength;
             this.wordMaxLength = wordMaxLength;
             this.passwordMinLength = passwordMinLength;
             this.passwordMaxLength = passwordMaxLength;
+            this.createdDateFutureMultiplier = createdDateFutureMultiplier;
         }
 
         /// <summary>
-        /// Generate random datetime from now to to (now + this value) in days.
+        /// Generate random datetime from now to to (now + this value) in days. Every ~100th generated date will be the long distant future.
         /// </summary>
         /// <returns>Random generated datetime.</returns>
         public DateTime GenerateRandomDate()
         {
-            Random rng = new Random();
-            return DateTime.Now.AddSeconds(rng.Next(secondsInDay)).AddDays(rng.Next(createdDateRangeInDays));
+            if (random.Next(100) == 99)
+                return DateTime.Now.AddSeconds(random.Next(secondsInDay)).AddDays(random.Next(createdDateRangeInDays * createdDateFutureMultiplier));
+            else
+                return DateTime.Now.AddSeconds(random.Next(secondsInDay)).AddDays(random.Next(createdDateRangeInDays));
         }
 
         /// <summary>
@@ -63,9 +68,8 @@ namespace SharpPasswordManager.BL
         /// <returns>Random generated string.</returns>
         public string GenerateRandomLogin()
         {
-            Random rng = new Random();
             string result = "";
-            switch (rng.Next(0, 2))
+            switch (random.Next(0, 2))
             {
                 // One word login emulation
                 case 0:
@@ -96,8 +100,7 @@ namespace SharpPasswordManager.BL
         /// <returns>Random generated password.</returns>
         public string GenerateRandomPassword()
         {
-            Random rng = new Random();
-            int rndLength = rng.Next(passwordMinLength, passwordMaxLength);
+            int rndLength = random.Next(passwordMinLength, passwordMaxLength);
             return GenerateRandomPassword(rndLength);
         }
 
@@ -140,9 +143,8 @@ namespace SharpPasswordManager.BL
         ----------------------------------------------------------------------------------------------------*/
         private string GetRandomString(int minLenght, int maxLenght, string allowedСhars = allowedСharacters)
         {
-            Random rng = new Random();
-            int rndLenght = rng.Next(minLenght, maxLenght);
-            return new string(Enumerable.Repeat(allowedСhars, rndLenght).Select(s => s[rng.Next(s.Length)]).ToArray());
+            int rndLenght = random.Next(minLenght, maxLenght);
+            return new string(Enumerable.Repeat(allowedСhars, rndLenght).Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

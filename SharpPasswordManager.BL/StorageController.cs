@@ -95,6 +95,28 @@ namespace SharpPasswordManager.BL
             return modelList.Count;
         }
 
+        /// <summary>
+        /// Create file by path inner value directory and write modelsList into him.
+        /// </summary>
+        public void CreateStorage(IEnumerable<TModel> models = null)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+            try
+            {
+                if (models != null)
+                    formatter.Serialize(stream, models);
+            }
+            catch (Exception)
+            {
+                throw new InvalidOperationException(path);
+            }
+            finally
+            {
+                stream.Close();
+            }
+        }
+
         /*----------------------------------------------------------------------------------------------------
          * Make sure the <modelList> is initialized. If not call <ReceiveModels()>.
         ----------------------------------------------------------------------------------------------------*/

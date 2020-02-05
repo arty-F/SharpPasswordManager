@@ -1,4 +1,6 @@
-﻿namespace SharpPasswordManager.BL.Interfaces
+﻿using System.Collections.Generic;
+
+namespace SharpPasswordManager.BL.Interfaces
 {
     /// <summary>
     /// Provides a mechanism to manage models collection.
@@ -9,5 +11,6 @@
         TModel Get(int index);
         void PasteAt(int index, TModel model);
         int Count();
+        void CreateStorage(IEnumerable<TModel> modelsList);
     }
 }

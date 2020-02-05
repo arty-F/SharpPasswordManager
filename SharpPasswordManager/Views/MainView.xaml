@@ -7,6 +7,30 @@
         mc:Ignorable="d"
         Title="MainView" Height="450" Width="800">
     <Grid>
-        
+        <StackPanel>
+            <TextBlock Text="Categories"/>
+            <ListBox x:Name="categoriesList" ItemsSource="{Binding CategoriesList}" Height="100">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="5">
+                            <TextBlock FontSize="16" Text="{Binding Path=Name}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBlock Text="Data"/>
+            <ListBox x:Name="dataList" ItemsSource="{Binding DataList}" Height="100">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="5" Orientation="Horizontal">
+                            <TextBlock FontSize="16" Text="{Binding Path=Description}"/>
+                            <TextBlock FontSize="16" Text="{Binding Path=Login}"/>
+                            <TextBlock FontSize="16" Text="{Binding Path=Password}"/>
+                            <TextBlock FontSize="16" Text="{Binding Path=Date}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
     </Grid>
 </Window>

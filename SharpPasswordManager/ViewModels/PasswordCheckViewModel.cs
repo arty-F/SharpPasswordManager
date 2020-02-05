@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
+using System.IO;
+using System.Reflection;
 
 namespace SharpPasswordManager.ViewModels
 {
@@ -48,7 +50,11 @@ namespace SharpPasswordManager.ViewModels
 
             if (isAutenticate)
             {
-                MessageBox.Show("Correct");
+                Views.MainView mainView = new Views.MainView();
+                foreach (Window item in Application.Current.Windows)
+                    if (item.DataContext == this)
+                        item.Close();
+                mainView.ShowDialog();
             }
             else
             {
