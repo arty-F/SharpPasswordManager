@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.IO;
 using System.Linq;
 using SharpPasswordManager.BL.Interfaces;
+using System.Text;
 
 namespace SharpPasswordManager.BL
 {
@@ -98,8 +99,7 @@ namespace SharpPasswordManager.BL
         private string EncodeTo64(string toEncode)
         {
             byte[] toEncodeAsBytes = System.Text.Encoding.ASCII.GetBytes(toEncode);
-            string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
-            return returnValue;
+            return System.Convert.ToBase64String(toEncodeAsBytes);
         }
 
         /// <summary>

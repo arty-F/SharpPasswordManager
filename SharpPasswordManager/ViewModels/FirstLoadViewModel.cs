@@ -47,8 +47,7 @@ namespace SharpPasswordManager.ViewModels
             }
             else
             {
-                // Message box ?
-                throw new NotImplementedException();
+                MessageBox.Show("Wrong password");
             }
         }
     }

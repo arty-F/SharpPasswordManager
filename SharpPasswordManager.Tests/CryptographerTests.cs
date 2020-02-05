@@ -23,10 +23,10 @@ namespace SharpPasswordManager.Tests
             Assert.That(encryptedPassword, Is.Not.EqualTo(password));
         }
 
-        [Test]
+        [Test, Repeat(1000)]
         public void Decrypt_ResultIsSameAfterEncrypt()
         {
-            string password = "12345";
+            string password = "1234567890abcdefghijklmnopqrstuvwxyz";
             string encryptedPassword = cryptographer.Encypt(password);
             string decryptedPassword = cryptographer.Decrypt(encryptedPassword);
 

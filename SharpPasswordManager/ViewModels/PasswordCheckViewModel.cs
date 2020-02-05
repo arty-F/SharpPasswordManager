@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows;
 
 namespace SharpPasswordManager.ViewModels
 {
@@ -37,15 +38,21 @@ namespace SharpPasswordManager.ViewModels
                 return;
 
             autenticator.ChangeKey(Password);
-            if (autenticator.Autenticate(Password, setting.GetByKey(passwordKey)))
+            bool isAutenticate = false;
+            try
             {
-                // access gained
-                throw new NotImplementedException();
+                isAutenticate = autenticator.Autenticate(Password, setting.GetByKey(passwordKey));
+            }
+            catch (Exception) { }
+            
+
+            if (isAutenticate)
+            {
+                MessageBox.Show("Correct");
             }
             else
             {
-                // access denied
-                throw new NotImplementedException();
+                MessageBox.Show("Wrong password");
             }
         }
     }
