@@ -30,6 +30,12 @@ namespace SharpPasswordManager.BL
 
         private List<TModel> modelList { get; set; } = null;
 
+        public TModel this[int i]
+        {
+            get { return Get(i); }
+            set { PasteAt(i, value); }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="StorageController{TModel}"/>.
         /// </summary>
@@ -93,6 +99,16 @@ namespace SharpPasswordManager.BL
             CheckModelList();
 
             return modelList.Count;
+        }
+
+        /// <summary>
+        /// Return all models in storage.
+        /// </summary>
+        /// <returns></returns>
+        public List<TModel> ToList()
+        {
+            CheckModelList();
+            return modelList;
         }
 
         /// <summary>

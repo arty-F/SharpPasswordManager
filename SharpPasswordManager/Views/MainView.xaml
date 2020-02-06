@@ -9,6 +9,7 @@
     <Grid>
         <StackPanel>
             <TextBlock Text="Categories"/>
+            <Button Content="Add"/>
             <ListBox x:Name="categoriesList" ItemsSource="{Binding CategoriesList}" Height="100">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -19,6 +20,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <TextBlock Text="Data"/>
+            <Button Content="Add"/>
             <ListBox x:Name="dataList" ItemsSource="{Binding DataList}" Height="100">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

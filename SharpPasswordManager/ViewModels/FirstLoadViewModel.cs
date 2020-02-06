@@ -44,6 +44,7 @@ namespace SharpPasswordManager.ViewModels
         {
             if (Password == ConfirmPassword)
             {
+                AppManager.Password = Password;
                 string value = Password;
                 if (cryptographer != null)
                 {
@@ -52,12 +53,12 @@ namespace SharpPasswordManager.ViewModels
                 }
                 setting.Write(passwordKey, value);
 
+                Initialize();
                 Views.MainView mainView = new Views.MainView();
                 foreach (Window item in Application.Current.Windows)
                     if (item.DataContext == this)
                         item.Close();
 
-                Initialize();
                 mainView.ShowDialog();
             }
             else
@@ -69,16 +70,14 @@ namespace SharpPasswordManager.ViewModels
         // Create data and categories files
         private void Initialize()
         {
-            string dataPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), dataFileName);
-            string categoriesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), categoriesFileName);
+            string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            var dataController = new StorageController<DataModel>(dataPath);
+            var dataController = new StorageController<DataModel>(Path.Combine(assemblyPath, dataFileName));
             var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(setting.GetByKey(passwordKey)));
             dataController.CreateStorage(dataInitializer.GetData());
 
-            var categoriesController = new StorageController<CategoryModel>(categoriesPath);
-            categoriesController.CreateStorage();
+            var categoriesController = new StorageController<CategoryModel>(Path.Combine(assemblyPath, categoriesFileName));
+            categoriesController.CreateStorage(new List<CategoryModel>());
         }
-
     }
 }

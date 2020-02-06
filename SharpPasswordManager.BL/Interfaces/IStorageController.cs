@@ -11,6 +11,7 @@ namespace SharpPasswordManager.BL.Interfaces
         TModel Get(int index);
         void PasteAt(int index, TModel model);
         int Count();
+        List<TModel> ToList();
         void CreateStorage(IEnumerable<TModel> modelsList);
     }
 }
