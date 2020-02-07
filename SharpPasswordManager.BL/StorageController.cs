@@ -91,6 +91,22 @@ namespace SharpPasswordManager.BL
         }
 
         /// <summary>
+        /// Add <see cref="TModel"/> in to controller collection and serealize to file.
+        /// </summary>
+        /// <param name="model">Model to adding/</param>
+        public void Add(TModel model)
+        {
+            CheckModelList();
+
+            if (cryptographer == null)
+                modelList.Add(model);
+            else
+                modelList.Add(ApplyCryptography(model, CryptographyMode.Encrypt));
+
+            SaveChanges();
+        }
+
+        /// <summary>
         /// Return count of models collection.
         /// </summary>
         /// <returns>Count of models collection.</returns>

@@ -14,5 +14,6 @@ namespace SharpPasswordManager.Handlers
         bool AlreadyExist(string key);
         void Write(string key, string value);
         string GetByKey(string key);
+        void Delete(string key);
     }
 }

@@ -18,7 +18,7 @@
                 <TextBox Text="{Binding Path=ConfirmPassword, Mode=TwoWay}" Width="300" Margin="15 0 0 0"/>
             </StackPanel>
 
-            <Button Margin="10" Width="100" Height="25" Content="Ok" Command="{Binding CreatePassword}"/>
+            <Button Margin="10" Width="100" Height="25" Content="Ok" Command="{Binding CreatePasswordCmd}"/>
         </StackPanel>
 
     </Grid>

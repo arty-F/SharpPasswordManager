@@ -9,7 +9,7 @@
     <Grid>
         <StackPanel>
             <TextBlock Text="Categories"/>
-            <Button Content="Add"/>
+            <Button Content="Add" Command="{Binding AddCategoryCmd}"/>
             <ListBox x:Name="categoriesList" ItemsSource="{Binding CategoriesList}" Height="100">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

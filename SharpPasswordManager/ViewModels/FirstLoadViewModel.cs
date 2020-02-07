@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -20,6 +21,8 @@ namespace SharpPasswordManager.ViewModels
         const string passwordKey = "Password";
         const string dataFileName = "Data.bin";
         const string categoriesFileName = "Categories.bin";
+        const int minLength = 4;
+        const int maxLenght = 8;
 
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
@@ -32,52 +35,82 @@ namespace SharpPasswordManager.ViewModels
             this.cryptographer = cryptographer;
         }
 
-        private ICommand createPassword;
-        public ICommand CreatePassword
+        private ICommand createPasswordCmd;
+        public ICommand CreatePasswordCmd
         {
             get
             {
-                return createPassword ?? (createPassword = new CommandHandler(TryWritePassword, () => true));
+                return createPasswordCmd ?? (createPasswordCmd = new CommandHandler(TryWritePassword, () => true));
             }
         }
         private void TryWritePassword()
         {
             if (Password == ConfirmPassword)
             {
-                AppManager.Password = Password;
-                string value = Password;
-                if (cryptographer != null)
+                if (Password.Length >= minLength && Password.Length <= maxLenght)
                 {
-                    cryptographer.ChangeKey(value);
-                    value = cryptographer.Encypt(value);
+                    if (Regex.IsMatch(Password, @"^\d+$")) // Is digit only
+                    {
+                        AppManager.Password = Password;
+                        string value = Password;
+                        if (cryptographer != null)
+                        {
+                            cryptographer.ChangeKey(value);
+                            value = cryptographer.Encypt(value);
+                        }
+                        setting.Write(passwordKey, value);
+
+                        if (Initialize())
+                        {
+                            Views.MainView mainView = new Views.MainView();
+                            foreach (Window item in Application.Current.Windows)
+                                if (item.DataContext == this)
+                                    item.Close();
+
+                            mainView.ShowDialog();
+                        }
+                        else
+                            setting.Delete(passwordKey);
+                    }
+                    else
+                        MessageBox.Show("Password should consist only of digits.");
                 }
-                setting.Write(passwordKey, value);
-
-                Initialize();
-                Views.MainView mainView = new Views.MainView();
-                foreach (Window item in Application.Current.Windows)
-                    if (item.DataContext == this)
-                        item.Close();
-
-                mainView.ShowDialog();
+                else
+                    MessageBox.Show($"The number of password characters must be between {minLength} and {maxLenght}.");
             }
             else
-            {
-                MessageBox.Show("Wrong password");
-            }
+                MessageBox.Show("Entered passwords are different.");
         }
 
         // Create data and categories files
-        private void Initialize()
+        private bool Initialize()
         {
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             var dataController = new StorageController<DataModel>(Path.Combine(assemblyPath, dataFileName));
             var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(setting.GetByKey(passwordKey)));
-            dataController.CreateStorage(dataInitializer.GetData());
+            try
+            {
+                dataController.CreateStorage(dataInitializer.GetData());
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show($"Can't write data to {ex.Source}");
+                return false;
+            }
 
             var categoriesController = new StorageController<CategoryModel>(Path.Combine(assemblyPath, categoriesFileName));
-            categoriesController.CreateStorage(new List<CategoryModel>());
+            try
+            {
+                categoriesController.CreateStorage(new List<CategoryModel>());
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show($"Can't write data to {ex.Source}");
+                return false;
+            }
+
+            return true;
         }
     }
 }

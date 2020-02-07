@@ -17,7 +17,7 @@ namespace SharpPasswordManager.Tests
             modelsList.Clear();
             for (int i = 0; i < modelsCount; i++)
             {
-                modelsList.Add(new ModelMock());
+                modelsList.Add(new ModelMock { String = i.ToString() });
             }
             controller = new StorageController<ModelMock>(modelsList);
         }
@@ -47,6 +47,23 @@ namespace SharpPasswordManager.Tests
                 Assert.That(resultModel.Date, Is.EqualTo(expectedDate));
                 Assert.That(resultModel.String, Is.EqualTo(expectedString));
             });
+        }
+
+        [Test]
+        public void Get_GettingCorrectModel()
+        {
+            int expectedIndex = 0;
+            int result = int.Parse(controller.Get(expectedIndex).String);
+
+            Assert.That(result, Is.EqualTo(expectedIndex));
+        }
+
+        [Test]
+        public void Add_ModelAdded()
+        {
+            controller.Add(new ModelMock());
+
+            Assert.That(controller.Count(), Is.EqualTo(modelsCount + 1));
         }
     }
 }

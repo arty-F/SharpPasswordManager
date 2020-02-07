@@ -26,12 +26,12 @@ namespace SharpPasswordManager.ViewModels
         }
 
 
-        private ICommand checkPassword;
-        public ICommand CheckPassword
+        private ICommand checkPasswordCmd;
+        public ICommand CheckPasswordCmd
         {
             get
             {
-                return checkPassword ?? (checkPassword = new CommandHandler(AccessCheck, () => true));
+                return checkPasswordCmd ?? (checkPasswordCmd = new CommandHandler(AccessCheck, () => true));
             }
         }
         private void AccessCheck()
@@ -59,7 +59,7 @@ namespace SharpPasswordManager.ViewModels
             }
             else
             {
-                MessageBox.Show("Wrong password");
+                MessageBox.Show("Wrong password.");
             }
         }
     }

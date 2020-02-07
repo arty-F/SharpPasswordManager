@@ -61,5 +61,16 @@ namespace SharpPasswordManager.Handlers
             configFile.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
         }
+
+        public void Delete(string key)
+        {
+            if (AlreadyExist(key))
+            {
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var settings = configFile.AppSettings.Settings;
+
+                settings.Remove(key);
+            }
+        }
     }
 }
