@@ -28,6 +28,11 @@ namespace SharpPasswordManager.ViewModels
             dataController = new StorageController<DataModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), dataFileName), new Cryptographer(SecureManager.Key));
         }
 
+        public void CategoryChanged(List<int> indexes)
+        {
+           // MessageBox.Show(indexes.Count.ToString());
+        }
+
         #region Property changing
         public event PropertyChangedEventHandler PropertyChanged;
 

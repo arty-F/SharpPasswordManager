@@ -23,7 +23,6 @@ namespace SharpPasswordManager.Views
         public DataView()
         {
             InitializeComponent();
-            DataContext = new ViewModels.DataViewModel();
         }
     }
 }

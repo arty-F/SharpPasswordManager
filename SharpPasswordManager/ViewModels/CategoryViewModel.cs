@@ -19,6 +19,9 @@ namespace SharpPasswordManager.ViewModels
     {
         const string categoriesFileName = "Categories.bin";
 
+        public delegate void CategoryChangeHandler(List<int> indexes);
+        public event CategoryChangeHandler OnCategoryChanged;
+
         private StorageController<CategoryModel> categoriesController;
         public ObservableCollection<CategoryModel> CategoriesList { get; set; }
 
@@ -29,7 +32,7 @@ namespace SharpPasswordManager.ViewModels
             set
             {
                 selectedCategory = value;
-                MessageBox.Show(selectedCategory.Name);
+                OnCategoryChanged?.Invoke(selectedCategory.DataIndexes);
             }
         }
 
@@ -69,6 +72,19 @@ namespace SharpPasswordManager.ViewModels
             {
                 MessageBox.Show($"Can't save data to file {ex.Message}.");
             }
+        }
+
+        private ICommand editCategoryCmd;
+        public ICommand EditCategoryCmd
+        {
+            get
+            {
+                return editCategoryCmd ?? (editCategoryCmd = new CommandHandler(EditCategory, () => true));
+            }
+        }
+        private void EditCategory()
+        {
+
         }
 
         #region Property changing

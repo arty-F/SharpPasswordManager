@@ -24,7 +24,14 @@ namespace SharpPasswordManager.ViewModels
         public MainViewModel()
         {
             CategoriesControl = new Views.CategoryView();
+            CategoryViewModel categoryVM = new CategoryViewModel();
+            CategoriesControl.DataContext = categoryVM;
+
             DataControl = new Views.DataView();
+            DataViewModel dataVM = new DataViewModel();
+            DataControl.DataContext = dataVM;
+
+            categoryVM.OnCategoryChanged += dataVM.CategoryChanged;
         }
     }
 }
