@@ -5,34 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpPasswordManager.Views"
         mc:Ignorable="d"
-        Title="MainView" Height="450" Width="800">
+        Title="MainView" Height="600" Width="450">
+    
+
     <Grid>
         <StackPanel>
-            <TextBlock Text="Categories"/>
-            <Button Content="Add" Command="{Binding AddCategoryCmd}"/>
-            <ListBox x:Name="categoriesList" ItemsSource="{Binding CategoriesList}" Height="100">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Margin="5">
-                            <TextBlock FontSize="16" Text="{Binding Path=Name}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <TextBlock Text="Data"/>
-            <Button Content="Add"/>
-            <ListBox x:Name="dataList" ItemsSource="{Binding DataList}" Height="100">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Margin="5" Orientation="Horizontal">
-                            <TextBlock FontSize="16" Text="{Binding Path=Description}"/>
-                            <TextBlock FontSize="16" Text="{Binding Path=Login}"/>
-                            <TextBlock FontSize="16" Text="{Binding Path=Password}"/>
-                            <TextBlock FontSize="16" Text="{Binding Path=Date}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <UserControl Content="{Binding CategoriesControl}" Height="200" Width="400"/>
+
+            <UserControl Content="{Binding DataControl}" Height="200" Width="400"/>
+
         </StackPanel>
     </Grid>
 </Window>

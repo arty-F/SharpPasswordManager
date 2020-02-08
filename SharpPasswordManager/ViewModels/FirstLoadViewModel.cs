@@ -51,7 +51,7 @@ namespace SharpPasswordManager.ViewModels
                 {
                     if (Regex.IsMatch(Password, @"^\d+$")) // Is digit only
                     {
-                        AppManager.Password = Password;
+                        SecureManager.Key = Password;
                         string value = Password;
                         if (cryptographer != null)
                         {
