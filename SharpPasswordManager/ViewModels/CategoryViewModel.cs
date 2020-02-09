@@ -32,7 +32,7 @@ namespace SharpPasswordManager.ViewModels
             set
             {
                 selectedCategory = value;
-                OnCategoryChanged?.Invoke(selectedCategory.DataIndexes);
+                OnCategoryChanged?.Invoke(selectedCategory?.DataIndexes);
             }
         }
 
@@ -44,8 +44,30 @@ namespace SharpPasswordManager.ViewModels
 
         private void GetCategories()
         {
-            CategoriesList = new ObservableCollection<CategoryModel>(categoriesController.ToList());
+            try
+            {
+                CategoriesList = new ObservableCollection<CategoryModel>(categoriesController.ToList());
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"File not found {ex.Message}.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show($"Can't read data from file {ex.Message}.");
+            }
             OnPropertyChanged(nameof(CategoriesList));
+        }
+
+        public List<int> GetUsingIndexes()
+        {
+            List<int> indexes = new List<int>();
+            foreach (var model in CategoriesList)
+            {
+                if (model?.DataIndexes != null)
+                    indexes.AddRange(model.DataIndexes);
+            }
+            return indexes;
         }
 
         private ICommand addCategoryCmd;
@@ -74,17 +96,31 @@ namespace SharpPasswordManager.ViewModels
             }
         }
 
-        private ICommand editCategoryCmd;
-        public ICommand EditCategoryCmd
+        private ICommand deleteCategoryCmd;
+        public ICommand DeleteCategoryCmd
         {
             get
             {
-                return editCategoryCmd ?? (editCategoryCmd = new CommandHandler(EditCategory, () => true));
+                return deleteCategoryCmd ?? (deleteCategoryCmd = new CommandHandler(DeleteCategory, () => true));
             }
         }
-        private void EditCategory()
+        private void DeleteCategory()
         {
-
+            try
+            {
+                categoriesController.Remove(selectedCategory);
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"File not found {ex.Message}.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show($"Can't save data to file {ex.Message}.");
+            }
+            SelectedCategory = null;
+            GetCategories();
+            OnPropertyChanged(nameof(CategoriesList));
         }
 
         #region Property changing

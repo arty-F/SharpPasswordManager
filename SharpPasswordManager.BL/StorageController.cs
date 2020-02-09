@@ -107,6 +107,25 @@ namespace SharpPasswordManager.BL
         }
 
         /// <summary>
+        /// Remove all same models from the collection.
+        /// </summary>
+        /// <param name="model">Model to remove.</param>
+        public void Remove(TModel model)
+        {
+            CheckModelList();
+
+            if (cryptographer != null)
+            {
+                var encrypted = ApplyCryptography(model, CryptographyMode.Encrypt);
+                modelList.RemoveAll(m => m.Equals(encrypted));
+            }
+            else
+                modelList.RemoveAll(m => m.Equals(model));
+
+            SaveChanges();
+        }
+
+        /// <summary>
         /// Return count of models collection.
         /// </summary>
         /// <returns>Count of models collection.</returns>
@@ -132,6 +151,8 @@ namespace SharpPasswordManager.BL
         /// </summary>
         public void CreateStorage(IEnumerable<TModel> models = null)
         {
+            if (!File.Exists(path))
+                throw new FileNotFoundException(path);
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
             try

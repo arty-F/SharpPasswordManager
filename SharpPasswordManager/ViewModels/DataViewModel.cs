@@ -20,6 +20,9 @@ namespace SharpPasswordManager.ViewModels
     {
         const string dataFileName = "Data.bin";
 
+        public delegate List<int> DataAddHandler();
+        public event DataAddHandler OnDataAdded;
+
         private StorageController<DataModel> dataController;
         public ObservableCollection<DataModel> DataList { get; set; }
 
@@ -30,7 +33,54 @@ namespace SharpPasswordManager.ViewModels
 
         public void CategoryChanged(List<int> indexes)
         {
-           // MessageBox.Show(indexes.Count.ToString());
+            DataList = new ObservableCollection<DataModel>();
+
+            if (indexes != null && indexes.Count > 0)
+            {
+                foreach (var index in indexes)
+                {
+                    try
+                    {
+                        DataList.Add(dataController[index]);
+                    }
+                    catch (FileNotFoundException ex)
+                    {
+                        MessageBox.Show($"File not found {ex.Message}.");
+                        DataList = null;
+                        break;
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        MessageBox.Show($"Can't read data from file {ex.Message}.");
+                        DataList = null;
+                        break;
+                    }
+                    OnPropertyChanged(nameof(DataList));
+                }
+            }
+        }
+
+        private ICommand addDataCmd;
+        public ICommand AddDataCmd
+        {
+            get
+            {
+                return addDataCmd ?? (addDataCmd = new CommandHandler(AddData, () => true));
+            }
+        }
+        private void AddData()
+        {
+            List<int> usingIndexes = OnDataAdded?.Invoke();
+
+            throw new NotImplementedException();
+            // Create view for new models adding
+
+
+
+            DataModel model = new DataModel { Description = "asd", Login = "Login", Password = "Password", Date = DateTime.Now };
+            dataController.PasteAt(0, model);
+            DataList.Add(model);
+            OnPropertyChanged(nameof(DataList));
         }
 
         #region Property changing

@@ -65,5 +65,15 @@ namespace SharpPasswordManager.Tests
 
             Assert.That(controller.Count(), Is.EqualTo(modelsCount + 1));
         }
+
+        [Test]
+        public void Remove_CountIsRight()
+        {
+            ModelMock toRemove = new ModelMock { String = "To Remove." };
+            controller.Add(toRemove);
+            controller.Remove(toRemove);
+
+            Assert.That(controller.Count(), Is.EqualTo(modelsCount));
+        }
     }
 }

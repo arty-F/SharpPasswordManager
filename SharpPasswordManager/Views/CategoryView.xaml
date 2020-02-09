@@ -39,7 +39,7 @@
                     <StackPanel Margin="5">
                         <TextBox x:Name="CategoryName" Text="{Binding Path=Name}" IsHitTestVisible="False" Background="{x:Null}" BorderBrush="{x:Null}"/>
                         <StackPanel x:Name="ButtonsPanel" Orientation="Horizontal" Visibility="Hidden">
-                            <Button Content="delete" FontSize="8" Height="15" Width="25"/>
+                            <Button Content="delete" FontSize="8" Height="15" Width="25" Command="{Binding DataContext.DeleteCategoryCmd, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                         </StackPanel>
                     </StackPanel>
                     <DataTemplate.Triggers>
