@@ -80,19 +80,27 @@ namespace SharpPasswordManager.ViewModels
         }
         private void AddCategory()
         {
-            CategoryModel newCategory = new CategoryModel { DataIndexes = new List<int>(), Name = "Default" };
-            try
+            CategoryModel newModel = new CategoryModel();
+            CategoryValidateViewModel validateVM = new CategoryValidateViewModel(ref newModel);
+            Views.CategoryValidateView validateView = new Views.CategoryValidateView();
+            validateView.DataContext = validateVM;
+            validateView.ShowDialog();
+
+            if (newModel.DataIndexes != null && newModel.Name != null)
             {
-                categoriesController.Add(newCategory);
-                GetCategories();
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found {ex.Message}.");
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Can't save data to file {ex.Message}.");
+                try
+                {
+                    categoriesController.Add(newModel);
+                    GetCategories();
+                }
+                catch (FileNotFoundException ex)
+                {
+                    MessageBox.Show($"File not found {ex.Message}.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show($"Can't save data to file {ex.Message}.");
+                }
             }
         }
 
@@ -121,6 +129,40 @@ namespace SharpPasswordManager.ViewModels
             SelectedCategory = null;
             GetCategories();
             OnPropertyChanged(nameof(CategoriesList));
+        }
+
+        private ICommand editCategoryCmd;
+        public ICommand EditCategoryCmd
+        {
+            get
+            {
+                return editCategoryCmd ?? (editCategoryCmd = new CommandHandler(EditCategory, () => true));
+            }
+        }
+        private void EditCategory()
+        {
+            CategoryValidateViewModel validateVM = new CategoryValidateViewModel(ref selectedCategory);
+            Views.CategoryValidateView validateView = new Views.CategoryValidateView();
+            validateView.DataContext = validateVM;
+            validateView.ShowDialog();
+
+            int index = CategoriesList.IndexOf(selectedCategory);
+            try
+            {
+                categoriesController.PasteAt(index, selectedCategory);
+                GetCategories();
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"File not found {ex.Message}.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show($"Can't save data to file {ex.Message}.");
+            }
+
+            if (CategoriesList[index] != null)
+                selectedCategory = CategoriesList[index];
         }
 
         #region Property changing

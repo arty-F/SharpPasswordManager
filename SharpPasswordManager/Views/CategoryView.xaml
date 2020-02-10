@@ -37,15 +37,15 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="5">
-                        <TextBox x:Name="CategoryName" Text="{Binding Path=Name}" IsHitTestVisible="False" Background="{x:Null}" BorderBrush="{x:Null}"/>
+                        <TextBlock x:Name="CategoryName" Text="{Binding Path=Name}"/>
                         <StackPanel x:Name="ButtonsPanel" Orientation="Horizontal" Visibility="Hidden">
+                            <Button Content="edit" FontSize="8" Height="15" Width="25" Command="{Binding DataContext.EditCategoryCmd, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                             <Button Content="delete" FontSize="8" Height="15" Width="25" Command="{Binding DataContext.DeleteCategoryCmd, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                         </StackPanel>
                     </StackPanel>
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
                             <Setter Property="Visibility" Value="Visible" TargetName="ButtonsPanel"/>
-                            <Setter Property="IsHitTestVisible" Value="True" TargetName="CategoryName"/>
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>

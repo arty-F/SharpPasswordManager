@@ -26,6 +26,8 @@ namespace SharpPasswordManager.ViewModels
         private StorageController<DataModel> dataController;
         public ObservableCollection<DataModel> DataList { get; set; }
 
+        public DataModel SelectedData { get; set; }
+
         public DataViewModel()
         {
             dataController = new StorageController<DataModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), dataFileName), new Cryptographer(SecureManager.Key));
@@ -70,17 +72,27 @@ namespace SharpPasswordManager.ViewModels
         }
         private void AddData()
         {
-            List<int> usingIndexes = OnDataAdded?.Invoke();
+            DataModel newModel = new DataModel();
+            DataValidateViewModel validateVM = new DataValidateViewModel(ref newModel);
+            Views.DataValidateView validateView = new Views.DataValidateView();
+            validateView.DataContext = validateVM;
+            validateView.ShowDialog();
 
-            throw new NotImplementedException();
-            // Create view for new models adding
+            if (newModel.Password != null)
+            {
+                //TODO : ADD TO CONTROLLER
+                DataList.Add(newModel);
+                OnPropertyChanged(nameof(DataList));
+            }
 
+            //List<int> usingIndexes = OnDataAdded?.Invoke();
 
+            //throw new NotImplementedException();
 
-            DataModel model = new DataModel { Description = "asd", Login = "Login", Password = "Password", Date = DateTime.Now };
-            dataController.PasteAt(0, model);
-            DataList.Add(model);
-            OnPropertyChanged(nameof(DataList));
+            //DataModel model = new DataModel { Description = "asd", Login = "Login", Password = "Password", Date = DateTime.Now };
+            //dataController.PasteAt(0, model);
+            //DataList.Add(model);
+            //OnPropertyChanged(nameof(DataList));
         }
 
         #region Property changing
