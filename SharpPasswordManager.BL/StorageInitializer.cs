@@ -48,6 +48,7 @@ namespace SharpPasswordManager.BL
         public List<TModel> GetData(int modelsCount = 10000)
         {
             List<TModel> dataList = new List<TModel>();
+            dataList.Capacity = modelsCount;
             var genericType = GetType().GetGenericArguments();
 
             for (int i = 0; i < modelsCount; i++)
@@ -58,10 +59,7 @@ namespace SharpPasswordManager.BL
                     PropertyInfo pInfo = prop as PropertyInfo;
                     if (pInfo != null)
                     {
-                        if (pInfo.PropertyType == typeof(DateTime))
-                            prop.SetValue(model, dataGenerator.GenerateRandomDate());
-
-                        else if (pInfo.PropertyType == typeof(string))
+                        if (pInfo.PropertyType == typeof(string))
                         {
                             // Without encryption
                             if (cryptographer == null)
@@ -108,6 +106,8 @@ namespace SharpPasswordManager.BL
                                 }
                             }
                         }
+                        else if (pInfo.PropertyType == typeof(DateTime))
+                            prop.SetValue(model, dataGenerator.GenerateRandomDate());
                     }
                 }
                 dataList.Add(model);

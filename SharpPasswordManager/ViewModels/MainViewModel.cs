@@ -28,11 +28,12 @@ namespace SharpPasswordManager.ViewModels
             CategoriesControl.DataContext = categoryVM;
 
             DataControl = new Views.DataView();
-            DataViewModel dataVM = new DataViewModel();
+            DataViewModel dataVM = new DataViewModel(categoryVM.GetStartingIndex());
             DataControl.DataContext = dataVM;
 
             categoryVM.OnCategoryChanged += dataVM.CategoryChanged;
-            dataVM.OnDataAdded += categoryVM.GetUsingIndexes;
+            dataVM.OnDataAdded += categoryVM.AddData;
+            dataVM.OnDataDeleted += categoryVM.DeleteData;
         }
     }
 }

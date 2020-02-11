@@ -14,36 +14,60 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace SharpPasswordManager.ViewModels 
+namespace SharpPasswordManager.ViewModels
 {
     public class DataViewModel : INotifyPropertyChanged
     {
         const string dataFileName = "Data.bin";
+        private int startingIndex;
+        private List<int> dataIndexes;
 
-        public delegate List<int> DataAddHandler();
+        public delegate void DataAddHandler(int index);
         public event DataAddHandler OnDataAdded;
+
+        public delegate void DataDeleteHandler(int index);
+        public event DataAddHandler OnDataDeleted;
 
         private StorageController<DataModel> dataController;
         public ObservableCollection<DataModel> DataList { get; set; }
 
-        public DataModel SelectedData { get; set; }
-
-        public DataViewModel()
+        private DataModel selectedData;
+        public DataModel SelectedData
         {
+            get { return selectedData; }
+            set { selectedData = value; }
+        }
+
+        public DataViewModel(int startingIndex)
+        {
+            this.startingIndex = startingIndex;
             dataController = new StorageController<DataModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), dataFileName), new Cryptographer(SecureManager.Key));
         }
 
         public void CategoryChanged(List<int> indexes)
         {
+            if (indexes == null)
+            {
+                DataList = null;
+                OnPropertyChanged(nameof(DataList));
+                return;
+            }
+
+            dataIndexes = indexes;
+            GetData();
+        }
+
+        private void GetData()
+        {
             DataList = new ObservableCollection<DataModel>();
 
-            if (indexes != null && indexes.Count > 0)
+            if (dataIndexes.Count > 0)
             {
-                foreach (var index in indexes)
+                foreach (var index in dataIndexes)
                 {
                     try
                     {
-                        DataList.Add(dataController[index]);
+                        DataList.Add(dataController[SecureManager.GetIndexOf(index)]);
                     }
                     catch (FileNotFoundException ex)
                     {
@@ -57,9 +81,10 @@ namespace SharpPasswordManager.ViewModels
                         DataList = null;
                         break;
                     }
-                    OnPropertyChanged(nameof(DataList));
                 }
             }
+
+            OnPropertyChanged(nameof(DataList));
         }
 
         private ICommand addDataCmd;
@@ -72,6 +97,9 @@ namespace SharpPasswordManager.ViewModels
         }
         private void AddData()
         {
+            if (DataList == null)
+                return;
+
             DataModel newModel = new DataModel();
             DataValidateViewModel validateVM = new DataValidateViewModel(ref newModel);
             Views.DataValidateView validateView = new Views.DataValidateView();
@@ -80,19 +108,70 @@ namespace SharpPasswordManager.ViewModels
 
             if (newModel.Password != null)
             {
-                //TODO : ADD TO CONTROLLER
-                DataList.Add(newModel);
-                OnPropertyChanged(nameof(DataList));
+                try
+                {
+                    dataController.PasteAt(SecureManager.GetIndexOf(startingIndex), newModel);
+                }
+                catch (FileNotFoundException ex)
+                {
+                    MessageBox.Show($"File not found {ex.Message}.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show($"Can't read data from file {ex.Message}.");
+                }
+                OnDataAdded?.Invoke(startingIndex);
+                ++startingIndex;
+            }
+        }
+
+        private ICommand editDataCmd;
+        public ICommand EditDataCmd
+        {
+            get
+            {
+                return editDataCmd ?? (editDataCmd = new CommandHandler(EditData, () => true));
+            }
+        }
+        private void EditData()
+        {
+            DataValidateViewModel validateVM = new DataValidateViewModel(ref selectedData);
+            Views.DataValidateView validateView = new Views.DataValidateView();
+            validateView.DataContext = validateVM;
+            validateView.ShowDialog();
+
+            int index = DataList.IndexOf(selectedData);
+            try
+            {
+                dataController.PasteAt(SecureManager.GetIndexOf(dataIndexes[index]), selectedData);
+                GetData();
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"File not found {ex.Message}.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show($"Can't save data to file {ex.Message}.");
             }
 
-            //List<int> usingIndexes = OnDataAdded?.Invoke();
+            if (DataList[index] != null)
+                selectedData = DataList[index];
+            OnPropertyChanged(nameof(SelectedData));
+        }
 
-            //throw new NotImplementedException();
-
-            //DataModel model = new DataModel { Description = "asd", Login = "Login", Password = "Password", Date = DateTime.Now };
-            //dataController.PasteAt(0, model);
-            //DataList.Add(model);
-            //OnPropertyChanged(nameof(DataList));
+        private ICommand deleteDataCmd;
+        public ICommand DeleteDataCmd
+        {
+            get
+            {
+                return deleteDataCmd ?? (deleteDataCmd = new CommandHandler(DeleteData, () => true));
+            }
+        }
+        private void DeleteData()
+        {
+            OnDataDeleted?.Invoke(dataIndexes[DataList.IndexOf(selectedData)]);
+            GetData();
         }
 
         #region Property changing

@@ -1,4 +1,5 @@
 ﻿using SharpPasswordManager.BL;
+using SharpPasswordManager.BL.Interfaces;
 using SharpPasswordManager.DL.Models;
 using SharpPasswordManager.Handlers;
 using System;
@@ -22,7 +23,7 @@ namespace SharpPasswordManager.ViewModels
         public delegate void CategoryChangeHandler(List<int> indexes);
         public event CategoryChangeHandler OnCategoryChanged;
 
-        private StorageController<CategoryModel> categoriesController;
+        private IStorageController<CategoryModel> categoriesController;
         public ObservableCollection<CategoryModel> CategoriesList { get; set; }
 
         private CategoryModel selectedCategory;
@@ -59,15 +60,67 @@ namespace SharpPasswordManager.ViewModels
             OnPropertyChanged(nameof(CategoriesList));
         }
 
-        public List<int> GetUsingIndexes()
+        public int GetStartingIndex()
         {
-            List<int> indexes = new List<int>();
-            foreach (var model in CategoriesList)
+            int maxIndex = -1;
+
+            foreach (var category in CategoriesList)
             {
-                if (model?.DataIndexes != null)
-                    indexes.AddRange(model.DataIndexes);
+                if (category.DataIndexes != null && category.DataIndexes.Count > 0)
+                {
+                    foreach (var index in category.DataIndexes)
+                    {
+                        if (index > maxIndex)
+                            maxIndex = index;
+                    }
+                }
             }
-            return indexes;
+            return ++maxIndex;
+        }
+
+        public void AddData(int dataIndex)
+        {
+            int selectedCategoryIndex = CategoriesList.IndexOf(selectedCategory);
+            selectedCategory.DataIndexes.Add(dataIndex);
+            try
+            {
+                categoriesController.PasteAt(selectedCategoryIndex, selectedCategory);
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"File not found {ex.Message}.");
+                selectedCategory.DataIndexes.RemoveAll(i => i == dataIndex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show($"Can't save data to file {ex.Message}.");
+                selectedCategory.DataIndexes.RemoveAll(i => i == dataIndex);
+            }
+            GetCategories();
+            SelectedCategory = CategoriesList[selectedCategoryIndex];
+        }
+
+        public void DeleteData(int dataIndex)
+        {
+            selectedCategory.DataIndexes.RemoveAll(i => i == dataIndex);
+
+            int index = CategoriesList.IndexOf(selectedCategory);
+            try
+            {
+                categoriesController.PasteAt(index, selectedCategory);
+                GetCategories();
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"File not found {ex.Message}.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show($"Can't save data to file {ex.Message}.");
+            }
+
+            if (CategoriesList[index] != null)
+                selectedCategory = CategoriesList[index];
         }
 
         private ICommand addCategoryCmd;
@@ -101,6 +154,8 @@ namespace SharpPasswordManager.ViewModels
                 {
                     MessageBox.Show($"Can't save data to file {ex.Message}.");
                 }
+                SelectedCategory = CategoriesList.LastOrDefault();
+                OnPropertyChanged(nameof(SelectedCategory));
             }
         }
 
@@ -129,6 +184,7 @@ namespace SharpPasswordManager.ViewModels
             SelectedCategory = null;
             GetCategories();
             OnPropertyChanged(nameof(CategoriesList));
+            OnCategoryChanged?.Invoke(null);
         }
 
         private ICommand editCategoryCmd;

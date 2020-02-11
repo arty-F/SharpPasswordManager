@@ -43,6 +43,7 @@
                             <Button Content="delete" FontSize="8" Height="15" Width="25" Command="{Binding DataContext.DeleteCategoryCmd, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                         </StackPanel>
                     </StackPanel>
+                    
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
                             <Setter Property="Visibility" Value="Visible" TargetName="ButtonsPanel"/>
