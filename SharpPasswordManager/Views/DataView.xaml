@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="SharpPasswordManager.Views.DataView"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -41,19 +42,21 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Url:" Margin="5"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=Description}"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=Description}" Margin="5"/>
 
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Login:" Margin="5"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Login}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Login}" Margin="5"/>
 
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Password:" Margin="5"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Path=Password}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Path=Password}" Margin="5"/>
 
                         <TextBlock FontSize="10" FontWeight="Regular" Grid.Row="3" Grid.Column="0" Text="{Binding Path=Date}" Margin="5"/>
 
                         <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ButtonsPanel" Orientation="Horizontal" Visibility="Hidden">
-                            <Button Content="edit" FontSize="8" Height="15" Width="25" Command="{Binding DataContext.EditDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
-                            <Button Content="delete" FontSize="8" Height="15" Width="25" Command="{Binding DataContext.DeleteDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                            <Button Height="15" Width="25" Command="{Binding DataContext.EditDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}" Margin="5">
+                                <materialDesign:PackIcon Kind="Edit" Height="15" Width="25" Foreground="White"/>
+                            </Button>
+                            <Button Content="delete" FontSize="8" Height="15" Width="25" Command="{Binding DataContext.DeleteDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}" Margin="5"/>
                         </StackPanel>
                     </Grid>
 

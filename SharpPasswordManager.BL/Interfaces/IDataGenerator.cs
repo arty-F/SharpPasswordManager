@@ -11,6 +11,6 @@ namespace SharpPasswordManager.BL.Interfaces
         string GenerateRandomLogin();
         string GenerateRandomPassword();
         string GenerateRandomPassword(int lenght);
-        DateTime GenerateRandomDate();
+        string GenerateRandomDate();
     }
 }

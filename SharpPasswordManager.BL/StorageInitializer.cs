@@ -76,6 +76,11 @@ namespace SharpPasswordManager.BL
                                         prop.SetValue(model, dataGenerator.GenerateRandomPassword());
                                         break;
                                     }
+                                    case "Date":
+                                    {
+                                        prop.SetValue(model, dataGenerator.GenerateRandomDate());
+                                        break;
+                                    }
                                     default:
                                     {
                                         prop.SetValue(model, dataGenerator.GenerateRandomDescription());
@@ -98,6 +103,11 @@ namespace SharpPasswordManager.BL
                                         prop.SetValue(model, cryptographer.Encypt(dataGenerator.GenerateRandomPassword()));
                                         break;
                                     }
+                                    case "Date":
+                                    {
+                                        prop.SetValue(model, cryptographer.Encypt(dataGenerator.GenerateRandomDate()));
+                                        break;
+                                    }
                                     default:
                                     {
                                         prop.SetValue(model, cryptographer.Encypt(dataGenerator.GenerateRandomDescription()));
@@ -106,8 +116,6 @@ namespace SharpPasswordManager.BL
                                 }
                             }
                         }
-                        else if (pInfo.PropertyType == typeof(DateTime))
-                            prop.SetValue(model, dataGenerator.GenerateRandomDate());
                     }
                 }
                 dataList.Add(model);

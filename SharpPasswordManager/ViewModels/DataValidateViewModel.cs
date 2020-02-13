@@ -18,6 +18,8 @@ namespace SharpPasswordManager.ViewModels
         public DataValidateViewModel(ref DataModel model)
         {
             Model = model;
+            if (Model.Date == null)
+                Model.Date = DateTime.Now.ToString();
 
             initialState.Login = Model.Login;
             initialState.Description = Model.Description;

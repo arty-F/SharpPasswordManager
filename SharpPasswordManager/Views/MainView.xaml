@@ -1,4 +1,5 @@
 ﻿<Window x:Class="SharpPasswordManager.Views.MainView"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +10,17 @@
         Style="{StaticResource WindowBase}">
 
     <DockPanel Margin="10">
-        <StackPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="48" BorderThickness="0" Margin="0 0 10 0">
+                <materialDesign:PackIcon Kind="WindowMinimize" Width="24" Height="24" HorizontalAlignment="Center"/>
+            </Button>
+
+            <Button Width="48" BorderThickness="0" Margin="10 0 0 0">
+                <materialDesign:PackIcon Kind="WindowClose" Width="24" Height="24" HorizontalAlignment="Center"/>
+            </Button>
+        </StackPanel>
+
+        <StackPanel Margin="0 20 0 0">
             <UserControl Content="{Binding CategoriesControl}" Height="200" Width="400"/>
 
             <UserControl Content="{Binding DataControl}" Height="400" Width="400"/>

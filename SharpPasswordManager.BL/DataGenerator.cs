@@ -42,15 +42,15 @@ namespace SharpPasswordManager.BL
         }
 
         /// <summary>
-        /// Generate random datetime from now to to (now + this value) in days. Every ~100th generated date will be the long distant future.
+        /// Generate random datetime in sting format from now to to (now + this value) in days. Every ~100th generated date will be the long distant future.
         /// </summary>
-        /// <returns>Random generated datetime.</returns>
-        public DateTime GenerateRandomDate()
+        /// <returns>Random generated datetime string.</returns>
+        public string GenerateRandomDate()
         {
             if (random.Next(100) == 99)
-                return DateTime.Now.AddSeconds(random.Next(secondsInDay)).AddDays(random.Next(createdDateRangeInDays * createdDateFutureMultiplier));
+                return DateTime.Now.AddSeconds(random.Next(secondsInDay)).AddDays(random.Next(createdDateRangeInDays * createdDateFutureMultiplier)).ToString();
             else
-                return DateTime.Now.AddSeconds(random.Next(secondsInDay)).AddDays(random.Next(createdDateRangeInDays));
+                return DateTime.Now.AddSeconds(random.Next(secondsInDay)).AddDays(random.Next(createdDateRangeInDays)).ToString();
         }
 
         /// <summary>
