@@ -47,7 +47,6 @@ namespace SharpPasswordManager.ViewModels
             }
             catch (Exception) { }
             
-
             if (isAutenticate)
             {
                 SecureManager.Key = Password;
@@ -58,9 +57,7 @@ namespace SharpPasswordManager.ViewModels
                 mainView.ShowDialog();
             }
             else
-            {
                 MessageBox.Show("Wrong password.");
-            }
         }
     }
 }

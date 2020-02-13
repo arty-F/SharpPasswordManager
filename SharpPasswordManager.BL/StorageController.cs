@@ -151,8 +151,6 @@ namespace SharpPasswordManager.BL
         /// </summary>
         public void CreateStorage(IEnumerable<TModel> models = null)
         {
-            if (!File.Exists(path))
-                throw new FileNotFoundException(path);
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
             try

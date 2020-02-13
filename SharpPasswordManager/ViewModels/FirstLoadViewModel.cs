@@ -55,7 +55,7 @@ namespace SharpPasswordManager.ViewModels
                         string value = Password;
                         if (cryptographer != null)
                         {
-                            cryptographer.ChangeKey(value);
+                            cryptographer.ChangeKey(SecureManager.Key);
                             value = cryptographer.Encypt(value);
                         }
                         setting.Write(passwordKey, value);
@@ -88,7 +88,7 @@ namespace SharpPasswordManager.ViewModels
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             var dataController = new StorageController<DataModel>(Path.Combine(assemblyPath, dataFileName));
-            var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(setting.GetByKey(passwordKey)));
+            var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(SecureManager.Key));
             try
             {
                 dataController.CreateStorage(dataInitializer.GetData());

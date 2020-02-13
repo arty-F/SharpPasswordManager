@@ -68,6 +68,7 @@ namespace SharpPasswordManager.ViewModels
                     try
                     {
                         DataList.Add(dataController[SecureManager.GetIndexOf(index)]);
+                        MessageBox.Show(dataController[SecureManager.GetIndexOf(889)].Date.ToString());
                     }
                     catch (FileNotFoundException ex)
                     {
@@ -100,7 +101,7 @@ namespace SharpPasswordManager.ViewModels
             if (DataList == null)
                 return;
 
-            DataModel newModel = new DataModel();
+            DataModel newModel = new DataModel { Date = DateTime.Now};
             DataValidateViewModel validateVM = new DataValidateViewModel(ref newModel);
             Views.DataValidateView validateView = new Views.DataValidateView();
             validateView.DataContext = validateVM;

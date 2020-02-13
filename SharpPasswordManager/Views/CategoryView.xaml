@@ -7,11 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
     <StackPanel>
-
-        <TextBlock Text="Categories"/>
         <Button Content="Add" Command="{Binding AddCategoryCmd}"/>
 
-        <ListBox x:Name="categoriesList" ItemsSource="{Binding CategoriesList}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" Height="200" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox Style="{StaticResource ListBoxBase}" ItemsSource="{Binding CategoriesList}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" Height="200" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -21,15 +19,10 @@
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="ListBoxItem.Background" Value="LightSteelBlue"/>
-                    <Setter Property="ListBoxItem.Margin" Value="5"/>
-                    <Setter Property="ListBoxItem.Padding" Value="5"/>
+                    <Setter Property="Margin" Value="4"/>
+                    <Setter Property="Background" Value="DodgerBlue"/>
                     <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="White"/>
-                            <Setter Property="BorderThickness" Value="2"/>
-                            <Setter Property="BorderBrush" Value="Red"/>
-                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True"/>
                     </Style.Triggers>
                 </Style>
             </ListBox.ItemContainerStyle>
@@ -43,7 +36,7 @@
                             <Button Content="delete" FontSize="8" Height="15" Width="25" Command="{Binding DataContext.DeleteCategoryCmd, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                         </StackPanel>
                     </StackPanel>
-                    
+
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
                             <Setter Property="Visibility" Value="Visible" TargetName="ButtonsPanel"/>
@@ -51,6 +44,7 @@
                     </DataTemplate.Triggers>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+
         </ListBox>
 
     </StackPanel>
