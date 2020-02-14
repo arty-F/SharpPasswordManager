@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows;
 using System.IO;
 using System.Reflection;
+using System.Windows.Controls;
 
 namespace SharpPasswordManager.ViewModels
 {
@@ -31,13 +32,13 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return checkPasswordCmd ?? (checkPasswordCmd = new CommandHandler(AccessCheck, () => true));
+                return checkPasswordCmd ?? (checkPasswordCmd = new CommandHandler(AccessCheck, (object obj) => true));
             }
         }
-        private void AccessCheck()
+        private void AccessCheck(object parameter)
         {
-            if (Password == null)
-                return;
+            var passwordBox = parameter as PasswordBox;
+            Password = passwordBox.Password;
 
             autenticator.ChangeKey(Password);
             bool isAutenticate = false;

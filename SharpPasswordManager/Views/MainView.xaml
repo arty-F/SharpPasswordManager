@@ -20,11 +20,11 @@
     
     <DockPanel Margin="10">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="48" Foreground="Black" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding MinimizeCmd}">
+            <Button Width="48" Foreground="#FF2F2F82" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding MinimizeCmd}">
                 <materialDesign:PackIcon Kind="WindowMinimize" Width="24" Height="24" HorizontalAlignment="Center"/>
             </Button>
 
-            <Button Width="48" Foreground="Black" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding CloseCmd}">
+            <Button Width="48" Foreground="#FF2F2F82" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding CloseCmd}">
                 <materialDesign:PackIcon Kind="WindowClose" Width="24" Height="24" HorizontalAlignment="Center"/>
             </Button>
         </StackPanel>

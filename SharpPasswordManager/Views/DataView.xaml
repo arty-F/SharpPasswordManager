@@ -8,8 +8,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
     <StackPanel>
-        
-        <Button Style="{DynamicResource MaterialDesignIconButton}" Foreground="Black" Command="{Binding AddDataCmd}" HorizontalAlignment="Left">
+
+        <Button Style="{DynamicResource MaterialDesignIconButton}" Foreground="#FF2F2F82" Command="{Binding AddDataCmd}" HorizontalAlignment="Left">
             <materialDesign:PackIcon Kind="Add">
                 <materialDesign:PackIcon.LayoutTransform>
                     <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2" ScaleY="2"/>
@@ -22,12 +22,10 @@
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <Setter Property="Background" Value="{x:Null}"/>
-                    <Setter Property="BorderBrush" Value="#FF1C1D18"/>
+                    <Setter Property="BorderBrush" Value="#FF2F2F82"/>
                     <Setter Property="BorderThickness" Value="2"/>
                     <Setter Property="Margin" Value="2"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True"/>
-                    </Style.Triggers>
+                    <Setter Property="Foreground" Value="#FF2F2F82"/>
                 </Style>
             </ListBox.ItemContainerStyle>
 
@@ -47,7 +45,8 @@
                             <ColumnDefinition/>
                             <ColumnDefinition Width="220"/>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="ButtonEdit" Visibility="Hidden" Grid.Row="0" Grid.Column="0" Foreground="White" Height="20" Width="20" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Command="{Binding DataContext.EditDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}" HorizontalAlignment="Left" Margin="45 0 0 0">
+                        <Button x:Name="ButtonEdit" Visibility="Hidden" Grid.Row="0" Grid.Column="0" Foreground="White" Height="20" Width="20" HorizontalAlignment="Left" Margin="45 0 0 0"
+                                Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Command="{Binding DataContext.EditDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}">
                             <materialDesign:PackIcon Kind="Edit">
                                 <materialDesign:PackIcon.LayoutTransform>
                                     <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
@@ -55,7 +54,8 @@
                             </materialDesign:PackIcon>
                         </Button>
 
-                        <Button x:Name="ButtonDelete" Visibility="Hidden" Grid.Row="0" Grid.Column="3" Foreground="White" Height="20" Width="20" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Command="{Binding DataContext.DeleteDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}" HorizontalAlignment="Right" Margin="5 0 45 0">
+                        <Button x:Name="ButtonDelete" Visibility="Hidden" Grid.Row="0" Grid.Column="3" Foreground="White" Height="20" Width="20" HorizontalAlignment="Right" Margin="5 0 45 0"
+                                Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Command="{Binding DataContext.DeleteDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}">
                             <materialDesign:PackIcon Kind="Delete">
                                 <materialDesign:PackIcon.LayoutTransform>
                                     <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
@@ -64,7 +64,8 @@
                         </Button>
 
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Url:" Margin="5 5 0 0"/>
-                        <Button Grid.Row="1" Grid.Column="1" Width="50" Height="25" Foreground="#FF1C1D18" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CopyDescriptionCmd}" VerticalAlignment="Center">
+                        <Button x:Name="ButtonCopyDescription" Visibility="Hidden" Grid.Row="1" Grid.Column="1" Width="50" Height="25" Foreground="#FF2F2F82" VerticalAlignment="Center"
+                                Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding DataContext.CopyDescriptionCmd, RelativeSource={RelativeSource AncestorType=ListBox}}">
                             <materialDesign:PackIcon Kind="ContentCopy">
                                 <materialDesign:PackIcon.LayoutTransform>
                                     <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
@@ -74,7 +75,8 @@
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Path=Description}" Margin="5 5 0 0"/>
 
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Login:" Margin="5 5 0 0"/>
-                        <Button Grid.Row="2" Grid.Column="1" Width="50" Height="25" Foreground="#FF1C1D18" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CopyLoginCmd}" VerticalAlignment="Center">
+                        <Button x:Name="ButtonCopyLogin" Visibility="Hidden" Grid.Row="2" Grid.Column="1" Width="50" Height="25" Foreground="#FF2F2F82" VerticalAlignment="Center"
+                                Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding DataContext.CopyLoginCmd, RelativeSource={RelativeSource AncestorType=ListBox}}">
                             <materialDesign:PackIcon Kind="ContentCopy">
                                 <materialDesign:PackIcon.LayoutTransform>
                                     <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
@@ -84,7 +86,8 @@
                         <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Path=Login}" Margin="5 5 0 0"/>
 
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Password:" Margin="5 5 0 8"/>
-                        <Button Grid.Row="3" Grid.Column="1" Width="50" Height="25" Foreground="#FF1C1D18" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CopyPasswordCmd}" VerticalAlignment="Center">
+                        <Button x:Name="ButtonCopyPassword" Visibility="Hidden" Grid.Row="3" Grid.Column="1" Width="50" Height="25" Foreground="#FF2F2F82" VerticalAlignment="Center"
+                                Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding DataContext.CopyPasswordCmd, RelativeSource={RelativeSource AncestorType=ListBox}}">
                             <materialDesign:PackIcon Kind="ContentCopy">
                                 <materialDesign:PackIcon.LayoutTransform>
                                     <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
@@ -101,6 +104,9 @@
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
                             <Setter Property="Visibility" Value="Visible" TargetName="ButtonEdit"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="ButtonDelete"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="ButtonCopyDescription"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="ButtonCopyLogin"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="ButtonCopyPassword"/>
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>

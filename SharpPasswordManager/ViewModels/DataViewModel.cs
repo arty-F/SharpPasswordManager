@@ -174,6 +174,45 @@ namespace SharpPasswordManager.ViewModels
             GetData();
         }
 
+        private ICommand copyDescriptionCmd;
+        public ICommand CopyDescriptionCmd
+        {
+            get
+            {
+                return copyDescriptionCmd ?? (copyDescriptionCmd = new CommandHandler(CopyDescription, () => true));
+            }
+        }
+        private void CopyDescription()
+        {
+            Clipboard.SetText(SelectedData.Description);
+        }
+
+        private ICommand copyLoginCmd;
+        public ICommand CopyLoginCmd
+        {
+            get
+            {
+                return copyLoginCmd ?? (copyLoginCmd = new CommandHandler(CopyLogin, () => true));
+            }
+        }
+        private void CopyLogin()
+        {
+            Clipboard.SetText(SelectedData.Login);
+        }
+
+        private ICommand copyPasswordCmd;
+        public ICommand CopyPasswordCmd
+        {
+            get
+            {
+                return copyPasswordCmd ?? (copyPasswordCmd = new CommandHandler(CopyPassword, () => true));
+            }
+        }
+        private void CopyPassword()
+        {
+            Clipboard.SetText(SelectedData.Password);
+        }
+
         #region Property changing
         public event PropertyChangedEventHandler PropertyChanged;
 

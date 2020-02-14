@@ -3,10 +3,13 @@
                     xmlns:local="clr-namespace:SharpPasswordManager.Views.Resources">
 
     <Style x:Key="WindowBase" TargetType="{x:Type Window}">
-        <Setter Property="Background" Value="#FF342F33"/>
+        <Setter Property="Background" Value="WhiteSmoke"/>
         <Setter Property="ResizeMode" Value="NoResize"/>
         <Setter Property="WindowStyle" Value="None"/>
         <Setter Property="FontFamily" Value="/SharpPasswordManager;component/Views/Fonts/#Lora"/>
+        <Setter Property="Foreground" Value="#FF2F2F82"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Bold"/>
     </Style>
 
 </ResourceDictionary>

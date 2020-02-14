@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
     <StackPanel>
-        <Button Foreground="Black" Style="{DynamicResource MaterialDesignIconButton}" Command="{Binding AddCategoryCmd}" HorizontalAlignment="Left">
+        <Button Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" Command="{Binding AddCategoryCmd}" HorizontalAlignment="Left">
             <materialDesign:PackIcon Kind="Add">
                 <materialDesign:PackIcon.LayoutTransform>
                     <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2" ScaleY="2"/>
@@ -26,9 +26,11 @@
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <Setter Property="Margin" Value="6 6 0 0"/>
-                    <Setter Property="Background" Value="#FF1C1D18"/>
+                    <Setter Property="Background" Value="#FF2F2F82"/>
                     <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True"/>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Foreground" Value="#FF2F2F82"/>
+                        </Trigger>
                     </Style.Triggers>
                 </Style>
             </ListBox.ItemContainerStyle>
@@ -46,7 +48,7 @@
                                     </materialDesign:PackIcon.LayoutTransform>
                                 </materialDesign:PackIcon>
                             </Button>
-                            
+
                             <Button Foreground="White" Height="18" Width="18" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Command="{Binding DataContext.DeleteCategoryCmd, RelativeSource={RelativeSource AncestorType=ListBox}}" Margin="0 2 0 0">
                                 <materialDesign:PackIcon Kind="Delete">
                                     <materialDesign:PackIcon.LayoutTransform>
@@ -69,5 +71,6 @@
             </ListBox.ItemTemplate>
 
         </ListBox>
+
     </StackPanel>
 </UserControl>
