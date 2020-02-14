@@ -8,7 +8,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Views/Resources/WindowBaseStyle.xaml"/>
                 <ResourceDictionary Source="../Views/Resources/ListBoxBaseStyle.xaml"/>
-                <ResourceDictionary Source="../Views/Resources/ButtonBaseStyle.xaml"/>
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />

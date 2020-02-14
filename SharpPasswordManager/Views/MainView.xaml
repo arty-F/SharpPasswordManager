@@ -6,24 +6,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpPasswordManager.Views"
         mc:Ignorable="d"
-        Title="MainView" Height="650" Width="450" WindowStartupLocation="CenterScreen"
-        Style="{StaticResource WindowBase}">
-
+        Title="MainView" Height="640" Width="420" WindowStartupLocation="CenterScreen"
+        Style="{StaticResource WindowBase}" MouseLeftButtonDown="WindowMouseLeftButtonDown">
+    
+    <x:Code>
+        <![CDATA[            
+        private void WindowMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
+    ]]>
+    </x:Code>
+    
     <DockPanel Margin="10">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="48" BorderThickness="0" Margin="0 0 10 0">
+            <Button Width="48" Foreground="Black" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding MinimizeCmd}">
                 <materialDesign:PackIcon Kind="WindowMinimize" Width="24" Height="24" HorizontalAlignment="Center"/>
             </Button>
 
-            <Button Width="48" BorderThickness="0" Margin="10 0 0 0">
+            <Button Width="48" Foreground="Black" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding CloseCmd}">
                 <materialDesign:PackIcon Kind="WindowClose" Width="24" Height="24" HorizontalAlignment="Center"/>
             </Button>
         </StackPanel>
 
-        <StackPanel Margin="0 20 0 0">
-            <UserControl Content="{Binding CategoriesControl}" Height="200" Width="400"/>
+        <StackPanel>
+            <UserControl Content="{Binding CategoriesControl}" Height="200"/>
 
-            <UserControl Content="{Binding DataControl}" Height="400" Width="400"/>
+            <UserControl Content="{Binding DataControl}" Height="385"/>
 
         </StackPanel>
     </DockPanel>

@@ -8,15 +8,22 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
     <StackPanel>
-        <Button Content="Add" Command="{Binding AddDataCmd}"/>
-
-        <ListBox Style="{StaticResource ListBoxBase}" Height="400" ItemsSource="{Binding DataList}" SelectedItem="{Binding SelectedData, Mode=TwoWay}">
+        
+        <Button Style="{DynamicResource MaterialDesignIconButton}" Foreground="Black" Command="{Binding AddDataCmd}" HorizontalAlignment="Left">
+            <materialDesign:PackIcon Kind="Add">
+                <materialDesign:PackIcon.LayoutTransform>
+                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2" ScaleY="2"/>
+                </materialDesign:PackIcon.LayoutTransform>
+            </materialDesign:PackIcon>
+        </Button>
+        
+        <ListBox Style="{StaticResource ListBoxBase}" Height="340" ItemsSource="{Binding DataList}" SelectedItem="{Binding SelectedData, Mode=TwoWay}">
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <Setter Property="Background" Value="{x:Null}"/>
-                    <Setter Property="BorderBrush" Value="DodgerBlue"/>
-                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="#FF1C1D18"/>
+                    <Setter Property="BorderThickness" Value="2"/>
                     <Setter Property="Margin" Value="2"/>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True"/>
@@ -27,7 +34,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
 
-                    <Grid>
+                    <Grid Width="360">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
@@ -36,33 +43,64 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90"/>
                             <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="220"/>
                         </Grid.ColumnDefinitions>
+                        <Button x:Name="ButtonEdit" Visibility="Hidden" Grid.Row="0" Grid.Column="0" Foreground="White" Height="20" Width="20" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Command="{Binding DataContext.EditDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}" HorizontalAlignment="Left" Margin="45 0 0 0">
+                            <materialDesign:PackIcon Kind="Edit">
+                                <materialDesign:PackIcon.LayoutTransform>
+                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                                </materialDesign:PackIcon.LayoutTransform>
+                            </materialDesign:PackIcon>
+                        </Button>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Url:" Margin="5"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=Description}" Margin="5"/>
+                        <Button x:Name="ButtonDelete" Visibility="Hidden" Grid.Row="0" Grid.Column="3" Foreground="White" Height="20" Width="20" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Command="{Binding DataContext.DeleteDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}" HorizontalAlignment="Right" Margin="5 0 45 0">
+                            <materialDesign:PackIcon Kind="Delete">
+                                <materialDesign:PackIcon.LayoutTransform>
+                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                                </materialDesign:PackIcon.LayoutTransform>
+                            </materialDesign:PackIcon>
+                        </Button>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Login:" Margin="5"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Login}" Margin="5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Url:" Margin="5 5 0 0"/>
+                        <Button Grid.Row="1" Grid.Column="1" Width="50" Height="25" Foreground="#FF1C1D18" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CopyDescriptionCmd}" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="ContentCopy">
+                                <materialDesign:PackIcon.LayoutTransform>
+                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                                </materialDesign:PackIcon.LayoutTransform>
+                            </materialDesign:PackIcon>
+                        </Button>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Path=Description}" Margin="5 5 0 0"/>
 
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Password:" Margin="5"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Path=Password}" Margin="5"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Login:" Margin="5 5 0 0"/>
+                        <Button Grid.Row="2" Grid.Column="1" Width="50" Height="25" Foreground="#FF1C1D18" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CopyLoginCmd}" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="ContentCopy">
+                                <materialDesign:PackIcon.LayoutTransform>
+                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                                </materialDesign:PackIcon.LayoutTransform>
+                            </materialDesign:PackIcon>
+                        </Button>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Path=Login}" Margin="5 5 0 0"/>
 
-                        <TextBlock FontSize="10" FontWeight="Regular" Grid.Row="3" Grid.Column="0" Text="{Binding Path=Date}" Margin="5"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Password:" Margin="5 5 0 8"/>
+                        <Button Grid.Row="3" Grid.Column="1" Width="50" Height="25" Foreground="#FF1C1D18" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CopyPasswordCmd}" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="ContentCopy">
+                                <materialDesign:PackIcon.LayoutTransform>
+                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                                </materialDesign:PackIcon.LayoutTransform>
+                            </materialDesign:PackIcon>
+                        </Button>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=Password}" Margin="5 5 0 8"/>
 
-                        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ButtonsPanel" Orientation="Horizontal" Visibility="Hidden">
-                            <Button Height="15" Width="25" Command="{Binding DataContext.EditDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}" Margin="5">
-                                <materialDesign:PackIcon Kind="Edit" Height="15" Width="25" Foreground="White"/>
-                            </Button>
-                            <Button Content="delete" FontSize="8" Height="15" Width="25" Command="{Binding DataContext.DeleteDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}" Margin="5"/>
-                        </StackPanel>
+                        <TextBlock FontSize="9" FontWeight="Regular" Grid.Row="0" Grid.Column="2" Text="{Binding Path=Date}" Margin="0 10 0 0"/>
+
                     </Grid>
 
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" TargetName="ButtonsPanel"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="ButtonEdit"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="ButtonDelete"/>
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>

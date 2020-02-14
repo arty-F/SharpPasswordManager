@@ -35,5 +35,34 @@ namespace SharpPasswordManager.ViewModels
             dataVM.OnDataAdded += categoryVM.AddData;
             dataVM.OnDataDeleted += categoryVM.DeleteData;
         }
+
+        private ICommand minimizeCmd;
+        public ICommand MinimizeCmd
+        {
+            get
+            {
+                return minimizeCmd ?? (minimizeCmd = new CommandHandler(Minimize, () => true));
+            }
+        }
+        private void Minimize()
+        {
+            foreach (Window item in Application.Current.Windows)
+            {
+                if (item.DataContext == this) item.WindowState = WindowState.Minimized;
+            }
+        }
+
+        private ICommand closeCmd;
+        public ICommand CloseCmd
+        {
+            get
+            {
+                return closeCmd ?? (closeCmd = new CommandHandler(Close, () => true));
+            }
+        }
+        private void Close()
+        {
+            Application.Current.Shutdown();
+        }
     }
 }

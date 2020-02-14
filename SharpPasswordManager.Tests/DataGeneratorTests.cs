@@ -53,7 +53,7 @@ namespace SharpPasswordManager.Tests
         public void GenerateRandomDate_NotLessNow()
         {
             DateTime now = DateTime.Now;
-            DateTime result = dataGenerator.GenerateRandomDate();
+            DateTime result = Convert.ToDateTime(dataGenerator.GenerateRandomDate());
 
             Assert.That(result, Is.GreaterThanOrEqualTo(now));
         }
