@@ -124,7 +124,6 @@ namespace SharpPasswordManager.ViewModels
         private void Close()
         {
             Application.Current.Shutdown();
-        }
-        
+        }   
     }
 }

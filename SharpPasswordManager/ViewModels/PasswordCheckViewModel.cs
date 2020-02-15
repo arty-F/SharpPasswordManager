@@ -60,5 +60,18 @@ namespace SharpPasswordManager.ViewModels
             else
                 MessageBox.Show("Wrong password.");
         }
+
+        private ICommand closeCmd;
+        public ICommand CloseCmd
+        {
+            get
+            {
+                return closeCmd ?? (closeCmd = new CommandHandler(Close, () => true));
+            }
+        }
+        private void Close()
+        {
+            Application.Current.Shutdown();
+        }
     }
 }

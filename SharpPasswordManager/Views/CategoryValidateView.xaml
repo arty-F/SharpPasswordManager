@@ -4,21 +4,46 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpPasswordManager.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="CategoryValidateView" Height="450" Width="800">
-    <Grid>
-        <StackPanel>
-            
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Name"/>
-                <TextBox Text="{Binding Model.Name, Mode=TwoWay}" Width="200"/>
-            </StackPanel>
-            
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Ok" Margin="5" Command="{Binding OkCmd}"/>
-                <Button Content="Cancel" Margin="5" Command="{Binding CancelCmd}"/>
-            </StackPanel>
-            
-        </StackPanel>
-    </Grid>
+        Title="CategoryValidateView" Height="180" Width="360"
+        WindowStartupLocation="CenterScreen" Style="{StaticResource WindowBase}">
+    <Border BorderBrush="#FF2F2F82" BorderThickness="2">
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="1" Text="Category:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Model.Name, Mode=TwoWay}" TextAlignment="Center" Width="180" HorizontalAlignment="Center"/>
+
+            <Button Height="32" Width="32" Grid.Row="4" Grid.Column="0" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
+                Command="{Binding OkCmd}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <materialDesign:PackIcon Kind="CheckBold">
+                    <materialDesign:PackIcon.LayoutTransform>
+                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                    </materialDesign:PackIcon.LayoutTransform>
+                </materialDesign:PackIcon>
+            </Button>
+
+            <Button Height="32" Width="32" Grid.Row="4" Grid.Column="1" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
+                Command="{Binding CancelCmd}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 70 0">
+                <materialDesign:PackIcon Kind="Cancel">
+                    <materialDesign:PackIcon.LayoutTransform>
+                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                    </materialDesign:PackIcon.LayoutTransform>
+                </materialDesign:PackIcon>
+            </Button>
+        </Grid>
+    </Border>
 </Window>

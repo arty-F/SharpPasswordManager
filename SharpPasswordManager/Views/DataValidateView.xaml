@@ -4,31 +4,53 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpPasswordManager.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="DataValidateView" Height="450" Width="800">
-    <Grid>
-        <StackPanel>
+        Title="DataValidateView" Height="180" Width="360"
+        WindowStartupLocation="CenterScreen" Style="{StaticResource WindowBase}">
 
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Login"/>
-                <TextBox Text="{Binding Model.Login, Mode=TwoWay}" Width="200"/>
-            </StackPanel>
+    <Border BorderBrush="#FF2F2F82" BorderThickness="2">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Description"/>
-                <TextBox Text="{Binding Model.Description, Mode=TwoWay}" Width="200"/>
-            </StackPanel>
+            <TextBlock Grid.Row="1" Text="Url:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox  Grid.Row="1" Grid.Column="1" Text="{Binding Model.Description, Mode=TwoWay}" TextAlignment="Center" Width="180" VerticalAlignment="Center"/>
 
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Password"/>
-                <TextBox Text="{Binding Model.Password, Mode=TwoWay}" Width="200"/>
-            </StackPanel>
+            <TextBlock Grid.Row="2" Text="Login:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Model.Login, Mode=TwoWay}" TextAlignment="Center" Width="180" VerticalAlignment="Center"/>
+
+            <TextBlock Grid.Row="3" Text="Password:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Model.Password, Mode=TwoWay}" TextAlignment="Center" Width="180" VerticalAlignment="Center"/>
+
+            <Button Height="32" Width="32" Grid.Row="4" Grid.Column="0" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
+                Command="{Binding OkCmd}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <materialDesign:PackIcon Kind="CheckBold">
+                    <materialDesign:PackIcon.LayoutTransform>
+                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                    </materialDesign:PackIcon.LayoutTransform>
+                </materialDesign:PackIcon>
+            </Button>
+
+            <Button Height="32" Width="32" Grid.Row="4" Grid.Column="1" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
+                Command="{Binding CancelCmd}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 70 0">
+                <materialDesign:PackIcon Kind="Cancel">
+                    <materialDesign:PackIcon.LayoutTransform>
+                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                    </materialDesign:PackIcon.LayoutTransform>
+                </materialDesign:PackIcon>
+            </Button>
             
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Ok" Margin="5" Command="{Binding OkCmd}"/>
-                <Button Content="Cancel" Margin="5" Command="{Binding CancelCmd}"/>
-            </StackPanel>
-
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </Border>
 </Window>

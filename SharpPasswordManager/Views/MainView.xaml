@@ -17,23 +17,25 @@
         }
     ]]>
     </x:Code>
-    
-    <DockPanel Margin="10">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="48" Foreground="#FF2F2F82" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding MinimizeCmd}">
-                <materialDesign:PackIcon Kind="WindowMinimize" Width="24" Height="24" HorizontalAlignment="Center"/>
-            </Button>
 
-            <Button Width="48" Foreground="#FF2F2F82" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding CloseCmd}">
-                <materialDesign:PackIcon Kind="WindowClose" Width="24" Height="24" HorizontalAlignment="Center"/>
-            </Button>
-        </StackPanel>
+    <Border BorderBrush="#FF2F2F82" BorderThickness="2">
+        <DockPanel Margin="10">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Width="48" Foreground="#FF2F2F82" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding MinimizeCmd}">
+                    <materialDesign:PackIcon Kind="WindowMinimize" Width="24" Height="24" HorizontalAlignment="Center"/>
+                </Button>
 
-        <StackPanel>
-            <UserControl Content="{Binding CategoriesControl}" Height="200"/>
+                <Button Width="48" Foreground="#FF2F2F82" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding CloseCmd}">
+                    <materialDesign:PackIcon Kind="WindowClose" Width="24" Height="24" HorizontalAlignment="Center"/>
+                </Button>
+            </StackPanel>
 
-            <UserControl Content="{Binding DataControl}" Height="385"/>
+            <StackPanel>
+                <UserControl Content="{Binding CategoriesControl}" Height="200"/>
 
-        </StackPanel>
-    </DockPanel>
+                <UserControl Content="{Binding DataControl}" Height="385"/>
+
+            </StackPanel>
+        </DockPanel>
+    </Border>
 </Window>
