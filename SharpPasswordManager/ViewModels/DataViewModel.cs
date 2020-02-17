@@ -100,9 +100,9 @@ namespace SharpPasswordManager.ViewModels
             if (DataList == null)
                 return;
 
-            DataModel newModel = new DataModel();
-            DataValidateViewModel validateVM = new DataValidateViewModel(ref newModel);
             Views.DataValidateView validateView = new Views.DataValidateView();
+            DataModel newModel = new DataModel();
+            DataValidateViewModel validateVM = new DataValidateViewModel(ref newModel, ref validateView.passwordBox, new DataGenerator());
             validateView.DataContext = validateVM;
             validateView.ShowDialog();
 
@@ -135,8 +135,8 @@ namespace SharpPasswordManager.ViewModels
         }
         private void EditData()
         {
-            DataValidateViewModel validateVM = new DataValidateViewModel(ref selectedData);
             Views.DataValidateView validateView = new Views.DataValidateView();
+            DataValidateViewModel validateVM = new DataValidateViewModel(ref selectedData, ref validateView.passwordBox);
             validateView.DataContext = validateVM;
             validateView.ShowDialog();
 

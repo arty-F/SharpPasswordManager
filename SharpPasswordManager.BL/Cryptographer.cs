@@ -108,7 +108,7 @@ namespace SharpPasswordManager.BL
         /// <param name="data">String for encryption.</param>
         public string Encypt(string data)
         {
-            if (data == null || data.Length <= 0)
+            if (data == null)
                 throw new ArgumentNullException("String");
 
             byte[] encryptedDataWithIV;
@@ -149,7 +149,7 @@ namespace SharpPasswordManager.BL
         /// <param name="data">Ecrypted string with IV.</param>
         public string Decrypt(string data)
         {
-            if (data == null || data.Length <= 0)
+            if (data == null)
                 throw new ArgumentNullException("String");
 
             string decrypted = null;

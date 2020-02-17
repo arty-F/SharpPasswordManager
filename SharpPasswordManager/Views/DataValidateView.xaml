@@ -6,12 +6,14 @@
         xmlns:local="clr-namespace:SharpPasswordManager.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="DataValidateView" Height="180" Width="360"
+        Title="DataValidateView" Height="240" Width="360"
         WindowStartupLocation="CenterScreen" Style="{StaticResource WindowBase}">
 
     <Border BorderBrush="#FF2F2F82" BorderThickness="2">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -31,10 +33,37 @@
             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Model.Login, Mode=TwoWay}" TextAlignment="Center" Width="180" VerticalAlignment="Center"/>
 
             <TextBlock Grid.Row="3" Text="Password:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Model.Password, Mode=TwoWay}" TextAlignment="Center" Width="180" VerticalAlignment="Center"/>
+            <PasswordBox IsEnabled="{Binding CanEditPassword}" Grid.Row="3" Grid.Column="1" Name="passwordBox" HorizontalContentAlignment="Center" Width="180" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" Visibility="Hidden" Name="passwordBlock" TextAlignment="Center" Width="180" VerticalAlignment="Center"/>
 
-            <Button Height="32" Width="32" Grid.Row="4" Grid.Column="0" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
-                Command="{Binding OkCmd}" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Grid.Row="4" Text="Generate:" Visibility="{Binding GeneratePasswordVisibility}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="{Binding CanEditPassword}"/>
+            <StackPanel Grid.Row="4" Grid.Column="1" Visibility="{Binding GeneratePasswordVisibility}" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                
+                <TextBox Margin="18 0 0 0" TextAlignment="Center" Width="26" Text="{Binding GeneratePasswordCharacters, Mode=TwoWay}" VerticalAlignment="Center"/>
+                <TextBlock Text="characters" VerticalAlignment="Center"/>
+
+                <Button Height="32" Width="32" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
+                Command="{Binding GeneratePasswordCmd}" CommandParameter="{Binding ElementName=Password}" VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="Dice5">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+                </Button>
+
+                <Button Height="32" Width="32" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
+                VerticalAlignment="Center" PreviewMouseDown="Button_PreviewMouseDown" PreviewMouseUp="Button_PreviewMouseUp">
+                    <materialDesign:PackIcon Kind="Eye">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+                </Button>
+                
+            </StackPanel>
+
+            <Button Height="32" Width="32" Grid.Row="6" Grid.Column="0" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
+                Command="{Binding OkCmd}" CommandParameter="{Binding ElementName=Password}" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <materialDesign:PackIcon Kind="CheckBold">
                     <materialDesign:PackIcon.LayoutTransform>
                         <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
@@ -42,7 +71,7 @@
                 </materialDesign:PackIcon>
             </Button>
 
-            <Button Height="32" Width="32" Grid.Row="4" Grid.Column="1" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
+            <Button Height="32" Width="32" Grid.Row="6" Grid.Column="1" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
                 Command="{Binding CancelCmd}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 70 0">
                 <materialDesign:PackIcon Kind="Cancel">
                     <materialDesign:PackIcon.LayoutTransform>
