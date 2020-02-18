@@ -16,8 +16,8 @@
                 </materialDesign:PackIcon.LayoutTransform>
             </materialDesign:PackIcon>
         </Button>
-        
-        <ListBox Style="{StaticResource ListBoxBase}" Height="340" ItemsSource="{Binding DataList}" SelectedItem="{Binding SelectedData, Mode=TwoWay}">
+
+        <ListBox Style="{StaticResource ListBoxBase}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="340" ItemsSource="{Binding DataList}" SelectedItem="{Binding SelectedData, Mode=TwoWay}">
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
@@ -45,23 +45,25 @@
                             <ColumnDefinition/>
                             <ColumnDefinition Width="220"/>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="ButtonEdit" Visibility="Hidden" Grid.Row="0" Grid.Column="0" Foreground="White" Height="20" Width="20" HorizontalAlignment="Left" Margin="45 0 0 0"
-                                Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Command="{Binding DataContext.EditDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}">
-                            <materialDesign:PackIcon Kind="Edit">
-                                <materialDesign:PackIcon.LayoutTransform>
-                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
-                                </materialDesign:PackIcon.LayoutTransform>
-                            </materialDesign:PackIcon>
-                        </Button>
 
-                        <Button x:Name="ButtonDelete" Visibility="Hidden" Grid.Row="0" Grid.Column="3" Foreground="White" Height="20" Width="20" HorizontalAlignment="Right" Margin="5 0 45 0"
+                        <StackPanel Grid.Row="0" Grid.Column="2" x:Name="ButtonsPanel" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Margin="0 2 0 0" Visibility="Hidden">
+                            <Button Foreground="White" Height="18" Width="18"
+                                Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Command="{Binding DataContext.EditDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                <materialDesign:PackIcon Kind="Edit">
+                                    <materialDesign:PackIcon.LayoutTransform>
+                                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                                    </materialDesign:PackIcon.LayoutTransform>
+                                </materialDesign:PackIcon>
+                            </Button>
+                            <Button Foreground="White" Height="18" Width="18" Margin="8 0 2 0"
                                 Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Command="{Binding DataContext.DeleteDataCmd, RelativeSource={RelativeSource AncestorType=ListBox}}">
-                            <materialDesign:PackIcon Kind="Delete">
-                                <materialDesign:PackIcon.LayoutTransform>
-                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
-                                </materialDesign:PackIcon.LayoutTransform>
-                            </materialDesign:PackIcon>
-                        </Button>
+                                <materialDesign:PackIcon Kind="Delete">
+                                    <materialDesign:PackIcon.LayoutTransform>
+                                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                                    </materialDesign:PackIcon.LayoutTransform>
+                                </materialDesign:PackIcon>
+                            </Button>
+                        </StackPanel>
 
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Url:" Margin="5 5 0 0"/>
                         <Button x:Name="ButtonCopyDescription" Visibility="Hidden" Grid.Row="1" Grid.Column="1" Width="50" Height="25" Foreground="#FF2F2F82" VerticalAlignment="Center"
@@ -94,19 +96,29 @@
                                 </materialDesign:PackIcon.LayoutTransform>
                             </materialDesign:PackIcon>
                         </Button>
-                        <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=Password}" Margin="5 5 0 8"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=Password}" Margin="5 5 0 0" Visibility="Hidden" Uid="value"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" FontSize="18" FontWeight="Regular" Text="••••••••••••••" Margin="5 5 0 0" Visibility="Visible" Uid="mask"/>
 
-                        <TextBlock FontSize="9" FontWeight="Regular" Grid.Row="0" Grid.Column="2" Text="{Binding Path=Date}" Margin="0 10 0 0"/>
+                        <Button Grid.Row="3" Grid.Column="2" Height="32" Width="32" x:Name="PasswordShowButton" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" Visibility="Hidden" 
+                                VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 8 0" PreviewMouseDown="Button_PreviewMouseDown" PreviewMouseUp="Button_PreviewMouseUp">
+                            <materialDesign:PackIcon Kind="Eye">
+                                <materialDesign:PackIcon.LayoutTransform>
+                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                                </materialDesign:PackIcon.LayoutTransform>
+                            </materialDesign:PackIcon>
+                        </Button>
+
+                        <TextBlock FontSize="9" FontWeight="Regular" Grid.Row="0" Grid.Column="0" Text="{Binding Path=Date}" Margin="10 5 0 0"/>
 
                     </Grid>
 
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" TargetName="ButtonEdit"/>
-                            <Setter Property="Visibility" Value="Visible" TargetName="ButtonDelete"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="ButtonCopyDescription"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="ButtonCopyLogin"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="ButtonCopyPassword"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="PasswordShowButton"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="ButtonsPanel"/>
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>

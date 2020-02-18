@@ -51,16 +51,16 @@
                     </materialDesign:PackIcon>
                 </Button>
 
-                <Button Height="32" Width="32" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
-                VerticalAlignment="Center" PreviewMouseDown="Button_PreviewMouseDown" PreviewMouseUp="Button_PreviewMouseUp">
-                    <materialDesign:PackIcon Kind="Eye">
-                        <materialDesign:PackIcon.LayoutTransform>
-                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
-                        </materialDesign:PackIcon.LayoutTransform>
-                    </materialDesign:PackIcon>
-                </Button>
-                
             </StackPanel>
+
+            <Button Grid.Row="4" Grid.Column="1" Height="32" Width="32" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
+                VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 8 0" PreviewMouseDown="Button_PreviewMouseDown" PreviewMouseUp="Button_PreviewMouseUp">
+                <materialDesign:PackIcon Kind="Eye">
+                    <materialDesign:PackIcon.LayoutTransform>
+                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                    </materialDesign:PackIcon.LayoutTransform>
+                </materialDesign:PackIcon>
+            </Button>
 
             <Button Height="32" Width="32" Grid.Row="6" Grid.Column="0" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
                 Command="{Binding OkCmd}" CommandParameter="{Binding ElementName=Password}" VerticalAlignment="Center" HorizontalAlignment="Center">
