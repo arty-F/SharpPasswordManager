@@ -9,8 +9,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -169,22 +167,30 @@ namespace SharpPasswordManager.ViewModels
         }
         private void DeleteCategory()
         {
-            try
+            СonfirmationViewModel confirmVM = new СonfirmationViewModel("Do you really want to delete this category?");
+            Views.СonfirmationView confirmView = new Views.СonfirmationView();
+            confirmView.DataContext = confirmVM;
+            confirmView.ShowDialog();
+
+            if (confirmVM.Result)
             {
-                categoriesController.Remove(selectedCategory);
+                try
+                {
+                    categoriesController.Remove(selectedCategory);
+                }
+                catch (FileNotFoundException ex)
+                {
+                    MessageBox.Show($"File not found {ex.Message}.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show($"Can't save data to file {ex.Message}.");
+                }
+                SelectedCategory = null;
+                GetCategories();
+                OnPropertyChanged(nameof(CategoriesList));
+                OnCategoryChanged?.Invoke(null);
             }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found {ex.Message}.");
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Can't save data to file {ex.Message}.");
-            }
-            SelectedCategory = null;
-            GetCategories();
-            OnPropertyChanged(nameof(CategoriesList));
-            OnCategoryChanged?.Invoke(null);
         }
 
         private ICommand editCategoryCmd;

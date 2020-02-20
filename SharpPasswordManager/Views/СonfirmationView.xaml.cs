@@ -3,11 +3,11 @@
 namespace SharpPasswordManager.Views
 {
     /// <summary>
-    /// Interaction logic for CategoryValidateView.xaml
+    /// Interaction logic for СonfirmationView.xaml
     /// </summary>
-    public partial class CategoryValidateView : Window
+    public partial class СonfirmationView : Window
     {
-        public CategoryValidateView()
+        public СonfirmationView()
         {
             InitializeComponent();
         }

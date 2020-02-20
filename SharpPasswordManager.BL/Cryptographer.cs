@@ -3,7 +3,6 @@ using System.Security.Cryptography;
 using System.IO;
 using System.Linq;
 using SharpPasswordManager.BL.Interfaces;
-using System.Text;
 
 namespace SharpPasswordManager.BL
 {

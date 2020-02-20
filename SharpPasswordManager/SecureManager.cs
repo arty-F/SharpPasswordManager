@@ -5,6 +5,8 @@
 	/// </summary>
 	public static class SecureManager
     {
+		public static int StartingIndex { get; private set; }
+
 		private static string key;
 		public static string Key
 		{
@@ -15,8 +17,6 @@
 				StartingIndex = int.Parse(key);
 			}
 		}
-
-		public static int StartingIndex { get; private set; }
 
 		public static int GetIndexOf(int i)
 		{

@@ -6,12 +6,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace SharpPasswordManager.ViewModels
@@ -170,8 +166,16 @@ namespace SharpPasswordManager.ViewModels
         }
         private void DeleteData()
         {
-            OnDataDeleted?.Invoke(dataIndexes[DataList.IndexOf(selectedData)]);
-            GetData();
+            СonfirmationViewModel confirmVM = new СonfirmationViewModel("Do you really want to delete this data?");
+            Views.СonfirmationView confirmView = new Views.СonfirmationView();
+            confirmView.DataContext = confirmVM;
+            confirmView.ShowDialog();
+
+            if (confirmVM.Result)
+            {
+                OnDataDeleted?.Invoke(dataIndexes[DataList.IndexOf(selectedData)]);
+                GetData();
+            }
         }
 
         private ICommand copyDescriptionCmd;

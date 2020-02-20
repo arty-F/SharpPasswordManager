@@ -1,14 +1,8 @@
 ﻿using SharpPasswordManager.Handlers;
 using SharpPasswordManager.BL.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
-using System.IO;
-using System.Reflection;
 using System.Windows.Controls;
 
 namespace SharpPasswordManager.ViewModels
@@ -25,7 +19,6 @@ namespace SharpPasswordManager.ViewModels
             this.setting = setting;
             this.autenticator = autenticator;
         }
-
 
         private ICommand checkPasswordCmd;
         public ICommand CheckPasswordCmd

@@ -1,4 +1,4 @@
-﻿<Window x:Class="SharpPasswordManager.Views.FirstLoadView"
+﻿<Window x:Class="SharpPasswordManager.Views.СonfirmationView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SharpPasswordManager.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="FirstLoadView" Height="180" Width="360"
+        Title="СonfirmationView" Height="180" Width="360"
         WindowStartupLocation="CenterScreen" Style="{StaticResource WindowBase}">
 
     <Border BorderBrush="#FF2F2F82" BorderThickness="2">
@@ -20,18 +20,14 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="140"/>
+                <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 0 0 0">Password</TextBlock>
-            <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" IsEnabled="{Binding IsUiEnabled}" Text="{Binding Path=Password, Mode=TwoWay}" TextAlignment="Center" Width="180" HorizontalAlignment="Center"/>
-
-            <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 0 0 0">Confirm password</TextBlock>
-            <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" IsEnabled="{Binding IsUiEnabled}" Text="{Binding Path=ConfirmPassword, Mode=TwoWay}" TextAlignment="Center" Width="180" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Message}" TextAlignment="Center" VerticalAlignment="Center"/>
 
             <Button Height="32" Width="32" Grid.Row="4" Grid.Column="0" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
-                Command="{Binding CreatePasswordCmd}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                Command="{Binding OkCmd}" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <materialDesign:PackIcon Kind="CheckBold">
                     <materialDesign:PackIcon.LayoutTransform>
                         <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
@@ -40,15 +36,13 @@
             </Button>
 
             <Button Height="32" Width="32" Grid.Row="4" Grid.Column="1" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
-                Command="{Binding CloseCmd}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 70 0">
+                Command="{Binding CancelCmd}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 70 0">
                 <materialDesign:PackIcon Kind="Cancel">
                     <materialDesign:PackIcon.LayoutTransform>
                         <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
                     </materialDesign:PackIcon.LayoutTransform>
                 </materialDesign:PackIcon>
             </Button>
-
-            <TextBlock Text="Creating secure data storage..." Visibility="{Binding Path=LoadingPanelVisibility}" Foreground="WhiteSmoke" Background="#FF2F2F82" Grid.Row="5" Grid.ColumnSpan="2" TextAlignment="Center" VerticalAlignment="Center"/>
 
         </Grid>
     </Border>

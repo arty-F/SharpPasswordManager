@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using SharpPasswordManager.BL.Enums;
 using SharpPasswordManager.BL.Interfaces;
+using System.Threading.Tasks;
 
 namespace SharpPasswordManager.BL
 {
@@ -147,8 +148,19 @@ namespace SharpPasswordManager.BL
         }
 
         /// <summary>
+        /// Asynchronously create file by path inner value directory and write modelsList into him.
+        /// </summary>
+        /// <param name="models">Writed to file models.</param>
+        /// <returns></returns>
+        public async Task CreateStorageAsync(IEnumerable<TModel> models = null)
+        {
+            await Task.Run(() => CreateStorage(models));
+        }
+
+        /// <summary>
         /// Create file by path inner value directory and write modelsList into him.
         /// </summary>
+        /// <param name="models">Writed to file models.</param>
         public void CreateStorage(IEnumerable<TModel> models = null)
         {
             IFormatter formatter = new BinaryFormatter();

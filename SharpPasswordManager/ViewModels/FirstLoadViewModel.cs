@@ -4,11 +4,9 @@ using SharpPasswordManager.DL.Models;
 using SharpPasswordManager.Handlers;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,18 +14,31 @@ using System.Windows.Input;
 
 namespace SharpPasswordManager.ViewModels
 {
-    public class FirstLoadViewModel
+    public class FirstLoadViewModel : INotifyPropertyChanged
     {
         const string passwordKey = "Password";
         const string dataFileName = "Data.bin";
         const string categoriesFileName = "Categories.bin";
         const int minLength = 4;
-        const int maxLenght = 8;
+        const int maxLenght = 9;    // Sure that password lenth gives a stock of values when using Int32 index type which return <SecureManager>!
 
+        public Visibility LoadingPanelVisibility { get; set; } = Visibility.Hidden;
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
         private readonly IAppSettingsHandler setting;
         private readonly ICryptographer cryptographer;
+
+        private bool isUiEnabled = true;
+        public bool IsUiEnabled
+        {
+            get { return isUiEnabled; }
+            set 
+            { 
+                isUiEnabled = value;
+                OnPropertyChanged(nameof(IsUiEnabled));
+            }
+        }
+
 
         public FirstLoadViewModel(IAppSettingsHandler setting, ICryptographer cryptographer)
         {
@@ -40,16 +51,17 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return createPasswordCmd ?? (createPasswordCmd = new CommandHandler(TryWritePassword, () => true));
+                return createPasswordCmd ?? (createPasswordCmd = new CommandHandler(TryWritePassword, UiIsEnabled));
             }
         }
-        private void TryWritePassword()
+        private async void TryWritePassword()
         {
+            IsUiEnabled = false;
             if (Password == ConfirmPassword)
             {
                 if (Password.Length >= minLength && Password.Length <= maxLenght)
                 {
-                    if (Regex.IsMatch(Password, @"^\d+$")) // Is digit only
+                    if (Regex.IsMatch(Password, @"^\d+$")) // Is digits only
                     {
                         SecureManager.Key = Password;
                         string value = Password;
@@ -60,17 +72,27 @@ namespace SharpPasswordManager.ViewModels
                         }
                         setting.Write(passwordKey, value);
 
-                        if (Initialize())
+                        LoadingPanelVisibility = Visibility.Visible;
+                        OnPropertyChanged(nameof(LoadingPanelVisibility));
+                        Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+
+                        if (await Initialize())
                         {
                             Views.MainView mainView = new Views.MainView();
                             foreach (Window item in Application.Current.Windows)
                                 if (item.DataContext == this)
                                     item.Close();
 
+                            Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
                             mainView.ShowDialog();
                         }
                         else
+                        {
+                            Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
+                            LoadingPanelVisibility = Visibility.Hidden;
+                            OnPropertyChanged(nameof(LoadingPanelVisibility));
                             setting.Delete(passwordKey);
+                        }
                     }
                     else
                         MessageBox.Show("Password should consist only of digits.");
@@ -80,10 +102,12 @@ namespace SharpPasswordManager.ViewModels
             }
             else
                 MessageBox.Show("Entered passwords are different.");
+
+            IsUiEnabled = true;
         }
 
-        // Create data and categories files
-        private bool Initialize()
+        // Create data and category files
+        private async Task<bool> Initialize()
         {
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -91,7 +115,8 @@ namespace SharpPasswordManager.ViewModels
             var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(SecureManager.Key));
             try
             {
-                dataController.CreateStorage(dataInitializer.GetData());
+                List<DataModel> dataList = await dataInitializer.GetDataAsync();
+                await dataController.CreateStorageAsync(dataList);
             }
             catch (InvalidOperationException ex)
             {
@@ -102,7 +127,7 @@ namespace SharpPasswordManager.ViewModels
             var categoriesController = new StorageController<CategoryModel>(Path.Combine(assemblyPath, categoriesFileName));
             try
             {
-                categoriesController.CreateStorage(new List<CategoryModel>());
+                await categoriesController.CreateStorageAsync(new List<CategoryModel>());
             }
             catch (InvalidOperationException ex)
             {
@@ -118,12 +143,30 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return closeCmd ?? (closeCmd = new CommandHandler(Close, () => true));
+                return closeCmd ?? (closeCmd = new CommandHandler(Close, UiIsEnabled));
             }
         }
         private void Close()
         {
             Application.Current.Shutdown();
-        }   
+        }
+
+        private bool UiIsEnabled()
+        {
+            return IsUiEnabled;
+        }
+
+        #region Property changing
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                var args = new PropertyChangedEventArgs(propertyName);
+                PropertyChanged(this, args);
+            }
+        }
+        #endregion
     }
 }
