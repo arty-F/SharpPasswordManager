@@ -1,6 +1,4 @@
-﻿using SharpPasswordManager.BL;
-using SharpPasswordManager.BL.Interfaces;
-using SharpPasswordManager.DL.Models;
+﻿using SharpPasswordManager.DL.Models;
 using SharpPasswordManager.Handlers;
 using System;
 using System.Collections.Generic;
@@ -8,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 
@@ -16,12 +13,10 @@ namespace SharpPasswordManager.ViewModels
 {
     public class CategoryViewModel : INotifyPropertyChanged
     {
-        const string categoriesFileName = "Categories.bin";
-
-        public delegate void CategoryChangeHandler(List<int> indexes);
+        public delegate void CategoryChangeHandler();
         public event CategoryChangeHandler OnCategoryChanged;
 
-        private IStorageController<CategoryModel> categoriesController;
+        IStorageHandler<CategoryModel, DataModel> storageHandler;
         public ObservableCollection<CategoryModel> CategoriesList { get; set; }
 
         private CategoryModel selectedCategory;
@@ -31,13 +26,14 @@ namespace SharpPasswordManager.ViewModels
             set
             {
                 selectedCategory = value;
-                OnCategoryChanged?.Invoke(selectedCategory?.DataIndexes);
+                storageHandler.CurrentCategory = selectedCategory;
+                OnCategoryChanged?.Invoke();
             }
         }
 
-        public CategoryViewModel()
+        public CategoryViewModel(IStorageHandler<CategoryModel, DataModel> storageHandler)
         {
-            categoriesController = new StorageController<CategoryModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), categoriesFileName));
+            this.storageHandler = storageHandler;
             GetCategories();
         }
 
@@ -45,7 +41,7 @@ namespace SharpPasswordManager.ViewModels
         {
             try
             {
-                CategoriesList = new ObservableCollection<CategoryModel>(categoriesController.ToList());
+                CategoriesList = new ObservableCollection<CategoryModel>(storageHandler.GetCategories());
             }
             catch (FileNotFoundException ex)
             {
@@ -58,67 +54,12 @@ namespace SharpPasswordManager.ViewModels
             OnPropertyChanged(nameof(CategoriesList));
         }
 
-        public int GetStartingIndex()
+        public void DataChanged()
         {
-            int maxIndex = -1;
-
-            foreach (var category in CategoriesList)
-            {
-                if (category.DataIndexes != null && category.DataIndexes.Count > 0)
-                {
-                    foreach (var index in category.DataIndexes)
-                    {
-                        if (index > maxIndex)
-                            maxIndex = index;
-                    }
-                }
-            }
-            return ++maxIndex;
-        }
-
-        public void AddData(int dataIndex)
-        {
-            int selectedCategoryIndex = CategoriesList.IndexOf(selectedCategory);
-            selectedCategory.DataIndexes.Add(dataIndex);
-            try
-            {
-                categoriesController.PasteAt(selectedCategoryIndex, selectedCategory);
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found {ex.Message}.");
-                selectedCategory.DataIndexes.RemoveAll(i => i == dataIndex);
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Can't save data to file {ex.Message}.");
-                selectedCategory.DataIndexes.RemoveAll(i => i == dataIndex);
-            }
+            int index = CategoriesList.IndexOf(SelectedCategory);
             GetCategories();
-            SelectedCategory = CategoriesList[selectedCategoryIndex];
-        }
-
-        public void DeleteData(int dataIndex)
-        {
-            selectedCategory.DataIndexes.RemoveAll(i => i == dataIndex);
-
-            int index = CategoriesList.IndexOf(selectedCategory);
-            try
-            {
-                categoriesController.PasteAt(index, selectedCategory);
-                GetCategories();
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found {ex.Message}.");
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Can't save data to file {ex.Message}.");
-            }
-
-            if (CategoriesList[index] != null)
-                selectedCategory = CategoriesList[index];
+            SelectedCategory = CategoriesList[index];
+            OnPropertyChanged(nameof(CategoriesList));
         }
 
         private ICommand addCategoryCmd;
@@ -131,17 +72,17 @@ namespace SharpPasswordManager.ViewModels
         }
         private void AddCategory()
         {
-            CategoryModel newModel = new CategoryModel();
-            CategoryValidateViewModel validateVM = new CategoryValidateViewModel(ref newModel);
+            CategoryModel newCategory = new CategoryModel();
+            CategoryValidateViewModel validateVM = new CategoryValidateViewModel(ref newCategory);
             Views.CategoryValidateView validateView = new Views.CategoryValidateView();
             validateView.DataContext = validateVM;
             validateView.ShowDialog();
 
-            if (newModel.DataIndexes != null && newModel.Name != null)
+            if (newCategory.DataIndexes != null && newCategory.Name != null)
             {
                 try
                 {
-                    categoriesController.Add(newModel);
+                    storageHandler.AddCategory(newCategory);
                     GetCategories();
                 }
                 catch (FileNotFoundException ex)
@@ -153,6 +94,7 @@ namespace SharpPasswordManager.ViewModels
                     MessageBox.Show($"Can't save data to file {ex.Message}.");
                 }
                 SelectedCategory = CategoriesList.LastOrDefault();
+                storageHandler.CurrentCategory = SelectedCategory;
                 OnPropertyChanged(nameof(SelectedCategory));
             }
         }
@@ -176,7 +118,7 @@ namespace SharpPasswordManager.ViewModels
             {
                 try
                 {
-                    categoriesController.Remove(selectedCategory);
+                    storageHandler.RemoveCategory(selectedCategory);
                 }
                 catch (FileNotFoundException ex)
                 {
@@ -187,9 +129,10 @@ namespace SharpPasswordManager.ViewModels
                     MessageBox.Show($"Can't save data to file {ex.Message}.");
                 }
                 SelectedCategory = null;
+                storageHandler.CurrentCategory = SelectedCategory;
                 GetCategories();
                 OnPropertyChanged(nameof(CategoriesList));
-                OnCategoryChanged?.Invoke(null);
+                OnCategoryChanged?.Invoke();
             }
         }
 
@@ -203,28 +146,34 @@ namespace SharpPasswordManager.ViewModels
         }
         private void EditCategory()
         {
+            CategoryModel oldCategory = new CategoryModel();
+            oldCategory.Name = selectedCategory.Name;
+            oldCategory.DataIndexes = new List<int>(selectedCategory.DataIndexes);
+            
             CategoryValidateViewModel validateVM = new CategoryValidateViewModel(ref selectedCategory);
             Views.CategoryValidateView validateView = new Views.CategoryValidateView();
             validateView.DataContext = validateVM;
             validateView.ShowDialog();
 
-            int index = CategoriesList.IndexOf(selectedCategory);
-            try
+            if (!selectedCategory.Equals(oldCategory))
             {
-                categoriesController.PasteAt(index, selectedCategory);
-                GetCategories();
+                int index = CategoriesList.IndexOf(selectedCategory);
+                try
+                {
+                    storageHandler.ReplaceCategory(oldCategory, selectedCategory);
+                    GetCategories();
+                }
+                catch (FileNotFoundException ex)
+                {
+                    MessageBox.Show($"File not found {ex.Message}.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show($"Can't save data to file {ex.Message}.");
+                }
+                SelectedCategory = CategoriesList[index];
+                storageHandler.CurrentCategory = SelectedCategory;
             }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found {ex.Message}.");
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Can't save data to file {ex.Message}.");
-            }
-
-            if (CategoriesList[index] != null)
-                selectedCategory = CategoriesList[index];
         }
 
         #region Property changing

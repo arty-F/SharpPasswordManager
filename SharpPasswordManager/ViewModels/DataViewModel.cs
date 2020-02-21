@@ -2,11 +2,9 @@
 using SharpPasswordManager.DL.Models;
 using SharpPasswordManager.Handlers;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 
@@ -14,70 +12,48 @@ namespace SharpPasswordManager.ViewModels
 {
     public class DataViewModel : INotifyPropertyChanged
     {
-        const string dataFileName = "Data.bin";
-        private int startingIndex;
-        private List<int> dataIndexes;
+        public delegate void DataAddHandler();
+        public event DataAddHandler OnDataChanged;
 
-        public delegate void DataAddHandler(int index);
-        public event DataAddHandler OnDataAdded;
-
-        public delegate void DataDeleteHandler(int index);
-        public event DataAddHandler OnDataDeleted;
-
-        private StorageController<DataModel> dataController;
         public ObservableCollection<DataModel> DataList { get; set; }
+        IStorageHandler<CategoryModel, DataModel> storageHandler;
 
         private DataModel selectedData;
         public DataModel SelectedData
         {
             get { return selectedData; }
-            set { selectedData = value; }
-        }
-
-        public DataViewModel(int startingIndex)
-        {
-            this.startingIndex = startingIndex;
-            dataController = new StorageController<DataModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), dataFileName), new Cryptographer(SecureManager.Key));
-        }
-
-        public void CategoryChanged(List<int> indexes)
-        {
-            if (indexes == null)
+            set
             {
-                DataList = null;
-                OnPropertyChanged(nameof(DataList));
-                return;
+                selectedData = value;
+                OnPropertyChanged(nameof(SelectedData));
             }
+        }
 
-            dataIndexes = indexes;
+        public DataViewModel(IStorageHandler<CategoryModel, DataModel> storageHandler)
+        {
+            this.storageHandler = storageHandler;
+        }
+
+        public void CategoryChanged()
+        {
             GetData();
         }
 
         private void GetData()
         {
-            DataList = new ObservableCollection<DataModel>();
-
-            if (dataIndexes.Count > 0)
+            try
             {
-                foreach (var index in dataIndexes)
-                {
-                    try
-                    {
-                        DataList.Add(dataController[SecureManager.GetIndexOf(index)]);
-                    }
-                    catch (FileNotFoundException ex)
-                    {
-                        MessageBox.Show($"File not found {ex.Message}.");
-                        DataList = null;
-                        break;
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        MessageBox.Show($"Can't read data from file {ex.Message}.");
-                        DataList = null;
-                        break;
-                    }
-                }
+                DataList = new ObservableCollection<DataModel>(storageHandler.GetData());
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show($"File not found {ex.Message}.");
+                DataList = null;
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show($"Can't read data from file {ex.Message}.");
+                DataList = null;
             }
 
             OnPropertyChanged(nameof(DataList));
@@ -93,20 +69,20 @@ namespace SharpPasswordManager.ViewModels
         }
         private void AddData()
         {
-            if (DataList == null)
+            if (storageHandler.CurrentCategory == null)
                 return;
 
             Views.DataValidateView validateView = new Views.DataValidateView();
-            DataModel newModel = new DataModel();
-            DataValidateViewModel validateVM = new DataValidateViewModel(ref newModel, ref validateView.passwordBox, new DataGenerator());
+            DataModel newData = new DataModel();
+            DataValidateViewModel validateVM = new DataValidateViewModel(ref newData, ref validateView.passwordBox, new DataGenerator());
             validateView.DataContext = validateVM;
             validateView.ShowDialog();
 
-            if (newModel.Password != null)
+            if (newData.Password != null)
             {
                 try
                 {
-                    dataController.PasteAt(SecureManager.GetIndexOf(startingIndex), newModel);
+                    storageHandler.AddData(newData);
                 }
                 catch (FileNotFoundException ex)
                 {
@@ -116,8 +92,8 @@ namespace SharpPasswordManager.ViewModels
                 {
                     MessageBox.Show($"Can't read data from file {ex.Message}.");
                 }
-                OnDataAdded?.Invoke(startingIndex);
-                ++startingIndex;
+                OnDataChanged?.Invoke();
+                SelectedData = DataList[DataList.Count - 1];
             }
         }
 
@@ -131,29 +107,35 @@ namespace SharpPasswordManager.ViewModels
         }
         private void EditData()
         {
+            DataModel oldData = new DataModel();
+            oldData.Date = selectedData.Date;
+            oldData.Description = selectedData.Description;
+            oldData.Login = selectedData.Login;
+            oldData.Password = selectedData.Password;
+            int index = DataList.IndexOf(selectedData);
+
             Views.DataValidateView validateView = new Views.DataValidateView();
             DataValidateViewModel validateVM = new DataValidateViewModel(ref selectedData, ref validateView.passwordBox);
             validateView.DataContext = validateVM;
             validateView.ShowDialog();
 
-            int index = DataList.IndexOf(selectedData);
-            try
+            if (!selectedData.Equals(oldData))
             {
-                dataController.PasteAt(SecureManager.GetIndexOf(dataIndexes[index]), selectedData);
-                GetData();
+                try
+                {
+                    storageHandler.ReplaceData(oldData, selectedData);
+                }
+                catch (FileNotFoundException ex)
+                {
+                    MessageBox.Show($"File not found {ex.Message}.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show($"Can't save data to file {ex.Message}.");
+                }
             }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found {ex.Message}.");
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Can't save data to file {ex.Message}.");
-            }
-
-            if (DataList[index] != null)
-                selectedData = DataList[index];
-            OnPropertyChanged(nameof(SelectedData));
+            OnDataChanged?.Invoke();
+            SelectedData = DataList[index];
         }
 
         private ICommand deleteDataCmd;
@@ -173,8 +155,9 @@ namespace SharpPasswordManager.ViewModels
 
             if (confirmVM.Result)
             {
-                OnDataDeleted?.Invoke(dataIndexes[DataList.IndexOf(selectedData)]);
-                GetData();
+                storageHandler.RemoveData(selectedData);
+                OnDataChanged?.Invoke();
+                SelectedData = null;
             }
         }
 

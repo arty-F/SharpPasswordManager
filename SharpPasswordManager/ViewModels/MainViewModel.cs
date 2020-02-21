@@ -1,4 +1,9 @@
-﻿using SharpPasswordManager.Handlers;
+﻿using SharpPasswordManager.BL;
+using SharpPasswordManager.BL.Interfaces;
+using SharpPasswordManager.DL.Models;
+using SharpPasswordManager.Handlers;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,17 +17,21 @@ namespace SharpPasswordManager.ViewModels
 
         public MainViewModel()
         {
+            IStorageController<CategoryModel> categoryController = new StorageController<CategoryModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Categories.bin"));
+            IStorageController<DataModel> dataController = new StorageController<DataModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Data.bin"), new Cryptographer(SecureManager.Key));
+
+            IStorageHandler<CategoryModel, DataModel> storageHandler = new StorageHandler(categoryController, dataController);
+
             CategoriesControl = new Views.CategoryView();
-            CategoryViewModel categoryVM = new CategoryViewModel();
+            CategoryViewModel categoryVM = new CategoryViewModel(storageHandler);
             CategoriesControl.DataContext = categoryVM;
 
             DataControl = new Views.DataView();
-            DataViewModel dataVM = new DataViewModel(categoryVM.GetStartingIndex());
+            DataViewModel dataVM = new DataViewModel(storageHandler);
             DataControl.DataContext = dataVM;
-
+            
             categoryVM.OnCategoryChanged += dataVM.CategoryChanged;
-            dataVM.OnDataAdded += categoryVM.AddData;
-            dataVM.OnDataDeleted += categoryVM.DeleteData;
+            dataVM.OnDataChanged += categoryVM.DataChanged;
         }
 
         private ICommand minimizeCmd;
