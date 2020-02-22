@@ -17,8 +17,8 @@ namespace SharpPasswordManager.ViewModels
 
         public MainViewModel()
         {
-            IStorageController<CategoryModel> categoryController = new StorageController<CategoryModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Categories.bin"));
-            IStorageController<DataModel> dataController = new StorageController<DataModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Data.bin"), new Cryptographer(SecureManager.Key));
+            IStorageController<CategoryModel> categoryController = new StorageController<CategoryModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), SecureManager.CategoriesFileName));
+            IStorageController<DataModel> dataController = new StorageController<DataModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), SecureManager.DataFileName), new Cryptographer(SecureManager.Key));
 
             IStorageHandler<CategoryModel, DataModel> storageHandler = new StorageHandler(categoryController, dataController);
 

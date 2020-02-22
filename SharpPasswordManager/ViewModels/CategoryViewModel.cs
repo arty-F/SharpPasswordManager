@@ -149,7 +149,7 @@ namespace SharpPasswordManager.ViewModels
             CategoryModel oldCategory = new CategoryModel();
             oldCategory.Name = selectedCategory.Name;
             oldCategory.DataIndexes = new List<int>(selectedCategory.DataIndexes);
-            
+
             CategoryValidateViewModel validateVM = new CategoryValidateViewModel(ref selectedCategory);
             Views.CategoryValidateView validateView = new Views.CategoryValidateView();
             validateView.DataContext = validateVM;

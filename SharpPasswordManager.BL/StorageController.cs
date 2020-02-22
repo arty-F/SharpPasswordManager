@@ -21,7 +21,7 @@ namespace SharpPasswordManager.BL
                                         model list to a file by <path>.
     ----------------------------------------------------------------------------------*/
     /// <summary>
-    /// Manage models collection taken from file. Can get, paste and find count of models.
+    /// Manage models collection taken from file. Can get, add, remove, paste and find count of models.
     /// </summary>
     /// <typeparam name="TModel">Any model class.</typeparam>
     public class StorageController<TModel> : IStorageController<TModel>

@@ -16,9 +16,6 @@ namespace SharpPasswordManager.ViewModels
 {
     public class FirstLoadViewModel : INotifyPropertyChanged
     {
-        const string passwordKey = "Password";
-        const string dataFileName = "Data.bin";
-        const string categoriesFileName = "Categories.bin";
         const int minLength = 4;
         const int maxLenght = 9;    // Sure that password lenth gives a stock of values when using Int32 index type which return <SecureManager>!
 
@@ -28,14 +25,14 @@ namespace SharpPasswordManager.ViewModels
         private readonly IAppSettingsHandler setting;
         private readonly ICryptographer cryptographer;
 
-        private bool isUiEnabled = true;
-        public bool IsUiEnabled
+        private bool isUiAvailable = true;
+        public bool IsUiAvailable
         {
-            get { return isUiEnabled; }
+            get { return isUiAvailable; }
             set 
             { 
-                isUiEnabled = value;
-                OnPropertyChanged(nameof(IsUiEnabled));
+                isUiAvailable = value;
+                OnPropertyChanged(nameof(IsUiAvailable));
             }
         }
 
@@ -51,12 +48,12 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return createPasswordCmd ?? (createPasswordCmd = new CommandHandler(TryWritePassword, UiIsEnabled));
+                return createPasswordCmd ?? (createPasswordCmd = new CommandHandler(TryWritePassword, CheckUiAvailability));
             }
         }
         private async void TryWritePassword()
         {
-            IsUiEnabled = false;
+            IsUiAvailable = false;
             if (Password == ConfirmPassword)
             {
                 if (Password.Length >= minLength && Password.Length <= maxLenght)
@@ -70,7 +67,7 @@ namespace SharpPasswordManager.ViewModels
                             cryptographer.ChangeKey(SecureManager.Key);
                             value = cryptographer.Encypt(value);
                         }
-                        setting.Write(passwordKey, value);
+                        setting.Write(SecureManager.PasswordKey, value);
 
                         LoadingPanelVisibility = Visibility.Visible;
                         OnPropertyChanged(nameof(LoadingPanelVisibility));
@@ -91,7 +88,7 @@ namespace SharpPasswordManager.ViewModels
                             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
                             LoadingPanelVisibility = Visibility.Hidden;
                             OnPropertyChanged(nameof(LoadingPanelVisibility));
-                            setting.Delete(passwordKey);
+                            setting.Delete(SecureManager.PasswordKey);
                         }
                     }
                     else
@@ -103,7 +100,7 @@ namespace SharpPasswordManager.ViewModels
             else
                 MessageBox.Show("Entered passwords are different.");
 
-            IsUiEnabled = true;
+            IsUiAvailable = true;
         }
 
         // Create data and category files
@@ -111,7 +108,7 @@ namespace SharpPasswordManager.ViewModels
         {
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            var dataController = new StorageController<DataModel>(Path.Combine(assemblyPath, dataFileName));
+            var dataController = new StorageController<DataModel>(Path.Combine(assemblyPath, SecureManager.DataFileName));
             var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(SecureManager.Key));
             try
             {
@@ -124,7 +121,7 @@ namespace SharpPasswordManager.ViewModels
                 return false;
             }
 
-            var categoriesController = new StorageController<CategoryModel>(Path.Combine(assemblyPath, categoriesFileName));
+            var categoriesController = new StorageController<CategoryModel>(Path.Combine(assemblyPath, SecureManager.CategoriesFileName));
             try
             {
                 await categoriesController.CreateStorageAsync(new List<CategoryModel>());
@@ -143,7 +140,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return closeCmd ?? (closeCmd = new CommandHandler(Close, UiIsEnabled));
+                return closeCmd ?? (closeCmd = new CommandHandler(Close, CheckUiAvailability));
             }
         }
         private void Close()
@@ -151,9 +148,9 @@ namespace SharpPasswordManager.ViewModels
             Application.Current.Shutdown();
         }
 
-        private bool UiIsEnabled()
+        private bool CheckUiAvailability()
         {
-            return IsUiEnabled;
+            return IsUiAvailable;
         }
 
         #region Property changing

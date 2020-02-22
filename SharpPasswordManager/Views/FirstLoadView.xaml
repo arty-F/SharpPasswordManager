@@ -25,10 +25,10 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 0 0 0">Password</TextBlock>
-            <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" IsEnabled="{Binding IsUiEnabled}" Text="{Binding Path=Password, Mode=TwoWay}" TextAlignment="Center" Width="180" HorizontalAlignment="Center"/>
+            <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" IsEnabled="{Binding IsUiAvailable}" Text="{Binding Path=Password, Mode=TwoWay}" TextAlignment="Center" Width="180" HorizontalAlignment="Center"/>
 
             <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 0 0 0">Confirm password</TextBlock>
-            <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" IsEnabled="{Binding IsUiEnabled}" Text="{Binding Path=ConfirmPassword, Mode=TwoWay}" TextAlignment="Center" Width="180" HorizontalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" IsEnabled="{Binding IsUiAvailable}" Text="{Binding Path=ConfirmPassword, Mode=TwoWay}" TextAlignment="Center" Width="180" HorizontalAlignment="Center"/>
 
             <Button Height="32" Width="32" Grid.Row="4" Grid.Column="0" Foreground="#FF2F2F82" Style="{DynamicResource MaterialDesignIconButton}" 
                 Command="{Binding CreatePasswordCmd}" VerticalAlignment="Center" HorizontalAlignment="Center">

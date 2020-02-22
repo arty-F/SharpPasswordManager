@@ -30,7 +30,7 @@ namespace SharpPasswordManager.DL.Models
                 if (Name != null)
                     hash = (hash * hashMultiple) ^ Name.GetHashCode();
 
-                if (DataIndexes.Count > 0)
+                if (DataIndexes != null && DataIndexes.Count > 0)
                 {
                     foreach (var item in DataIndexes)
                         hash = (hash * hashMultiple) ^ item.GetHashCode();

@@ -9,7 +9,6 @@ namespace SharpPasswordManager.ViewModels
 {
     public class PasswordCheckViewModel
     {
-        const string passwordKey = "Password";
         public string Password { get; set; }
         private readonly IAppSettingsHandler setting;
         private readonly IAuthenticator autenticator;
@@ -37,7 +36,7 @@ namespace SharpPasswordManager.ViewModels
             bool isAutenticate = false;
             try
             {
-                isAutenticate = autenticator.Autenticate(Password, setting.GetByKey(passwordKey));
+                isAutenticate = autenticator.Autenticate(Password, setting.GetByKey(SecureManager.PasswordKey));
             }
             catch (Exception) { }
             

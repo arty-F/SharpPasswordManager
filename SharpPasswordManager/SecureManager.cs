@@ -5,6 +5,11 @@
 	/// </summary>
 	public static class SecureManager
     {
+		static public string PasswordKey = "Password";
+		static public string DataFileName = "Data.bin";
+		static public string CategoriesFileName = "Categories.bin";
+
+
 		public static int StartingIndex { get; private set; }
 
 		private static string key;

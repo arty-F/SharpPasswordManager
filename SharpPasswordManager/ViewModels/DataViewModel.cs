@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -93,7 +94,7 @@ namespace SharpPasswordManager.ViewModels
                     MessageBox.Show($"Can't read data from file {ex.Message}.");
                 }
                 OnDataChanged?.Invoke();
-                SelectedData = DataList[DataList.Count - 1];
+                SelectedData = DataList.LastOrDefault();
             }
         }
 
