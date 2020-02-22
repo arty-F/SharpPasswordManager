@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpPasswordManager.Views"
         mc:Ignorable="d"
-        Title="MainView" Height="640" Width="420" WindowStartupLocation="CenterScreen"
+        Title="Sharp password manager" Height="640" Width="420" WindowStartupLocation="CenterScreen"
         Style="{StaticResource WindowBase}" MouseLeftButtonDown="WindowMouseLeftButtonDown">
     
     <x:Code>
@@ -19,8 +19,11 @@
     </x:Code>
 
     <Border BorderBrush="#FF2F2F82" BorderThickness="2">
-        <DockPanel Margin="10">
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Grid Margin="10">
+            <Image Source="Logo.png" Width="100" VerticalAlignment="Top" Margin="5"/>
+            
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right" Height="30" VerticalAlignment="Top">
+               
                 <Button Width="48" Foreground="#FF2F2F82" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding MinimizeCmd}">
                     <materialDesign:PackIcon Kind="WindowMinimize" Width="24" Height="24" HorizontalAlignment="Center"/>
                 </Button>
@@ -30,12 +33,12 @@
                 </Button>
             </StackPanel>
 
-            <StackPanel>
+            <StackPanel Margin="0 30 0 0">
                 <UserControl Content="{Binding CategoriesControl}" Height="200"/>
 
                 <UserControl Content="{Binding DataControl}" Height="385"/>
 
             </StackPanel>
-        </DockPanel>
+        </Grid>
     </Border>
 </Window>
