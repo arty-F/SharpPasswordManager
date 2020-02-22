@@ -9,7 +9,7 @@ namespace SharpPasswordManager.Handlers
     /// <typeparam name="TData"></typeparam>
     public interface IStorageHandler<TCategory, TData>
     {
-        TCategory CurrentCategory { get; set; }
+        int CurrentCategoryIndex { get; set; }
 
         List<TCategory> GetCategories();
         List<TData> GetData();

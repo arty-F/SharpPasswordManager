@@ -18,7 +18,8 @@ namespace SharpPasswordManager.Handlers
         /// <summary>
         /// Selected model of <see cref="CategoryModel"/>.
         /// </summary>
-        public CategoryModel CurrentCategory { get; set; }
+        public int CurrentCategoryIndex { get; set; } = -1;
+
         private Random random = new Random();
 
         /// <summary>
@@ -47,9 +48,6 @@ namespace SharpPasswordManager.Handlers
         /// <param name="category">Adding data</param>
         public void AddData(DataModel data)
         {
-            if (CurrentCategory == null)
-                return;
-
             List<int> usingIndexes = new List<int>();
             for (int i = 0; i < categoryController.Count(); i++)
             {
@@ -66,16 +64,9 @@ namespace SharpPasswordManager.Handlers
 
             dataController.PasteAt(SecureManager.GetIndexOf(newIndex), data);
 
-            for (int i = 0; i < categoryController.Count(); i++)
-            {
-                CategoryModel category = categoryController.Get(i);
-                if (category.Equals(CurrentCategory))
-                {
-                    category.DataIndexes.Add(newIndex);
-                    categoryController.PasteAt(i, category);
-                    break;
-                }
-            }
+            CategoryModel category = categoryController.Get(CurrentCategoryIndex);
+            category.DataIndexes.Add(newIndex);
+            categoryController.PasteAt(CurrentCategoryIndex, category);
         }
 
         /// <summary>
@@ -93,23 +84,19 @@ namespace SharpPasswordManager.Handlers
         /// <returns></returns>
         public List<DataModel> GetData()
         {
-            if (CurrentCategory != null)
+            List<DataModel> dataList = new List<DataModel>();
+            CategoryModel currentCategory = categoryController.Get(CurrentCategoryIndex);
+            dataList.Capacity = currentCategory.DataIndexes.Count();
+
+            foreach (var index in currentCategory.DataIndexes)
             {
-                List<DataModel> dataList = new List<DataModel>();
-                dataList.Capacity = CurrentCategory.DataIndexes.Count();
-
-                foreach (var index in CurrentCategory.DataIndexes)
-                {
-                    DataModel data = dataController.Get(SecureManager.GetIndexOf(index));
-                    dataList.Add(data);
-                }
-
-                SetUsingData(CurrentCategory.DataIndexes);
-
-                return dataList;
+                DataModel data = dataController.Get(SecureManager.GetIndexOf(index));
+                dataList.Add(data);
             }
-            else
-                return new List<DataModel>();
+
+            SetUsingData(currentCategory.DataIndexes);
+
+            return dataList;
         }
 
         /// <summary>
@@ -139,17 +126,10 @@ namespace SharpPasswordManager.Handlers
 
             if (index > -1)
             {
-                for (int i = 0; i < categoryController.Count(); i++)
-                {
-                    CategoryModel category = categoryController.Get(i);
-                    if (category.DataIndexes.Contains(index))
-                    {
-                        category.DataIndexes.Remove(index);
-                        categoryController.PasteAt(i, category);
-                        SetUsingData(category.DataIndexes);
-                        break;
-                    }
-                }
+                CategoryModel currentCategory = categoryController.Get(CurrentCategoryIndex);
+                currentCategory.DataIndexes.Remove(index);
+                categoryController.PasteAt(CurrentCategoryIndex, currentCategory);
+                SetUsingData(currentCategory.DataIndexes);
             }
         }
 

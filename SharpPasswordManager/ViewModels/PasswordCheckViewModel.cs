@@ -47,7 +47,7 @@ namespace SharpPasswordManager.ViewModels
                 foreach (Window item in Application.Current.Windows)
                     if (item.DataContext == this)
                         item.Close();
-                mainView.ShowDialog();
+                mainView.Show();
             }
             else
                 MessageBox.Show("Wrong password.");

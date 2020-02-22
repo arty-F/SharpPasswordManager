@@ -26,7 +26,11 @@ namespace SharpPasswordManager.ViewModels
             set
             {
                 selectedCategory = value;
-                storageHandler.CurrentCategory = selectedCategory;
+                if (selectedCategory == null)
+                    storageHandler.CurrentCategoryIndex = -1;
+                else
+                    storageHandler.CurrentCategoryIndex = CategoriesList.IndexOf(SelectedCategory);
+
                 OnCategoryChanged?.Invoke();
             }
         }
@@ -51,14 +55,14 @@ namespace SharpPasswordManager.ViewModels
             {
                 MessageBox.Show($"Can't read data from file {ex.Message}.");
             }
+
             OnPropertyChanged(nameof(CategoriesList));
         }
 
         public void DataChanged()
         {
-            int index = CategoriesList.IndexOf(SelectedCategory);
             GetCategories();
-            SelectedCategory = CategoriesList[index];
+            SelectedCategory = CategoriesList[storageHandler.CurrentCategoryIndex];
             OnPropertyChanged(nameof(CategoriesList));
         }
 
@@ -93,8 +97,9 @@ namespace SharpPasswordManager.ViewModels
                 {
                     MessageBox.Show($"Can't save data to file {ex.Message}.");
                 }
+
                 SelectedCategory = CategoriesList.LastOrDefault();
-                storageHandler.CurrentCategory = SelectedCategory;
+                OnCategoryChanged?.Invoke();
                 OnPropertyChanged(nameof(SelectedCategory));
             }
         }
@@ -119,6 +124,7 @@ namespace SharpPasswordManager.ViewModels
                 try
                 {
                     storageHandler.RemoveCategory(selectedCategory);
+                    GetCategories();
                 }
                 catch (FileNotFoundException ex)
                 {
@@ -128,11 +134,10 @@ namespace SharpPasswordManager.ViewModels
                 {
                     MessageBox.Show($"Can't save data to file {ex.Message}.");
                 }
+
                 SelectedCategory = null;
-                storageHandler.CurrentCategory = SelectedCategory;
-                GetCategories();
-                OnPropertyChanged(nameof(CategoriesList));
                 OnCategoryChanged?.Invoke();
+                OnPropertyChanged(nameof(CategoriesList));
             }
         }
 
@@ -157,7 +162,6 @@ namespace SharpPasswordManager.ViewModels
 
             if (!selectedCategory.Equals(oldCategory))
             {
-                int index = CategoriesList.IndexOf(selectedCategory);
                 try
                 {
                     storageHandler.ReplaceCategory(oldCategory, selectedCategory);
@@ -171,8 +175,10 @@ namespace SharpPasswordManager.ViewModels
                 {
                     MessageBox.Show($"Can't save data to file {ex.Message}.");
                 }
-                SelectedCategory = CategoriesList[index];
-                storageHandler.CurrentCategory = SelectedCategory;
+
+                SelectedCategory = CategoriesList[storageHandler.CurrentCategoryIndex];
+                OnCategoryChanged?.Invoke();
+                OnPropertyChanged(nameof(CategoriesList));
             }
         }
 

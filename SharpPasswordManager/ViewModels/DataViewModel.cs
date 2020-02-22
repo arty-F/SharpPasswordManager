@@ -42,20 +42,25 @@ namespace SharpPasswordManager.ViewModels
 
         private void GetData()
         {
-            try
+            if (storageHandler.CurrentCategoryIndex > -1)
             {
-                DataList = new ObservableCollection<DataModel>(storageHandler.GetData());
+                try
+                {
+                    DataList = new ObservableCollection<DataModel>(storageHandler.GetData());
+                }
+                catch (FileNotFoundException ex)
+                {
+                    MessageBox.Show($"File not found {ex.Message}.");
+                    DataList = null;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show($"Can't read data from file {ex.Message}.");
+                    DataList = null;
+                }
             }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found {ex.Message}.");
-                DataList = null;
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Can't read data from file {ex.Message}.");
-                DataList = null;
-            }
+            else
+                DataList = new ObservableCollection<DataModel>();
 
             OnPropertyChanged(nameof(DataList));
         }
@@ -70,7 +75,7 @@ namespace SharpPasswordManager.ViewModels
         }
         private void AddData()
         {
-            if (storageHandler.CurrentCategory == null)
+            if (storageHandler.CurrentCategoryIndex == -1)
                 return;
 
             Views.DataValidateView validateView = new Views.DataValidateView();
