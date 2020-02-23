@@ -31,6 +31,7 @@ namespace SharpPasswordManager.ViewModels
             DataControl.DataContext = dataVM;
             
             categoryVM.OnCategoryChanged += dataVM.CategoryChanged;
+            dataVM.OnNeededCurrentCategory += categoryVM.ShareSelectedCategory;
             dataVM.OnDataChanged += categoryVM.DataChanged;
         }
 

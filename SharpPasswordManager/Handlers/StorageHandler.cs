@@ -2,7 +2,6 @@
 using SharpPasswordManager.DL.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SharpPasswordManager.Handlers
 {
@@ -13,12 +12,6 @@ namespace SharpPasswordManager.Handlers
     {
         private IStorageController<CategoryModel> categoryController;
         private IStorageController<DataModel> dataController;
-
-        private Dictionary<DataModel, int> usingData = new Dictionary<DataModel, int>();
-        /// <summary>
-        /// Selected model of <see cref="CategoryModel"/>.
-        /// </summary>
-        public int CurrentCategoryIndex { get; set; } = -1;
 
         private Random random = new Random();
 
@@ -46,16 +39,9 @@ namespace SharpPasswordManager.Handlers
         /// Write <seealso cref="DataModel"/> to data storage contoller at defined random index. Then write that index to CurrentCategory index collection, and save changes of category storage controller.
         /// </summary>
         /// <param name="category">Adding data</param>
-        public void AddData(DataModel data)
+        public void AddData(DataModel data, CategoryModel toCategory)
         {
-            List<int> usingIndexes = new List<int>();
-            for (int i = 0; i < categoryController.Count(); i++)
-            {
-                foreach (var index in categoryController.Get(i).DataIndexes)
-                {
-                    usingIndexes.Add(index);
-                }
-            }
+            List<int> usingIndexes = GetUsingDataIndexes();
 
             int maxValue = dataController.Count();
             int newIndex = random.Next(0, maxValue);
@@ -64,9 +50,18 @@ namespace SharpPasswordManager.Handlers
 
             dataController.PasteAt(SecureManager.GetIndexOf(newIndex), data);
 
-            CategoryModel category = categoryController.Get(CurrentCategoryIndex);
-            category.DataIndexes.Add(newIndex);
-            categoryController.PasteAt(CurrentCategoryIndex, category);
+            List<CategoryModel> categories = categoryController.ToList();
+
+            for (int i = 0; i < categories.Count; i++)
+            {
+                if (categories[i].Equals(toCategory))
+                {
+                    CategoryModel newCategory = new CategoryModel { DataIndexes = new List<int>(toCategory.DataIndexes), Name = toCategory.Name };
+                    newCategory.DataIndexes.Add(newIndex);
+                    categoryController.PasteAt(i, newCategory);
+                    break;
+                }
+            }
         }
 
         /// <summary>
@@ -82,19 +77,18 @@ namespace SharpPasswordManager.Handlers
         /// Get list of data referenced in CurrentCategory.
         /// </summary>
         /// <returns></returns>
-        public List<DataModel> GetData()
+        public List<DataModel> GetData(CategoryModel ofCategory)
         {
             List<DataModel> dataList = new List<DataModel>();
-            CategoryModel currentCategory = categoryController.Get(CurrentCategoryIndex);
-            dataList.Capacity = currentCategory.DataIndexes.Count();
 
-            foreach (var index in currentCategory.DataIndexes)
+            if (ofCategory.DataIndexes.Count == 0)
+                return dataList;
+
+            dataList.Capacity = ofCategory.DataIndexes.Count;
+            foreach (var dataIndex in ofCategory.DataIndexes)
             {
-                DataModel data = dataController.Get(SecureManager.GetIndexOf(index));
-                dataList.Add(data);
+                dataList.Add(dataController.Get(SecureManager.GetIndexOf(dataIndex)));
             }
-
-            SetUsingData(currentCategory.DataIndexes);
 
             return dataList;
         }
@@ -114,22 +108,19 @@ namespace SharpPasswordManager.Handlers
         /// <param name="data">Data to remove.</param>
         public void RemoveData(DataModel data)
         {
-            int index = -1;
-            foreach (var item in usingData)
+            List<CategoryModel> categories = GetCategories();
+            for (int i = 0; i < categories.Count; i++)
             {
-                if (item.Key.Equals(data))
+                foreach (var dataIndex in categories[i].DataIndexes)
                 {
-                    index = item.Value;
-                    break;
+                    if (dataController.Get(SecureManager.GetIndexOf(dataIndex)).Equals(data))
+                    {
+                        CategoryModel newCategory = new CategoryModel { DataIndexes = new List<int>(categories[i].DataIndexes), Name = categories[i].Name };
+                        newCategory.DataIndexes.Remove(dataIndex);
+                        categoryController.PasteAt(i, newCategory);
+                        return;
+                    }
                 }
-            }
-
-            if (index > -1)
-            {
-                CategoryModel currentCategory = categoryController.Get(CurrentCategoryIndex);
-                currentCategory.DataIndexes.Remove(index);
-                categoryController.PasteAt(CurrentCategoryIndex, currentCategory);
-                SetUsingData(currentCategory.DataIndexes);
             }
         }
 
@@ -153,24 +144,30 @@ namespace SharpPasswordManager.Handlers
         /// </summary>
         public void ReplaceData(DataModel oldData, DataModel newData)
         {
-            foreach (var item in usingData)
+            List<int> usingIndexes = GetUsingDataIndexes();
+
+            foreach (var index in usingIndexes)
             {
-                if (item.Key.Equals(oldData))
+                if (dataController.Get(SecureManager.GetIndexOf(index)).Equals(oldData))
                 {
-                    dataController.PasteAt(SecureManager.GetIndexOf(item.Value), newData);
-                    SetUsingData(usingData.Values.ToList());
+                    dataController.PasteAt(SecureManager.GetIndexOf(index), newData);
                     break;
                 }
             }
         }
 
-        private void SetUsingData(List<int> indexes)
+        private List<int> GetUsingDataIndexes()
         {
-            usingData.Clear();
-            foreach (var index in indexes)
+            List<int> usingIndexes = new List<int>();
+            List<CategoryModel> categories = categoryController.ToList();
+            foreach (var category in categories)
             {
-                usingData.Add(dataController.Get(SecureManager.GetIndexOf(index)), index);
+                foreach (var index in category.DataIndexes)
+                {
+                    usingIndexes.Add(index);
+                }
             }
+            return usingIndexes;
         }
     }
 }

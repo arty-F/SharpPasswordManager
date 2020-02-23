@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -13,11 +12,11 @@ namespace SharpPasswordManager.ViewModels
 {
     public class CategoryViewModel : INotifyPropertyChanged
     {
-        public delegate void CategoryChangeHandler();
+        public delegate void CategoryChangeHandler(CategoryModel category);
         public event CategoryChangeHandler OnCategoryChanged;
 
         IStorageHandler<CategoryModel, DataModel> storageHandler;
-        public ObservableCollection<CategoryModel> CategoriesList { get; set; }
+        public ObservableCollection<CategoryModel> CategoriesList { get; set; } = new ObservableCollection<CategoryModel>();
 
         private CategoryModel selectedCategory;
         public CategoryModel SelectedCategory
@@ -26,12 +25,7 @@ namespace SharpPasswordManager.ViewModels
             set
             {
                 selectedCategory = value;
-                if (selectedCategory == null)
-                    storageHandler.CurrentCategoryIndex = -1;
-                else
-                    storageHandler.CurrentCategoryIndex = CategoriesList.IndexOf(SelectedCategory);
-
-                OnCategoryChanged?.Invoke();
+                OnCategoryChanged?.Invoke(selectedCategory);
             }
         }
 
@@ -43,27 +37,41 @@ namespace SharpPasswordManager.ViewModels
 
         private void GetCategories()
         {
+            int index = -1;
+            if (SelectedCategory != null)
+                index = CategoriesList.IndexOf(SelectedCategory);
+
+            CategoriesList.Clear();
+
             try
             {
                 CategoriesList = new ObservableCollection<CategoryModel>(storageHandler.GetCategories());
             }
             catch (FileNotFoundException ex)
-            {
-                MessageBox.Show($"File not found {ex.Message}.");
-            }
+            { MessageBox.Show($"File not found {ex.Message}."); }
             catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Can't read data from file {ex.Message}.");
-            }
+            { MessageBox.Show($"Can't read data from file {ex.Message}."); }
+            catch (Exception ex)
+            { MessageBox.Show($"Something is wrong {ex.Message}."); }
 
             OnPropertyChanged(nameof(CategoriesList));
+
+            if (index > -1 && index < CategoriesList.Count)
+                SelectedCategory = CategoriesList[index];
+            else
+                SelectedCategory = null;
+
+            OnPropertyChanged(nameof(SelectedCategory));
+        }
+
+        public CategoryModel ShareSelectedCategory()
+        {
+            return SelectedCategory;
         }
 
         public void DataChanged()
         {
             GetCategories();
-            SelectedCategory = CategoriesList[storageHandler.CurrentCategoryIndex];
-            OnPropertyChanged(nameof(CategoriesList));
         }
 
         private ICommand addCategoryCmd;
@@ -87,20 +95,15 @@ namespace SharpPasswordManager.ViewModels
                 try
                 {
                     storageHandler.AddCategory(newCategory);
-                    GetCategories();
                 }
                 catch (FileNotFoundException ex)
-                {
-                    MessageBox.Show($"File not found {ex.Message}.");
-                }
+                { MessageBox.Show($"File not found {ex.Message}."); }
                 catch (InvalidOperationException ex)
-                {
-                    MessageBox.Show($"Can't save data to file {ex.Message}.");
-                }
+                { MessageBox.Show($"Can't write data to file {ex.Message}."); }
+                catch (Exception ex)
+                { MessageBox.Show($"Something is wrong {ex.Message}."); }
 
-                SelectedCategory = CategoriesList.LastOrDefault();
-                OnCategoryChanged?.Invoke();
-                OnPropertyChanged(nameof(SelectedCategory));
+                GetCategories();
             }
         }
 
@@ -123,21 +126,17 @@ namespace SharpPasswordManager.ViewModels
             {
                 try
                 {
-                    storageHandler.RemoveCategory(selectedCategory);
-                    GetCategories();
+                    storageHandler.RemoveCategory(SelectedCategory);
                 }
                 catch (FileNotFoundException ex)
-                {
-                    MessageBox.Show($"File not found {ex.Message}.");
-                }
+                { MessageBox.Show($"File not found {ex.Message}."); }
                 catch (InvalidOperationException ex)
-                {
-                    MessageBox.Show($"Can't save data to file {ex.Message}.");
-                }
+                { MessageBox.Show($"Can't save data to file {ex.Message}."); }
+                catch (Exception ex)
+                { MessageBox.Show($"Something is wrong {ex.Message}."); }
 
                 SelectedCategory = null;
-                OnCategoryChanged?.Invoke();
-                OnPropertyChanged(nameof(CategoriesList));
+                GetCategories();
             }
         }
 
@@ -151,34 +150,25 @@ namespace SharpPasswordManager.ViewModels
         }
         private void EditCategory()
         {
-            CategoryModel oldCategory = new CategoryModel();
-            oldCategory.Name = selectedCategory.Name;
-            oldCategory.DataIndexes = new List<int>(selectedCategory.DataIndexes);
-
-            CategoryValidateViewModel validateVM = new CategoryValidateViewModel(ref selectedCategory);
+            CategoryModel newCategory = new CategoryModel { DataIndexes = new List<int>(SelectedCategory?.DataIndexes), Name = SelectedCategory.Name };
+            CategoryValidateViewModel validateVM = new CategoryValidateViewModel(ref newCategory);
             Views.CategoryValidateView validateView = new Views.CategoryValidateView();
             validateView.DataContext = validateVM;
             validateView.ShowDialog();
 
-            if (!selectedCategory.Equals(oldCategory))
+            if (!SelectedCategory.Equals(newCategory))
             {
                 try
                 {
-                    storageHandler.ReplaceCategory(oldCategory, selectedCategory);
-                    GetCategories();
+                    storageHandler.ReplaceCategory(SelectedCategory, newCategory);
                 }
                 catch (FileNotFoundException ex)
-                {
-                    MessageBox.Show($"File not found {ex.Message}.");
-                }
+                { MessageBox.Show($"File not found {ex.Message}."); }
                 catch (InvalidOperationException ex)
-                {
-                    MessageBox.Show($"Can't save data to file {ex.Message}.");
-                }
-
-                SelectedCategory = CategoriesList[storageHandler.CurrentCategoryIndex];
-                OnCategoryChanged?.Invoke();
-                OnPropertyChanged(nameof(CategoriesList));
+                { MessageBox.Show($"Can't save data to file {ex.Message}."); }
+                catch (Exception ex)
+                { MessageBox.Show($"Something is wrong {ex.Message}."); }
+                GetCategories();
             }
         }
 
