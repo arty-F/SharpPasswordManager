@@ -4,6 +4,7 @@ using System;
 using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
+using System.Threading.Tasks;
 
 namespace SharpPasswordManager.ViewModels
 {
@@ -24,22 +25,20 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return checkPasswordCmd ?? (checkPasswordCmd = new CommandHandler(AccessCheck, (object obj) => true));
+                return checkPasswordCmd ?? (checkPasswordCmd = new CommandHandler(AccessCheckAsync, (object obj) => true));
             }
         }
-        private void AccessCheck(object parameter)
+        private async void AccessCheckAsync(object parameter)
         {
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
             var passwordBox = parameter as PasswordBox;
             Password = passwordBox.Password;
 
             autenticator.ChangeKey(Password);
-            bool isAutenticate = false;
-            try
-            {
-                isAutenticate = autenticator.Autenticate(Password, setting.GetByKey(SecureManager.PasswordKey));
-            }
-            catch (Exception) { }
-            
+            bool isAutenticate = await autenticator.Autenticate(Password, setting.GetByKey(SecureManager.PasswordKey));
+
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
+
             if (isAutenticate)
             {
                 SecureManager.Key = Password;

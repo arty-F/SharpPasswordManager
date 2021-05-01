@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SharpPasswordManager.Handlers
 {
@@ -17,5 +18,6 @@ namespace SharpPasswordManager.Handlers
         void AddData(TData data, TCategory toCategory);
         void ReplaceCategory(TCategory oldCategory, TCategory newCategory);
         void ReplaceData(TData oldData, TData newData);
+        Task SecureStorageAsync();
     }
 }

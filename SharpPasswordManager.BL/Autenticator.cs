@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using SharpPasswordManager.BL.Interfaces;
 
 namespace SharpPasswordManager.BL
@@ -22,6 +23,10 @@ namespace SharpPasswordManager.BL
     /// </summary>
     public class Autenticator : IAuthenticator
     {
+        const int authDelay = 500;
+        const int authDelayRange = 100;
+        Random rng = new Random();
+
         ICryptographer cryptographer;
 
         /// <summary>
@@ -39,10 +44,12 @@ namespace SharpPasswordManager.BL
         /// </summary>
         /// <param name="password">Entered password.</param>
         /// <returns></returns>
-        public bool Autenticate(string password, string encryptedPassword)
+        public async Task<bool> Autenticate(string password, string encryptedPassword)
         {
             if (password == null || encryptedPassword == null)
                 throw new ArgumentNullException();
+
+            await Task.Delay(rng.Next(authDelay - authDelayRange, authDelay + authDelayRange));
 
             if (cryptographer != null)
             {

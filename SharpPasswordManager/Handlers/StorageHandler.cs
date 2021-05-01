@@ -1,7 +1,9 @@
-﻿using SharpPasswordManager.BL.Interfaces;
+﻿using SharpPasswordManager.BL;
+using SharpPasswordManager.BL.Interfaces;
 using SharpPasswordManager.DL.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SharpPasswordManager.Handlers
 {
@@ -152,6 +154,46 @@ namespace SharpPasswordManager.Handlers
                 {
                     dataController.PasteAt(SecureManager.GetIndexOf(index), newData);
                     break;
+                }
+            }
+        }
+
+        public async Task SecureStorageAsync()
+        {
+            await Task.Run(SecureStorage);
+        }
+
+        private void SecureStorage()
+        {
+            var dataIndexes = GetUsingDataIndexes();
+            if (dataIndexes.Count == 0)
+                return;
+
+            List<DataModel> data = new List<DataModel>();
+            foreach (var index in dataIndexes)
+                data.Add(dataController.Get(SecureManager.GetIndexOf(index)));
+
+            Random rng = new Random();
+            DataGenerator generator = new DataGenerator();
+            int storageLength = dataController.Count();
+            foreach (var item in data)
+            {
+                for (int i = 0; i < storageLength / (50 * data.Count); i++)
+                {
+                    int index;
+                    do
+                    {
+                        index = rng.Next(storageLength);
+                    } while (dataIndexes.Contains(index));
+
+                    dataController.PasteAt(SecureManager.GetIndexOf(index),
+                        new DataModel
+                        {
+                            Date = item.Date,
+                            Description = item.Description,
+                            Login = item.Login,
+                            Password = generator.GenerateRandomPassword(item.Password.Length)
+                        });
                 }
             }
         }

@@ -20,7 +20,11 @@
 
     <Border BorderBrush="#FF2F2F82" BorderThickness="2">
         <Grid Margin="10">
-            <Image Source="Logo.png" Width="100" VerticalAlignment="Top" Margin="5"/>
+            <Button ToolTip="Secure data storage. This may takes some time." VerticalAlignment="Top" HorizontalAlignment="Left" Width="48" Foreground="#FF2F2F82" BorderThickness="0" Style="{DynamicResource MaterialDesignFlatAccentButton}"  Command="{Binding SecureCmd}">
+                <materialDesign:PackIcon Kind="Security" Width="24" Height="24" HorizontalAlignment="Center"/>
+            </Button>
+
+            <Image Source="Logo.png" Width="100" VerticalAlignment="Top" Margin="4"/>
             
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right" Height="30" VerticalAlignment="Top">
                
@@ -39,6 +43,8 @@
                 <UserControl Content="{Binding DataControl}" Height="385"/>
 
             </StackPanel>
+
+            <TextBlock Text="Please wait until programm complete secure operations..." Height="39" Visibility="{Binding Path=SecurePanelVisibility}" Foreground="WhiteSmoke" Background="#FF2F2F82" TextAlignment="Center" VerticalAlignment="Top" Padding="9"/>
         </Grid>
     </Border>
 </Window>
