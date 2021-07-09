@@ -1,5 +1,6 @@
-﻿using SharpPasswordManager.DL.Models;
-using SharpPasswordManager.Handlers;
+﻿using SharpPasswordManager.BL.StorageLogic;
+using SharpPasswordManager.DL.Models;
+using SharpPasswordManager.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +16,7 @@ namespace SharpPasswordManager.ViewModels
         public delegate void CategoryChangeHandler(CategoryModel category);
         public event CategoryChangeHandler OnCategoryChanged;
 
-        IStorageHandler<CategoryModel, DataModel> storageHandler;
+        IMultipleStorageController<CategoryModel, DataModel> storageHandler;
         public ObservableCollection<CategoryModel> CategoriesList { get; set; } = new ObservableCollection<CategoryModel>();
 
         private CategoryModel selectedCategory;
@@ -29,7 +30,7 @@ namespace SharpPasswordManager.ViewModels
             }
         }
 
-        public CategoryViewModel(IStorageHandler<CategoryModel, DataModel> storageHandler)
+        public CategoryViewModel(IMultipleStorageController<CategoryModel, DataModel> storageHandler)
         {
             this.storageHandler = storageHandler;
             GetCategories();
@@ -79,7 +80,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return addCategoryCmd ?? (addCategoryCmd = new CommandHandler(AddCategory, () => true));
+                return addCategoryCmd ?? (addCategoryCmd = new CommandHelper(AddCategory, () => true));
             }
         }
         private void AddCategory()
@@ -112,7 +113,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return deleteCategoryCmd ?? (deleteCategoryCmd = new CommandHandler(DeleteCategory, () => true));
+                return deleteCategoryCmd ?? (deleteCategoryCmd = new CommandHelper(DeleteCategory, () => true));
             }
         }
         private void DeleteCategory()
@@ -145,7 +146,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return editCategoryCmd ?? (editCategoryCmd = new CommandHandler(EditCategory, () => true));
+                return editCategoryCmd ?? (editCategoryCmd = new CommandHelper(EditCategory, () => true));
             }
         }
         private void EditCategory()

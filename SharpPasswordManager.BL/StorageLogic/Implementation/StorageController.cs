@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using SharpPasswordManager.BL.Enums;
-using SharpPasswordManager.BL.Interfaces;
 using System.Threading.Tasks;
+using SharpPasswordManager.BL.Security;
 
-namespace SharpPasswordManager.BL
+namespace SharpPasswordManager.BL.StorageLogic
 {
     /*----------------------------------------------------------------------------------
      * Exceptions:

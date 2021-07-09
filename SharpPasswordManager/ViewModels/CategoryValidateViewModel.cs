@@ -1,5 +1,5 @@
 ﻿using SharpPasswordManager.DL.Models;
-using SharpPasswordManager.Handlers;
+using SharpPasswordManager.Helpers;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
@@ -23,7 +23,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return okCmd ?? (okCmd = new CommandHandler(Validate, () => true));
+                return okCmd ?? (okCmd = new CommandHelper(Validate, () => true));
             }
         }
         private void Validate()
@@ -44,7 +44,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return cancelCmd ?? (cancelCmd = new CommandHandler(RollBack, () => true));
+                return cancelCmd ?? (cancelCmd = new CommandHelper(RollBack, () => true));
             }
         }
         private void RollBack()

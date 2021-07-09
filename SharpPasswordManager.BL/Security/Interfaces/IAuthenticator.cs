@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SharpPasswordManager.BL.Interfaces
+namespace SharpPasswordManager.BL.Security
 {
     /// <summary>
     /// Provides a mechanism to autentication.

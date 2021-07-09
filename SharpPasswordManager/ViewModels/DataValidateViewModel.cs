@@ -1,6 +1,6 @@
-﻿using SharpPasswordManager.BL.Interfaces;
+﻿using SharpPasswordManager.DL.DataGenerators;
 using SharpPasswordManager.DL.Models;
-using SharpPasswordManager.Handlers;
+using SharpPasswordManager.Helpers;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,7 +45,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return okCmd ?? (okCmd = new CommandHandler(Validate, () => true));
+                return okCmd ?? (okCmd = new CommandHelper(Validate, () => true));
             }
         }
         private void Validate()
@@ -69,7 +69,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return cancelCmd ?? (cancelCmd = new CommandHandler(RollBack, () => true));
+                return cancelCmd ?? (cancelCmd = new CommandHelper(RollBack, () => true));
             }
         }
         private void RollBack()
@@ -93,7 +93,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return generatePasswordCmd ?? (generatePasswordCmd = new CommandHandler(GeneratePassword, () => true));
+                return generatePasswordCmd ?? (generatePasswordCmd = new CommandHelper(GeneratePassword, () => true));
             }
         }
         private void GeneratePassword()

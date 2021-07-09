@@ -1,16 +1,16 @@
 ﻿using System.Configuration;
 
-namespace SharpPasswordManager.Handlers
+namespace SharpPasswordManager.Helpers
 {
     /// <summary>
     /// Used by manage app settings through <see cref="ConfigurationManager"/>.
     /// </summary>
-    public class AppSettingsHandler : IAppSettingsHandler
+    public class AppSettingsHelper : IAppSettingsHelper
     {
         Configuration configFile;
         KeyValueConfigurationCollection settings;
 
-        public AppSettingsHandler()
+        public AppSettingsHelper()
         {
             configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             settings = configFile.AppSettings.Settings;

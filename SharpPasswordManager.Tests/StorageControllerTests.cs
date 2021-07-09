@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using SharpPasswordManager.BL;
+using SharpPasswordManager.BL.StorageLogic;
 using System;
 using System.Collections.Generic;
 

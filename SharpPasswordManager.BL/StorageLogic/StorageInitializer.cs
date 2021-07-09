@@ -1,10 +1,11 @@
-﻿using SharpPasswordManager.BL.Interfaces;
+﻿using SharpPasswordManager.BL.Security;
+using SharpPasswordManager.DL.DataGenerators;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace SharpPasswordManager.BL
+namespace SharpPasswordManager.BL.StorageLogic
 {
     /// <summary>
     /// Serves to generate random string and datetime prepertiy values for model.

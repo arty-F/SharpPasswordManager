@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SharpPasswordManager.BL.Interfaces;
 
-namespace SharpPasswordManager.BL
+namespace SharpPasswordManager.BL.Security
 {
     /*----------------------------------------------------------------------------
      * Result of Autenticate method will be true when the method parameter 

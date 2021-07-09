@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SharpPasswordManager.BL.Interfaces
+namespace SharpPasswordManager.BL.StorageLogic
 {
     /// <summary>
     /// Provides a mechanism to manage models collection.

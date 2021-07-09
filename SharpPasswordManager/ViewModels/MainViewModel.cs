@@ -1,7 +1,8 @@
-﻿using SharpPasswordManager.BL;
-using SharpPasswordManager.BL.Interfaces;
+﻿using SharpPasswordManager.BL.Handlers;
+using SharpPasswordManager.BL.Security;
+using SharpPasswordManager.BL.StorageLogic;
 using SharpPasswordManager.DL.Models;
-using SharpPasswordManager.Handlers;
+using SharpPasswordManager.Helpers;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
@@ -17,14 +18,14 @@ namespace SharpPasswordManager.ViewModels
         public UserControl DataControl { get; set; }
 
         public Visibility SecurePanelVisibility { get; set; } = Visibility.Hidden;
-        IStorageHandler<CategoryModel, DataModel> storageHandler;
+        IMultipleStorageController<CategoryModel, DataModel> storageHandler;
 
         public MainViewModel()
         {
-            IStorageController<CategoryModel> categoryController = new StorageController<CategoryModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), SecureManager.CategoriesFileName));
-            IStorageController<DataModel> dataController = new StorageController<DataModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), SecureManager.DataFileName), new Cryptographer(SecureManager.Key));
+            IStorageController<CategoryModel> categoryController = new StorageController<CategoryModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), SecureHandler.CategoriesFileName));
+            IStorageController<DataModel> dataController = new StorageController<DataModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), SecureHandler.DataFileName), new Cryptographer(SecureHandler.Key));
 
-            storageHandler = new StorageHandler(categoryController, dataController);
+            storageHandler = new MultipleStorageController(categoryController, dataController);
 
             CategoriesControl = new Views.CategoryView();
             CategoryViewModel categoryVM = new CategoryViewModel(storageHandler);
@@ -44,7 +45,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return minimizeCmd ?? (minimizeCmd = new CommandHandler(Minimize, () => true));
+                return minimizeCmd ?? (minimizeCmd = new CommandHelper(Minimize, () => true));
             }
         }
         private void Minimize()
@@ -60,7 +61,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return closeCmd ?? (closeCmd = new CommandHandler(Close, () => true));
+                return closeCmd ?? (closeCmd = new CommandHelper(Close, () => true));
             }
         }
         private void Close()
@@ -73,7 +74,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return secureCmd ?? (secureCmd = new CommandHandler(Secure, () => true));
+                return secureCmd ?? (secureCmd = new CommandHelper(Secure, () => true));
             }
         }
         private async void Secure()

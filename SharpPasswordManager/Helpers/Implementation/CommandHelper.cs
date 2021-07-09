@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace SharpPasswordManager.Handlers
+namespace SharpPasswordManager.Helpers
 {
     /// <summary>
     /// Can handle two types of commands, without parameter and with one parameter.
     /// </summary>
-    public class CommandHandler : ICommand
+    public class CommandHelper : ICommand
     {
         private Action action;
         private Action<object> actionParam;
@@ -14,14 +14,14 @@ namespace SharpPasswordManager.Handlers
         private Func<object, bool> canExecuteParam;
         private bool withParam;
 
-        public CommandHandler(Action action, Func<bool> canExecute)
+        public CommandHelper(Action action, Func<bool> canExecute)
         {
             this.action = action;
             this.canExecute = canExecute;
             withParam = false;
         }
 
-        public CommandHandler(Action<object> action, Func<object, bool> canExecute)
+        public CommandHelper(Action<object> action, Func<object, bool> canExecute)
         {
             actionParam = action;
             canExecuteParam = canExecute;

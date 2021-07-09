@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SharpPasswordManager.Handlers
+namespace SharpPasswordManager.BL.StorageLogic
 {
     /// <summary>
     /// Provides mechanism to manage categories storage controller and data storage controller.
     /// </summary>
     /// <typeparam name="TCategory"></typeparam>
     /// <typeparam name="TData"></typeparam>
-    public interface IStorageHandler<TCategory, TData>
+    public interface IMultipleStorageController<TCategory, TData>
     {
         List<TCategory> GetCategories();
         List<TData> GetData(TCategory ofCategory);

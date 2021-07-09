@@ -1,9 +1,9 @@
-﻿namespace SharpPasswordManager
+﻿namespace SharpPasswordManager.BL.Handlers
 {
 	/// <summary>
 	/// Gain access to entered by user password which is used as cryptography key and calculates starting index for data storage.
 	/// </summary>
-	public static class SecureManager
+	public static class SecureHandler
     {
 		static public string PasswordKey = "Password";
 		static public string DataFileName = "Data.bin";

@@ -1,4 +1,4 @@
-﻿namespace SharpPasswordManager.BL.Interfaces
+﻿namespace SharpPasswordManager.BL.Security
 {
     /// <summary>
     /// Provides a mechanism to data encryption/decryption.

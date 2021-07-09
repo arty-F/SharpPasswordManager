@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SharpPasswordManager.BL.Interfaces
+﻿namespace SharpPasswordManager.DL.DataGenerators
 {
     /// <summary>
     /// Provides a mechanism to generate random data.

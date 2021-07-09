@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using SharpPasswordManager.BL;
+using SharpPasswordManager.BL.Security;
 
 namespace SharpPasswordManager.Tests
 {

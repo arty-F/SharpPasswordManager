@@ -1,7 +1,9 @@
-﻿using SharpPasswordManager.BL;
-using SharpPasswordManager.BL.Interfaces;
+﻿using SharpPasswordManager.BL.Handlers;
+using SharpPasswordManager.BL.Security;
+using SharpPasswordManager.BL.StorageLogic;
+using SharpPasswordManager.DL.DataGenerators;
 using SharpPasswordManager.DL.Models;
-using SharpPasswordManager.Handlers;
+using SharpPasswordManager.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,7 +24,7 @@ namespace SharpPasswordManager.ViewModels
         public Visibility LoadingPanelVisibility { get; set; } = Visibility.Hidden;
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
-        private readonly IAppSettingsHandler setting;
+        private readonly IAppSettingsHelper setting;
         private readonly ICryptographer cryptographer;
 
         private bool isUiAvailable = true;
@@ -37,7 +39,7 @@ namespace SharpPasswordManager.ViewModels
         }
 
 
-        public FirstLoadViewModel(IAppSettingsHandler setting, ICryptographer cryptographer)
+        public FirstLoadViewModel(IAppSettingsHelper setting, ICryptographer cryptographer)
         {
             this.setting = setting;
             this.cryptographer = cryptographer;
@@ -48,7 +50,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return createPasswordCmd ?? (createPasswordCmd = new CommandHandler(TryWritePassword, CheckUiAvailability));
+                return createPasswordCmd ?? (createPasswordCmd = new CommandHelper(TryWritePassword, CheckUiAvailability));
             }
         }
         private async void TryWritePassword()
@@ -60,14 +62,14 @@ namespace SharpPasswordManager.ViewModels
                 {
                     if (Regex.IsMatch(Password, @"^\d+$")) // Is digits only
                     {
-                        SecureManager.Key = Password;
+                        SecureHandler.Key = Password;
                         string value = Password;
                         if (cryptographer != null)
                         {
-                            cryptographer.ChangeKey(SecureManager.Key);
+                            cryptographer.ChangeKey(SecureHandler.Key);
                             value = cryptographer.Encypt(value);
                         }
-                        setting.Write(SecureManager.PasswordKey, value);
+                        setting.Write(SecureHandler.PasswordKey, value);
 
                         LoadingPanelVisibility = Visibility.Visible;
                         OnPropertyChanged(nameof(LoadingPanelVisibility));
@@ -88,7 +90,7 @@ namespace SharpPasswordManager.ViewModels
                             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
                             LoadingPanelVisibility = Visibility.Hidden;
                             OnPropertyChanged(nameof(LoadingPanelVisibility));
-                            setting.Delete(SecureManager.PasswordKey);
+                            setting.Delete(SecureHandler.PasswordKey);
                         }
                     }
                     else
@@ -108,8 +110,8 @@ namespace SharpPasswordManager.ViewModels
         {
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            var dataController = new StorageController<DataModel>(Path.Combine(assemblyPath, SecureManager.DataFileName));
-            var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(SecureManager.Key));
+            var dataController = new StorageController<DataModel>(Path.Combine(assemblyPath, SecureHandler.DataFileName));
+            var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(SecureHandler.Key));
             try
             {
                 List<DataModel> dataList = await dataInitializer.GetDataAsync();
@@ -121,7 +123,7 @@ namespace SharpPasswordManager.ViewModels
                 return false;
             }
 
-            var categoriesController = new StorageController<CategoryModel>(Path.Combine(assemblyPath, SecureManager.CategoriesFileName));
+            var categoriesController = new StorageController<CategoryModel>(Path.Combine(assemblyPath, SecureHandler.CategoriesFileName));
             try
             {
                 await categoriesController.CreateStorageAsync(new List<CategoryModel>());
@@ -140,7 +142,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return closeCmd ?? (closeCmd = new CommandHandler(Close, CheckUiAvailability));
+                return closeCmd ?? (closeCmd = new CommandHelper(Close, CheckUiAvailability));
             }
         }
         private void Close()

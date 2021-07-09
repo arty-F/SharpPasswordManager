@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
-using SharpPasswordManager.BL.Interfaces;
 
-namespace SharpPasswordManager.BL
+namespace SharpPasswordManager.DL.DataGenerators
 {
     /// <summary>
     /// Generate specific random data for models.

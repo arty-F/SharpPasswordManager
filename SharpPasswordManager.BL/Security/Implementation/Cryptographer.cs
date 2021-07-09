@@ -2,9 +2,8 @@
 using System.Security.Cryptography;
 using System.IO;
 using System.Linq;
-using SharpPasswordManager.BL.Interfaces;
 
-namespace SharpPasswordManager.BL
+namespace SharpPasswordManager.BL.Security
 {
     /*-----------------------------------------------------------------------------
      * Class using Aes for cryptography. When encrypting the first <ivLength> bytes

@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
-using SharpPasswordManager.BL;
-using SharpPasswordManager.BL.Interfaces;
+using SharpPasswordManager.DL.DataGenerators;
 
 namespace SharpPasswordManager.Tests
 {

@@ -1,6 +1,7 @@
-﻿using SharpPasswordManager.BL;
+﻿using SharpPasswordManager.BL.StorageLogic;
+using SharpPasswordManager.DL.DataGenerators;
 using SharpPasswordManager.DL.Models;
-using SharpPasswordManager.Handlers;
+using SharpPasswordManager.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -19,11 +20,11 @@ namespace SharpPasswordManager.ViewModels
         public event DataChangeHandler OnDataChanged;
 
         public ObservableCollection<DataModel> DataList { get; set; } = new ObservableCollection<DataModel>();
-        IStorageHandler<CategoryModel, DataModel> storageHandler;
+        IMultipleStorageController<CategoryModel, DataModel> storageHandler;
 
         public DataModel SelectedData { get; set; }
 
-        public DataViewModel(IStorageHandler<CategoryModel, DataModel> storageHandler)
+        public DataViewModel(IMultipleStorageController<CategoryModel, DataModel> storageHandler)
         {
             this.storageHandler = storageHandler;
         }
@@ -70,7 +71,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return addDataCmd ?? (addDataCmd = new CommandHandler(AddData, () => true));
+                return addDataCmd ?? (addDataCmd = new CommandHelper(AddData, () => true));
             }
         }
         private void AddData()
@@ -107,7 +108,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return editDataCmd ?? (editDataCmd = new CommandHandler(EditData, () => true));
+                return editDataCmd ?? (editDataCmd = new CommandHelper(EditData, () => true));
             }
         }
         private void EditData()
@@ -140,7 +141,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return deleteDataCmd ?? (deleteDataCmd = new CommandHandler(DeleteData, () => true));
+                return deleteDataCmd ?? (deleteDataCmd = new CommandHelper(DeleteData, () => true));
             }
         }
         private void DeleteData()
@@ -172,7 +173,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return copyDescriptionCmd ?? (copyDescriptionCmd = new CommandHandler(CopyDescription, () => true));
+                return copyDescriptionCmd ?? (copyDescriptionCmd = new CommandHelper(CopyDescription, () => true));
             }
         }
         private void CopyDescription()
@@ -185,7 +186,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return copyLoginCmd ?? (copyLoginCmd = new CommandHandler(CopyLogin, () => true));
+                return copyLoginCmd ?? (copyLoginCmd = new CommandHelper(CopyLogin, () => true));
             }
         }
         private void CopyLogin()
@@ -198,7 +199,7 @@ namespace SharpPasswordManager.ViewModels
         {
             get
             {
-                return copyPasswordCmd ?? (copyPasswordCmd = new CommandHandler(CopyPassword, () => true));
+                return copyPasswordCmd ?? (copyPasswordCmd = new CommandHelper(CopyPassword, () => true));
             }
         }
         private void CopyPassword()

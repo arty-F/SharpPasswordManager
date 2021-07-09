@@ -1,5 +1,5 @@
-﻿using SharpPasswordManager.BL;
-using SharpPasswordManager.Handlers;
+﻿using SharpPasswordManager.BL.Security;
+using SharpPasswordManager.Helpers;
 using System.Windows;
 
 namespace SharpPasswordManager.Views
@@ -12,7 +12,7 @@ namespace SharpPasswordManager.Views
         public PasswordCheckView()
         {
             InitializeComponent();
-            DataContext = new ViewModels.PasswordCheckViewModel(new AppSettingsHandler(), new Autenticator(new Cryptographer()));
+            DataContext = new ViewModels.PasswordCheckViewModel(new AppSettingsHelper(), new Autenticator(new Cryptographer()));
         }
     }
 }
