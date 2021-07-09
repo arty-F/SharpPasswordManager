@@ -7,65 +7,49 @@ namespace SharpPasswordManager.Handlers
     /// </summary>
     public class AppSettingsHandler : IAppSettingsHandler
     {
-        /// <summary>
-        /// Returns is there a key in app settings.
-        /// </summary>
-        /// <param name="key">Key of settings.</param>
-        /// <returns></returns>
-        public bool AlreadyExist(string key)
-        {
-            var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            var settings = configFile.AppSettings.Settings;
+        Configuration configFile;
+        KeyValueConfigurationCollection settings;
 
-            if (settings[key] == null)
-                return false;
-            else
-                return true;
+        public AppSettingsHandler()
+        {
+            configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            settings = configFile.AppSettings.Settings;
         }
 
-        /// <summary>
-        /// Get value of recieved key.
-        /// </summary>
-        /// <param name="key">Key of app setting.</param>
-        /// <returns></returns>
-        public string GetByKey(string key)
-        {
-            if (!AlreadyExist(key))
-                return null;
+        #region Public methods
 
-            var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            var settings = configFile.AppSettings.Settings;
-            return settings[key].Value;
-        }
+        public bool AlreadyExist(string key) => settings[key] != null;
 
-        /// <summary>
-        /// Write value to key setting. If key doesn't exist, add that.
-        /// </summary>
-        /// <param name="key">Key of app setting.</param>
-        /// <param name="value">Value of app setting.</param>
+        public string GetByKey(string key) => AlreadyExist(key) ? settings[key].Value : null;
+
         public void Write(string key, string value)
         {
-            var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            var settings = configFile.AppSettings.Settings;
-
             if (AlreadyExist(key))
                 settings[key].Value = value;
             else
                 settings.Add(key, value);
 
-            configFile.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+            RefreshConfig();
         }
 
         public void Delete(string key)
         {
             if (AlreadyExist(key))
-            {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var settings = configFile.AppSettings.Settings;
-
                 settings.Remove(key);
-            }
+
+            RefreshConfig();
         }
+
+        #endregion
+
+        #region Private methods
+
+        private void RefreshConfig()
+        {
+            configFile.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+        }
+
+        #endregion
     }
 }
