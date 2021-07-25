@@ -12,7 +12,7 @@ namespace SharpPasswordManager.Views
         public FirstLoadView()
         {
             InitializeComponent();
-            DataContext = new ViewModels.FirstLoadViewModel(new AppSettingsHelper(), Injector.Instance);
+            DataContext = new ViewModels.FirstLoadViewModel(Injector.Instance);
         }
     }
 }

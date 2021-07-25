@@ -14,7 +14,9 @@ namespace SharpPasswordManager.Infrastructure.Injector
 
         public ICryptographer Cryptographer;
 
-        public IAuthenticator Autheticator;
+        public IAuthenticator Authenticator;
+
+        public IAppSettingsHandler AppSettingsHandler;
 
         static Injector()
         {
@@ -32,7 +34,9 @@ namespace SharpPasswordManager.Infrastructure.Injector
 
             Cryptographer = new Cryptographer();
             
-            Autheticator = new Authenticator(Cryptographer);
+            Authenticator = new Authenticator(Cryptographer);
+
+            AppSettingsHandler = new AppSettingsHandler();
         }
     }
 }

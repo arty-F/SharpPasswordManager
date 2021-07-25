@@ -1,22 +1,20 @@
 ﻿using System.Configuration;
 
-namespace SharpPasswordManager.Helpers
+namespace SharpPasswordManager.BL.Handlers
 {
     /// <summary>
     /// Used by manage app settings through <see cref="ConfigurationManager"/>.
     /// </summary>
-    public class AppSettingsHelper : IAppSettingsHelper
+    public class AppSettingsHandler : IAppSettingsHandler
     {
         Configuration configFile;
         KeyValueConfigurationCollection settings;
 
-        public AppSettingsHelper()
+        public AppSettingsHandler()
         {
             configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             settings = configFile.AppSettings.Settings;
         }
-
-        #region Public methods
 
         public bool AlreadyExist(string key) => settings[key] != null;
 
@@ -40,16 +38,10 @@ namespace SharpPasswordManager.Helpers
             RefreshConfig();
         }
 
-        #endregion
-
-        #region Private methods
-
         private void RefreshConfig()
         {
             configFile.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
         }
-
-        #endregion
     }
 }

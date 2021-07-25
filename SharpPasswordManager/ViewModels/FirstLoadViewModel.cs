@@ -25,7 +25,7 @@ namespace SharpPasswordManager.ViewModels
         public Visibility LoadingPanelVisibility { get; set; } = Visibility.Hidden;
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
-        private readonly IAppSettingsHelper setting;
+        private readonly IAppSettingsHandler setting;
         private readonly ICryptographer cryptographer;
         private readonly ISecureHandler secureHandler;
 
@@ -40,10 +40,9 @@ namespace SharpPasswordManager.ViewModels
             }
         }
 
-
-        public FirstLoadViewModel(AppSettingsHelper setting, Injector injector)
+        public FirstLoadViewModel(Injector injector)
         {
-            this.setting = setting;
+            setting = injector.AppSettingsHandler;
             cryptographer = injector.Cryptographer;
             secureHandler = injector.SecureHandler;
         }

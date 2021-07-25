@@ -1,4 +1,5 @@
 ﻿using SharpPasswordManager.Helpers;
+using SharpPasswordManager.Infrastructure.Injector;
 using System.Windows;
 
 namespace SharpPasswordManager
@@ -18,10 +19,8 @@ namespace SharpPasswordManager
         /// <param name="e"></param>
         protected override void OnStartup(StartupEventArgs e)
         {
-            AppSettingsHelper appSetting = new AppSettingsHelper();
-
             // If settings[key] already defined set startup uri to default password check view
-            if (appSetting.AlreadyExist(passwordKey))
+            if (Injector.Instance.AppSettingsHandler.AlreadyExist(passwordKey))
                 StartupUri = new System.Uri(followingLoadView, System.UriKind.Relative);
             // Else set startup uri to view which allows to assign password
             else

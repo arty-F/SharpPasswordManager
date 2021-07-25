@@ -1,9 +1,9 @@
-﻿namespace SharpPasswordManager.Helpers
+﻿namespace SharpPasswordManager.BL.Handlers
 {
     /// <summary>
     /// Provides mechanism to manage app settings.
     /// </summary>
-    public interface IAppSettingsHelper
+    public interface IAppSettingsHandler
     {
         /// <summary>
         /// Returns is there a key in app settings.

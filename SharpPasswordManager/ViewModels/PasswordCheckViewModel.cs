@@ -11,14 +11,14 @@ namespace SharpPasswordManager.ViewModels
     public class PasswordCheckViewModel
     {
         public string Password { get; set; }
-        private readonly IAppSettingsHelper setting;
+        private readonly IAppSettingsHandler setting;
         private readonly IAuthenticator autenticator;
         private readonly ISecureHandler secureHandler;
 
-        public PasswordCheckViewModel(IAppSettingsHelper setting, Injector injector)
+        public PasswordCheckViewModel(Injector injector)
         {
-            this.setting = setting;
-            autenticator = injector.Autheticator;
+            setting = injector.AppSettingsHandler;
+            autenticator = injector.Authenticator;
             secureHandler = injector.SecureHandler;
         }
 
