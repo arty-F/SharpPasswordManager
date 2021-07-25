@@ -3,6 +3,7 @@ using SharpPasswordManager.BL.Security;
 using SharpPasswordManager.BL.StorageLogic;
 using SharpPasswordManager.DL.Models;
 using SharpPasswordManager.Helpers;
+using SharpPasswordManager.Infrastructure.Injector;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
@@ -20,12 +21,17 @@ namespace SharpPasswordManager.ViewModels
         public Visibility SecurePanelVisibility { get; set; } = Visibility.Hidden;
         IMultipleStorageController<CategoryModel, DataModel> storageHandler;
 
-        public MainViewModel()
+        public MainViewModel(Injector injector)
         {
-            IStorageController<CategoryModel> categoryController = new StorageController<CategoryModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), SecureHandler.CategoriesFileName));
-            IStorageController<DataModel> dataController = new StorageController<DataModel>(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), SecureHandler.DataFileName), new Cryptographer(SecureHandler.Key));
+            var secureHandler = injector.SecureHandler;
 
-            storageHandler = new MultipleStorageController(categoryController, dataController);
+            IStorageController<CategoryModel> categoryController = new StorageController<CategoryModel>(
+                Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), secureHandler.CategoriesFileName));
+
+            IStorageController<DataModel> dataController = new StorageController<DataModel>(
+                Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), secureHandler.DataFileName), new Cryptographer(secureHandler.Key));
+
+            storageHandler = new MultipleStorageController(categoryController, dataController, secureHandler);
 
             CategoriesControl = new Views.CategoryView();
             CategoryViewModel categoryVM = new CategoryViewModel(storageHandler);

@@ -1,31 +1,29 @@
 ﻿namespace SharpPasswordManager.BL.Handlers
 {
-	/// <summary>
-	/// Gain access to entered by user password which is used as cryptography key and calculates starting index for data storage.
-	/// </summary>
-	public static class SecureHandler
+	public class SecureHandler : ISecureHandler
     {
-		static public string PasswordKey = "Password";
-		static public string DataFileName = "Data.bin";
-		static public string CategoriesFileName = "Categories.bin";
+		public string PasswordKey { get; private set; } = "Password";
+		
+		public string DataFileName { get; private set; } = "Data.bin";
+		
+		public string CategoriesFileName { get; private set; } = "Categories.bin";
+		
+		private int startingIndex;
 
-
-		public static int StartingIndex { get; private set; }
-
-		private static string key;
-		public static string Key
+		private string key;
+		public string Key
 		{
 			get { return key; }
 			set 
 			{ 
 				key = value;
-				StartingIndex = int.Parse(key);
+				startingIndex = int.Parse(key);
 			}
 		}
 
-		public static int GetIndexOf(int i)
+		public int GetIndexOf(int i)
 		{
-			return i + StartingIndex;
+			return i + startingIndex;
 		}
 	}
 }

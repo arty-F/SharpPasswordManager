@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using SharpPasswordManager.Infrastructure.Injector;
+using System.Windows;
 
 namespace SharpPasswordManager.Views
 {
@@ -10,7 +11,7 @@ namespace SharpPasswordManager.Views
         public MainView()
         {
             InitializeComponent();
-            DataContext = new ViewModels.MainViewModel();
+            DataContext = new ViewModels.MainViewModel(Injector.Instance);
         }
     }
 }

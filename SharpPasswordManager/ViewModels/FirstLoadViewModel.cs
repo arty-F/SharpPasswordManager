@@ -4,6 +4,7 @@ using SharpPasswordManager.BL.StorageLogic;
 using SharpPasswordManager.DL.DataGenerators;
 using SharpPasswordManager.DL.Models;
 using SharpPasswordManager.Helpers;
+using SharpPasswordManager.Infrastructure.Injector;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,6 +27,7 @@ namespace SharpPasswordManager.ViewModels
         public string ConfirmPassword { get; set; }
         private readonly IAppSettingsHelper setting;
         private readonly ICryptographer cryptographer;
+        private readonly ISecureHandler secureHandler;
 
         private bool isUiAvailable = true;
         public bool IsUiAvailable
@@ -39,10 +41,11 @@ namespace SharpPasswordManager.ViewModels
         }
 
 
-        public FirstLoadViewModel(IAppSettingsHelper setting, ICryptographer cryptographer)
+        public FirstLoadViewModel(AppSettingsHelper setting, Injector injector)
         {
             this.setting = setting;
-            this.cryptographer = cryptographer;
+            cryptographer = injector.Cryptographer;
+            secureHandler = injector.SecureHandler;
         }
 
         private ICommand createPasswordCmd;
@@ -62,14 +65,14 @@ namespace SharpPasswordManager.ViewModels
                 {
                     if (Regex.IsMatch(Password, @"^\d+$")) // Is digits only
                     {
-                        SecureHandler.Key = Password;
+                        secureHandler.Key = Password;
                         string value = Password;
                         if (cryptographer != null)
                         {
-                            cryptographer.ChangeKey(SecureHandler.Key);
+                            cryptographer.ChangeKey(secureHandler.Key);
                             value = cryptographer.Encypt(value);
                         }
-                        setting.Write(SecureHandler.PasswordKey, value);
+                        setting.Write(secureHandler.PasswordKey, value);
 
                         LoadingPanelVisibility = Visibility.Visible;
                         OnPropertyChanged(nameof(LoadingPanelVisibility));
@@ -90,7 +93,7 @@ namespace SharpPasswordManager.ViewModels
                             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
                             LoadingPanelVisibility = Visibility.Hidden;
                             OnPropertyChanged(nameof(LoadingPanelVisibility));
-                            setting.Delete(SecureHandler.PasswordKey);
+                            setting.Delete(secureHandler.PasswordKey);
                         }
                     }
                     else
@@ -110,8 +113,8 @@ namespace SharpPasswordManager.ViewModels
         {
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            var dataController = new StorageController<DataModel>(Path.Combine(assemblyPath, SecureHandler.DataFileName));
-            var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(SecureHandler.Key));
+            var dataController = new StorageController<DataModel>(Path.Combine(assemblyPath, secureHandler.DataFileName));
+            var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(secureHandler.Key));
             try
             {
                 List<DataModel> dataList = await dataInitializer.GetDataAsync();
@@ -123,7 +126,7 @@ namespace SharpPasswordManager.ViewModels
                 return false;
             }
 
-            var categoriesController = new StorageController<CategoryModel>(Path.Combine(assemblyPath, SecureHandler.CategoriesFileName));
+            var categoriesController = new StorageController<CategoryModel>(Path.Combine(assemblyPath, secureHandler.CategoriesFileName));
             try
             {
                 await categoriesController.CreateStorageAsync(new List<CategoryModel>());

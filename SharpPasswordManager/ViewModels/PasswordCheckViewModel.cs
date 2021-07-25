@@ -4,6 +4,7 @@ using SharpPasswordManager.BL.Handlers;
 using SharpPasswordManager.BL.Security;
 using SharpPasswordManager.Helpers;
 using System.Windows.Controls;
+using SharpPasswordManager.Infrastructure.Injector;
 
 namespace SharpPasswordManager.ViewModels
 {
@@ -12,11 +13,13 @@ namespace SharpPasswordManager.ViewModels
         public string Password { get; set; }
         private readonly IAppSettingsHelper setting;
         private readonly IAuthenticator autenticator;
+        private readonly ISecureHandler secureHandler;
 
-        public PasswordCheckViewModel(IAppSettingsHelper setting, IAuthenticator autenticator)
+        public PasswordCheckViewModel(IAppSettingsHelper setting, Injector injector)
         {
             this.setting = setting;
-            this.autenticator = autenticator;
+            autenticator = injector.Autheticator;
+            secureHandler = injector.SecureHandler;
         }
 
         private ICommand checkPasswordCmd;
@@ -34,13 +37,13 @@ namespace SharpPasswordManager.ViewModels
             Password = passwordBox.Password;
 
             autenticator.ChangeKey(Password);
-            bool isAutenticate = await autenticator.Autenticate(Password, setting.GetByKey(SecureHandler.PasswordKey));
+            bool isAutenticate = await autenticator.Autenticate(Password, setting.GetByKey(secureHandler.PasswordKey));
 
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
 
             if (isAutenticate)
             {
-                SecureHandler.Key = Password;
+                secureHandler.Key = Password;
                 Views.MainView mainView = new Views.MainView();
                 foreach (Window item in Application.Current.Windows)
                     if (item.DataContext == this)

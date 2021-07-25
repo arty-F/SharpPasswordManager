@@ -20,7 +20,7 @@ namespace SharpPasswordManager.BL.Security
     /// <summary>
     /// This class used for autenticate user by entered password.
     /// </summary>
-    public class Autenticator : IAuthenticator
+    public class Authenticator : IAuthenticator
     {
         const int authDelay = 500;
         const int authDelayRange = 100;
@@ -33,7 +33,7 @@ namespace SharpPasswordManager.BL.Security
         /// </summary>
         /// <param name="data">Encrypted data for check autentication.</param>
         /// <param name="cryptographer">Cryptographer for decrypting data.</param>
-        public Autenticator(ICryptographer cryptographer = null)
+        public Authenticator(ICryptographer cryptographer = null)
         {
             this.cryptographer = cryptographer;
         }

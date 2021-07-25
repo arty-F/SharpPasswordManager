@@ -11,7 +11,7 @@ namespace SharpPasswordManager.Tests
         {
             string encryptedPassword = "12345";
             string password = "12345";
-            Autenticator autenticator = new Autenticator();
+            Authenticator autenticator = new Authenticator();
 
             bool result = await autenticator.Autenticate(password, encryptedPassword);
             bool expected = true;
@@ -24,7 +24,7 @@ namespace SharpPasswordManager.Tests
         {
             string encryptedPassword = "12345";
             string password = "54321";
-            Autenticator autenticator = new Autenticator();
+            Authenticator autenticator = new Authenticator();
 
             bool result = await autenticator.Autenticate(password, encryptedPassword);
             bool expected = false;

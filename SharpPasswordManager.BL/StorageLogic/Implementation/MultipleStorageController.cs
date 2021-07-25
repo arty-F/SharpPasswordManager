@@ -14,6 +14,7 @@ namespace SharpPasswordManager.BL.StorageLogic
     {
         private IStorageController<CategoryModel> categoryController;
         private IStorageController<DataModel> dataController;
+        private ISecureHandler secureHandler;
 
         private Random random = new Random();
 
@@ -22,10 +23,11 @@ namespace SharpPasswordManager.BL.StorageLogic
         /// </summary>
         /// <param name="categoryController"><seealso cref="IStorageController{TModel}"/> with categories.</param>
         /// <param name="dataController"><seealso cref="IStorageController{TModel}"/> with data.</param>
-        public MultipleStorageController(IStorageController<CategoryModel> categoryController, IStorageController<DataModel> dataController)
+        public MultipleStorageController(IStorageController<CategoryModel> categoryController, IStorageController<DataModel> dataController, ISecureHandler secureHandler)
         {
             this.categoryController = categoryController;
             this.dataController = dataController;
+            this.secureHandler = secureHandler;
         }
 
         /// <summary>
@@ -50,7 +52,7 @@ namespace SharpPasswordManager.BL.StorageLogic
             while (usingIndexes.Contains(newIndex))
                 newIndex = random.Next(0, maxValue);
 
-            dataController.PasteAt(SecureHandler.GetIndexOf(newIndex), data);
+            dataController.PasteAt(secureHandler.GetIndexOf(newIndex), data);
 
             List<CategoryModel> categories = categoryController.ToList();
 
@@ -89,7 +91,7 @@ namespace SharpPasswordManager.BL.StorageLogic
             dataList.Capacity = ofCategory.DataIndexes.Count;
             foreach (var dataIndex in ofCategory.DataIndexes)
             {
-                dataList.Add(dataController.Get(SecureHandler.GetIndexOf(dataIndex)));
+                dataList.Add(dataController.Get(secureHandler.GetIndexOf(dataIndex)));
             }
 
             return dataList;
@@ -115,7 +117,7 @@ namespace SharpPasswordManager.BL.StorageLogic
             {
                 foreach (var dataIndex in categories[i].DataIndexes)
                 {
-                    if (dataController.Get(SecureHandler.GetIndexOf(dataIndex)).Equals(data))
+                    if (dataController.Get(secureHandler.GetIndexOf(dataIndex)).Equals(data))
                     {
                         CategoryModel newCategory = new CategoryModel { DataIndexes = new List<int>(categories[i].DataIndexes), Name = categories[i].Name };
                         newCategory.DataIndexes.Remove(dataIndex);
@@ -150,9 +152,9 @@ namespace SharpPasswordManager.BL.StorageLogic
 
             foreach (var index in usingIndexes)
             {
-                if (dataController.Get(SecureHandler.GetIndexOf(index)).Equals(oldData))
+                if (dataController.Get(secureHandler.GetIndexOf(index)).Equals(oldData))
                 {
-                    dataController.PasteAt(SecureHandler.GetIndexOf(index), newData);
+                    dataController.PasteAt(secureHandler.GetIndexOf(index), newData);
                     break;
                 }
             }
@@ -171,7 +173,7 @@ namespace SharpPasswordManager.BL.StorageLogic
 
             List<DataModel> data = new List<DataModel>();
             foreach (var index in dataIndexes)
-                data.Add(dataController.Get(SecureHandler.GetIndexOf(index)));
+                data.Add(dataController.Get(secureHandler.GetIndexOf(index)));
 
             Random rng = new Random();
             DataGenerator generator = new DataGenerator();
@@ -186,7 +188,7 @@ namespace SharpPasswordManager.BL.StorageLogic
                         index = rng.Next(storageLength);
                     } while (dataIndexes.Contains(index));
 
-                    dataController.PasteAt(SecureHandler.GetIndexOf(index),
+                    dataController.PasteAt(secureHandler.GetIndexOf(index),
                         new DataModel
                         {
                             Date = item.Date,
