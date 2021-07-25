@@ -37,7 +37,7 @@ namespace SharpPasswordManager.ViewModels
             Password = passwordBox.Password;
 
             autenticator.ChangeKey(Password);
-            bool isAutenticate = await autenticator.Autenticate(Password, setting.GetByKey(secureHandler.PasswordKey));
+            bool isAutenticate = await autenticator.Authenticate(Password, setting.GetByKey(secureHandler.PasswordKey));
 
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
 

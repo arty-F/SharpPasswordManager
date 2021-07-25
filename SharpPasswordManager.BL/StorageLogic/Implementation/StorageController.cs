@@ -55,7 +55,9 @@ namespace SharpPasswordManager.BL.StorageLogic
         /// <param name="cryptographer">Using for data encryption/decryption.</param>
         public StorageController(List<TModel> modelList, ICryptographer cryptographer = null)
         {
-            this.modelList = modelList;
+            this.modelList = new List<TModel>(modelList.Count);
+            modelList.ForEach(m => Add(m));
+
             this.cryptographer = cryptographer;
         }
 
@@ -117,8 +119,14 @@ namespace SharpPasswordManager.BL.StorageLogic
 
             if (cryptographer != null)
             {
-                var encrypted = ApplyCryptography(model, CryptographyMode.Encrypt);
-                modelList.RemoveAll(m => m.Equals(encrypted));
+                foreach (var m in modelList)
+                {
+                    if (model.Equals(ApplyCryptography(m, CryptographyMode.Decrypt)))
+                    {
+                        modelList.Remove(m);
+                        break;
+                    }
+                }
             }
             else
                 modelList.RemoveAll(m => m.Equals(model));
@@ -241,6 +249,10 @@ namespace SharpPasswordManager.BL.StorageLogic
                         prop.SetValue(cryptedModel, cryptographer.Decrypt(propertyValue));
                     else if (mode == CryptographyMode.Encrypt)
                         prop.SetValue(cryptedModel, cryptographer.Encypt(propertyValue));
+                }
+                else
+                {
+                    prop.SetValue(cryptedModel, prop.GetValue(model));
                 }
             }
             return cryptedModel;

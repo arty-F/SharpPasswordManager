@@ -7,7 +7,7 @@ namespace SharpPasswordManager.BL.Security
     /// </summary>
     public interface IAuthenticator
     {
-        Task<bool> Autenticate(string password, string encryptedPassword);
+        Task<bool> Authenticate(string password, string encryptedPassword);
         void ChangeKey(string newKey);
     }
 }

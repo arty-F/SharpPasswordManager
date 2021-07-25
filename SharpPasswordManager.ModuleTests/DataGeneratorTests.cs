@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using System;
 using SharpPasswordManager.DL.DataGenerators;
+using System;
 
-namespace SharpPasswordManager.Tests
+namespace SharpPasswordManager.ModuleTests
 {
     public class DataGeneratorTests
     {
@@ -15,7 +15,7 @@ namespace SharpPasswordManager.Tests
         }
 
         [Test, Repeat(1000)]
-        public void GenerateRandomDescription_LenghtGreaterThanZero()
+        public void GenerateRandomDescription_lenght_greater_than_zero()
         {
             string result = dataGenerator.GenerateRandomDescription();
 
@@ -23,7 +23,7 @@ namespace SharpPasswordManager.Tests
         }
 
         [Test, Repeat(1000)]
-        public void GenerateRandomLogin_LenghtGreaterThanZero()
+        public void GenerateRandomLogin_lenght_greater_than_zero()
         {
             string result = dataGenerator.GenerateRandomLogin();
 
@@ -31,7 +31,7 @@ namespace SharpPasswordManager.Tests
         }
 
         [Test, Repeat(1000)]
-        public void GenerateRandomPassword_LenghtNotLessMinLenght()
+        public void GenerateRandomPassword_lenght_not_less_min_lenght()
         {
             int minLenght = 6;
             string result = dataGenerator.GenerateRandomPassword();
@@ -40,7 +40,7 @@ namespace SharpPasswordManager.Tests
         }
 
         [Test, Repeat(1000)]
-        public void GenerateRandomPassword_LenghtEqualToParameter()
+        public void GenerateRandomPassword_lenght_equal_to_parameter()
         {
             int lenght = 10;
             string result = dataGenerator.GenerateRandomPassword(lenght);
@@ -49,11 +49,11 @@ namespace SharpPasswordManager.Tests
         }
 
         [Test, Repeat(1000)]
-        public void GenerateRandomDate_NotLessNow()
+        public void GenerateRandomDate_not_less_now()
         {
             DateTime now = DateTime.Now;
             DateTime result = Convert.ToDateTime(dataGenerator.GenerateRandomDate());
-
+            
             Assert.That(result, Is.GreaterThanOrEqualTo(now));
         }
     }

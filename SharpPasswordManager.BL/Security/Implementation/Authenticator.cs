@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace SharpPasswordManager.BL.Security
@@ -43,7 +44,7 @@ namespace SharpPasswordManager.BL.Security
         /// </summary>
         /// <param name="password">Entered password.</param>
         /// <returns></returns>
-        public async Task<bool> Autenticate(string password, string encryptedPassword)
+        public async Task<bool> Authenticate(string password, string encryptedPassword)
         {
             if (password == null || encryptedPassword == null)
                 throw new ArgumentNullException();
@@ -53,7 +54,15 @@ namespace SharpPasswordManager.BL.Security
             if (cryptographer != null)
             {
                 cryptographer.ChangeKey(password);
-                return cryptographer.Decrypt(encryptedPassword) == password;
+
+                try
+                {
+                    return cryptographer.Decrypt(encryptedPassword) == password;
+                }
+                catch (CryptographicException)
+                {
+                    return false;
+                }
             }
             else
                 return encryptedPassword == password;

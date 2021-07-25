@@ -71,6 +71,9 @@ namespace SharpPasswordManager.BL.Security
         /// <param name="newKey">New key.</param>
         public void ChangeKey(string newKey)
         {
+            if (newKey == null)
+                throw new ArgumentNullException("New key parameter is null.");
+
             byte[] convertedKey = Convert.FromBase64String(EncodeTo64(newKey));
             byte[] requiredKey = new byte[keyLength];
             if (convertedKey.Length < keyLength)
@@ -107,7 +110,7 @@ namespace SharpPasswordManager.BL.Security
         public string Encypt(string data)
         {
             if (data == null)
-                throw new ArgumentNullException("String");
+                throw new ArgumentNullException("Data parameter is null.");
 
             byte[] encryptedDataWithIV;
             byte[] encryptedData;
@@ -148,7 +151,7 @@ namespace SharpPasswordManager.BL.Security
         public string Decrypt(string data)
         {
             if (data == null)
-                throw new ArgumentNullException("String");
+                throw new ArgumentNullException("Data parameter is null.");
 
             string decrypted = null;
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
