@@ -38,6 +38,12 @@ namespace SharpPasswordManager.BL.Handlers
             RefreshConfig();
         }
 
+        public void Clear()
+        {
+            foreach (var key in settings.AllKeys)
+                Delete(key);
+        }
+
         private void RefreshConfig()
         {
             configFile.Save(ConfigurationSaveMode.Modified);

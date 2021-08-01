@@ -4,6 +4,7 @@ using SharpPasswordManager.BL.StorageLogic;
 using SharpPasswordManager.DL.DataGenerators;
 using SharpPasswordManager.IntegrationTests.Mocks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SharpPasswordManager.IntegrationTests
 {
@@ -53,7 +54,44 @@ namespace SharpPasswordManager.IntegrationTests
         {
             var result = initializer.GetData(100);
 
-            Assert.True(result.All(r => !string.IsNullOrEmpty(r.Login)));
+            Assert.Multiple(() =>
+            {
+                Assert.True(result.All(r => !string.IsNullOrEmpty(r.Login)));
+                Assert.True(result.All(r => !string.IsNullOrEmpty(r.Date)));
+            });
+        }
+
+        [Test]
+        public async Task GetDataAsync_returns_correct_data_count()
+        {
+            int expected = 10;
+
+            var result = await initializer.GetDataAsync(expected);
+            int actual = result.Count();
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public async Task GetDataAsync_returns_correct_data_type()
+        {
+            var expectedType = typeof(ModelMock);
+
+            var result = await initializer.GetDataAsync(100);
+
+            Assert.True(result.All(r => r.GetType() == expectedType));
+        }
+
+        [Test]
+        public async Task GetDataAsync_has_no_empty_or_null()
+        {
+            var result = await initializer.GetDataAsync(100);
+
+            Assert.Multiple(() =>
+            {
+                Assert.True(result.All(r => !string.IsNullOrEmpty(r.Login)));
+                Assert.True(result.All(r => !string.IsNullOrEmpty(r.Date)));
+            });
         }
     }
 }

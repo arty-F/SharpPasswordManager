@@ -29,5 +29,10 @@
         /// </summary>
         /// <param name="key">Key of app setting.</param>
         void Delete(string key);
+
+        /// <summary>
+        /// Delete all keys from config file.
+        /// </summary>
+        void Clear();
     }
 }
