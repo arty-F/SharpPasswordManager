@@ -56,7 +56,7 @@ namespace SharpPasswordManager.DL.DataGenerators
         /// Generate random string whose lenght is in (minLenght : maxLenght) range.
         /// </summary>
         /// <returns>Random generated string.</returns>
-        public string GenerateRandomDescription()
+        public string GenerateRandomUrl()
         {
             return GetRandomString(wordMinLength, wordMaxLength);
         }

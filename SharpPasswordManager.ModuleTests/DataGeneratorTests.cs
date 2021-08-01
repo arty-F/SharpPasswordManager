@@ -15,9 +15,9 @@ namespace SharpPasswordManager.ModuleTests
         }
 
         [Test, Repeat(1000)]
-        public void GenerateRandomDescription_lenght_greater_than_zero()
+        public void GenerateRandomUrl_lenght_greater_than_zero()
         {
-            string result = dataGenerator.GenerateRandomDescription();
+            string result = dataGenerator.GenerateRandomUrl();
 
             Assert.That(result.Length, Is.GreaterThan(0));
         }

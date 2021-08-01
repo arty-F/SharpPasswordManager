@@ -95,7 +95,7 @@ namespace SharpPasswordManager.BL.StorageLogic
                                     }
                                     default:
                                     {
-                                        prop.SetValue(model, dataGenerator.GenerateRandomDescription());
+                                        prop.SetValue(model, dataGenerator.GenerateRandomUrl());
                                         break;
                                     }
                                 }
@@ -122,7 +122,7 @@ namespace SharpPasswordManager.BL.StorageLogic
                                     }
                                     default:
                                     {
-                                        prop.SetValue(model, cryptographer.Encypt(dataGenerator.GenerateRandomDescription()));
+                                        prop.SetValue(model, cryptographer.Encypt(dataGenerator.GenerateRandomUrl()));
                                         break;
                                     }
                                 }

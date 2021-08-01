@@ -8,15 +8,30 @@ namespace SharpPasswordManager.Infrastructure.Injector
     /// </summary>
     public class Injector
     {
+        /// <summary>
+        /// Instance of injector.
+        /// </summary>
         public static Injector Instance { get; private set; }
 
-        public ISecureHandler SecureHandler;
+        /// <summary>
+        /// Gets <seealso cref="ISecureHandler"/> injected realization.
+        /// </summary>
+        public ISecureHandler SecureHandler { get; private set; }
 
-        public ICryptographer Cryptographer;
+        /// <summary>
+        /// Gets <seealso cref="ICryptographer"/> injected realization.
+        /// </summary>
+        public ICryptographer Cryptographer { get; private set; }
 
-        public IAuthenticator Authenticator;
+        /// <summary>
+        /// Gets <seealso cref="IAuthenticator"/> injected realization.
+        /// </summary>
+        public IAuthenticator Authenticator { get; private set; }
 
-        public IAppSettingsHandler AppSettingsHandler;
+        /// <summary>
+        /// Gets <seealso cref="IAppSettingsHandler"/> injected realization.
+        /// </summary>
+        public IAppSettingsHandler AppSettingsHandler { get; private set; }
 
         static Injector()
         {

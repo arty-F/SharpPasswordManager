@@ -36,7 +36,7 @@ namespace SharpPasswordManager.ViewModels
                 Model.Date = DateTime.Now.ToString();
 
             initialState.Login = Model.Login;
-            initialState.Description = Model.Description;
+            initialState.Url = Model.Url;
             initialState.Password = Model.Password;
         }
 
@@ -53,8 +53,8 @@ namespace SharpPasswordManager.ViewModels
             Model.Password = passwordBox.Password;
             if (Model.Password != null && Model.Password.Length > 0)
             {
-                if (Model.Description == null)
-                    Model.Description = "";
+                if (Model.Url == null)
+                    Model.Url = "";
                 if (Model.Login == null)
                     Model.Login = "";
 
@@ -75,7 +75,7 @@ namespace SharpPasswordManager.ViewModels
         private void RollBack()
         {
             Model.Login = initialState.Login;
-            Model.Description = initialState.Description;
+            Model.Url = initialState.Url;
             Model.Password = initialState.Password;
 
             CloseWindow();

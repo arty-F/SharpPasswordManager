@@ -113,7 +113,7 @@ namespace SharpPasswordManager.ViewModels
         }
         private void EditData()
         {
-            DataModel newData = new DataModel { Date = SelectedData.Date, Description = SelectedData.Description, Login = SelectedData.Login, Password = SelectedData.Password };
+            DataModel newData = new DataModel { Date = SelectedData.Date, Url = SelectedData.Url, Login = SelectedData.Login, Password = SelectedData.Password };
             Views.DataValidateView validateView = new Views.DataValidateView();
             DataValidateViewModel validateVM = new DataValidateViewModel(ref newData, ref validateView.passwordBox);
             validateView.DataContext = validateVM;
@@ -178,7 +178,7 @@ namespace SharpPasswordManager.ViewModels
         }
         private void CopyDescription()
         {
-            Clipboard.SetText(SelectedData.Description);
+            Clipboard.SetText(SelectedData.Url);
         }
 
         private ICommand copyLoginCmd;

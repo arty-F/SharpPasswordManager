@@ -192,7 +192,7 @@ namespace SharpPasswordManager.BL.StorageLogic
                         new DataModel
                         {
                             Date = item.Date,
-                            Description = item.Description,
+                            Url = item.Url,
                             Login = item.Login,
                             Password = generator.GenerateRandomPassword(item.Password.Length)
                         });
