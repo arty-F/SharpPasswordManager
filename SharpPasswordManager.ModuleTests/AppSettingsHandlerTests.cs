@@ -17,7 +17,7 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void AlreadyExist_is_false_with_cleared()
         {
-            string key = "key";
+            var key = "key";
 
             Assert.False(settingsHandler.AlreadyExist(key));
         }
@@ -25,11 +25,11 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void AlreadyExist_is_false_with_not_existed_key()
         {
-            string key = "key";
-            string value = "value";
+            var key = "key";
+            var value = "value";
             settingsHandler.Write(key, value);
 
-            string notExistingKey = "str";
+            var notExistingKey = "str";
 
             Assert.False(settingsHandler.AlreadyExist(notExistingKey));
         }
@@ -37,8 +37,8 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void AlreadyExist_is_true_with_existed_key()
         {
-            string key = "key";
-            string value = "value";
+            var key = "key";
+            var value = "value";
             settingsHandler.Write(key, value);
 
             Assert.True(settingsHandler.AlreadyExist(key));
@@ -47,8 +47,8 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void Write_is_writing_key()
         {
-            string key = "key";
-            string value = "value";
+            var key = "key";
+            var value = "value";
             settingsHandler.Write(key, value);
 
             Assert.True(settingsHandler.AlreadyExist(key));
@@ -57,11 +57,11 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void GetByKey_returns_correct_value()
         {
-            string key = "key";
-            string expected = "value";
+            var key = "key";
+            var expected = "value";
             settingsHandler.Write(key, expected);
 
-            string actual = settingsHandler.GetByKey(key);
+            var actual = settingsHandler.GetByKey(key);
 
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -69,11 +69,11 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void Write_existing_key_is_renew_value()
         {
-            string key = "key";
-            string value = "value";
+            var key = "key";
+            var value = "value";
             settingsHandler.Write(key, value);
 
-            string expected = "newValue";
+            var expected = "newValue";
             settingsHandler.Write(key, expected);
 
             var actual = settingsHandler.GetByKey(key);
@@ -84,7 +84,7 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void GetByKey_returns_null_with_not_existed_key()
         {
-            string key = "key";
+            var key = "key";
 
             var actual = settingsHandler.GetByKey(key);
 
@@ -94,8 +94,8 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void Clear_is_clearing_settings()
         {
-            string key = "key";
-            string value = "value";
+            var key = "key";
+            var value = "value";
 
             settingsHandler.Write(key, value);
             settingsHandler.Clear();
@@ -106,8 +106,8 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void Delete_is_deleting_key()
         {
-            string key = "key";
-            string value = "value";
+            var key = "key";
+            var value = "value";
             settingsHandler.Write(key, value);
 
             settingsHandler.Delete(key);
@@ -118,7 +118,7 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void Delete_is_not_thrown_ex_with_no_exist_key_deleting()
         {
-            string key = "key";
+            var key = "key";
 
             Assert.DoesNotThrow(() => settingsHandler.Delete(key));
         }

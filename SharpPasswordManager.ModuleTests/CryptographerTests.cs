@@ -12,15 +12,15 @@ namespace SharpPasswordManager.ModuleTests
         [SetUp]
         public void Setup()
         {
-            string key = "1234567890asdfghjkl";
+            var key = "1234567890asdfghjkl";
             cryptographer = new Cryptographer(key);
         }
 
         [Test, Repeat(1000)]
         public void Encrypt_return_different_value()
         {
-            string data = "12345abc";
-            string actual = cryptographer.Encypt(data);
+            var data = "12345abc";
+            var actual = cryptographer.Encypt(data);
 
             Assert.AreNotEqual(data, actual);
         }
@@ -28,9 +28,9 @@ namespace SharpPasswordManager.ModuleTests
         [Test, Repeat(1000)]
         public void Encrypted_data_is_not_same()
         {
-            string data = "12345abc";
-            string firstEcrypted = cryptographer.Encypt(data);
-            string secondEcrypted = cryptographer.Encypt(data);
+            var data = "12345abc";
+            var firstEcrypted = cryptographer.Encypt(data);
+            var secondEcrypted = cryptographer.Encypt(data);
 
             Assert.AreNotEqual(firstEcrypted, secondEcrypted);
         }
@@ -38,9 +38,9 @@ namespace SharpPasswordManager.ModuleTests
         [Test, Repeat(1000)]
         public void Decrypted_data_is_same()
         {
-            string expected = "12345abc";
-            string decrypted = cryptographer.Encypt(expected);
-            string actual = cryptographer.Decrypt(decrypted);
+            var expected = "12345abc";
+            var decrypted = cryptographer.Encypt(expected);
+            var actual = cryptographer.Decrypt(decrypted);
 
             Assert.AreEqual(expected, actual);
         }
@@ -48,8 +48,8 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void ChangeKey_dont_broke_alghoritm()
         {
-            string data = "12345abc";
-            string newKey = "newKey";
+            var data = "12345abc";
+            var newKey = "newKey";
 
             cryptographer.ChangeKey(newKey);
             var encrypted = cryptographer.Encypt(data);
@@ -61,8 +61,8 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void ChangeKey_after_encrypt_throws_ex()
         {
-            string data = "12345abc";
-            string newKey = "newKey";
+            var data = "12345abc";
+            var newKey = "newKey";
 
             var encrypted = cryptographer.Encypt(data);
             cryptographer.ChangeKey(newKey);

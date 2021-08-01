@@ -58,14 +58,14 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void GetIndexOf_gets_right_index_with_string_key()
         {
-            string secretKey = "Key";
+            var secretKey = "Key";
             secureHandler.SecretKey = secretKey;
 
             var expectedKey = secretKey.Sum(c => c);
             var value = 123;
             var expected = expectedKey + value;
 
-            int actual = secureHandler.GetIndexOf(value);
+            var actual = secureHandler.GetIndexOf(value);
 
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -73,14 +73,14 @@ namespace SharpPasswordManager.ModuleTests
         [Test]
         public void GetIndexOf_gets_right_index_with_mixed_key()
         {
-            string secretKey = "12Key3";
+            var secretKey = "12Key3";
             secureHandler.SecretKey = secretKey;
 
             var expectedKey = secretKey.Sum(c => c);
             var value = 123;
             var expected = expectedKey + value;
 
-            int actual = secureHandler.GetIndexOf(value);
+            var actual = secureHandler.GetIndexOf(value);
 
             Assert.That(actual, Is.EqualTo(expected));
         }

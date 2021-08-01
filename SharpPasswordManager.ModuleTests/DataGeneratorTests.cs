@@ -17,7 +17,7 @@ namespace SharpPasswordManager.ModuleTests
         [Test, Repeat(100)]
         public void GenerateRandomUrl_lenght_greater_than_zero()
         {
-            string result = dataGenerator.GenerateRandomUrl();
+            var result = dataGenerator.GenerateRandomUrl();
 
             Assert.That(result.Length, Is.GreaterThan(0));
         }
@@ -25,7 +25,7 @@ namespace SharpPasswordManager.ModuleTests
         [Test, Repeat(100)]
         public void GenerateRandomLogin_lenght_greater_than_zero()
         {
-            string result = dataGenerator.GenerateRandomLogin();
+            var result = dataGenerator.GenerateRandomLogin();
 
             Assert.That(result.Length, Is.GreaterThan(0));
         }
@@ -33,8 +33,8 @@ namespace SharpPasswordManager.ModuleTests
         [Test, Repeat(100)]
         public void GenerateRandomPassword_lenght_not_less_min_lenght()
         {
-            int minLenght = 6;
-            string result = dataGenerator.GenerateRandomPassword();
+            var minLenght = 6;
+            var result = dataGenerator.GenerateRandomPassword();
 
             Assert.That(result.Length, Is.GreaterThanOrEqualTo(minLenght));
         }
@@ -42,8 +42,8 @@ namespace SharpPasswordManager.ModuleTests
         [Test, Repeat(100)]
         public void GenerateRandomPassword_lenght_equal_to_parameter()
         {
-            int lenght = 10;
-            string result = dataGenerator.GenerateRandomPassword(lenght);
+            var lenght = 10;
+            var result = dataGenerator.GenerateRandomPassword(lenght);
 
             Assert.That(result.Length, Is.EqualTo(lenght));
         }
@@ -51,8 +51,8 @@ namespace SharpPasswordManager.ModuleTests
         [Test, Repeat(100)]
         public void GenerateRandomDate_not_less_now()
         {
-            DateTime now = DateTime.Now;
-            DateTime result = Convert.ToDateTime(dataGenerator.GenerateRandomDate());
+            var now = DateTime.Now;
+            var result = Convert.ToDateTime(dataGenerator.GenerateRandomDate());
             
             Assert.That(result, Is.GreaterThanOrEqualTo(now));
         }

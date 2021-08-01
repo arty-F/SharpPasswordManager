@@ -27,7 +27,7 @@ namespace SharpPasswordManager.IntegrationTests
         [Test]
         public async Task Authenticate_with_right_password_is_correct()
         {
-            bool actual = await authenticator.Authenticate(enteredPassword, encryptedPassword);
+            var actual = await authenticator.Authenticate(enteredPassword, encryptedPassword);
 
             Assert.IsTrue(actual);
         }
@@ -35,7 +35,7 @@ namespace SharpPasswordManager.IntegrationTests
         [Test]
         public async Task Authenticate_with_one_char_wrong_password_is_incorrect()
         {
-            bool actual = await authenticator.Authenticate("12340", encryptedPassword);
+            var actual = await authenticator.Authenticate("12340", encryptedPassword);
 
             Assert.IsFalse(actual);
         }
@@ -43,7 +43,7 @@ namespace SharpPasswordManager.IntegrationTests
         [Test]
         public async Task Authenticate_with_full_wrong_password_is_incorrect()
         {
-            bool actual = await authenticator.Authenticate("5432112345", encryptedPassword);
+            var actual = await authenticator.Authenticate("5432112345", encryptedPassword);
 
             Assert.IsFalse(actual);
         }
@@ -51,7 +51,7 @@ namespace SharpPasswordManager.IntegrationTests
         [Test]
         public async Task Authenticate_with_empty_str_is_incorrect()
         {
-            bool actual = await authenticator.Authenticate(string.Empty, encryptedPassword);
+            var actual = await authenticator.Authenticate(string.Empty, encryptedPassword);
 
             Assert.IsFalse(actual);
         }

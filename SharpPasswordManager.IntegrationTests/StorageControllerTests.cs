@@ -21,7 +21,7 @@ namespace SharpPasswordManager.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            string key = "1234567890asdfghjkl";
+            var key = "1234567890asdfghjkl";
             cryptographer = new Cryptographer(key);
 
             var storageInitializer = new StorageInitializer<ModelMock>(new DataGenerator(), cryptographer);
@@ -34,8 +34,8 @@ namespace SharpPasswordManager.IntegrationTests
         [Test]
         public void Count_is_equal_models_count()
         {
-            int expected = modelsCount;
-            int actual = controller.Count();
+            var expected = modelsCount;
+            var actual = controller.Count();
 
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -43,9 +43,9 @@ namespace SharpPasswordManager.IntegrationTests
         [Test]
         public void PasteAt_model_pasted_at_right_index()
         {
-            int index = 2;
-            string expectedDate = new DateTime(2011, 11, 11).ToString();
-            string expectedLogin = "Login";
+            var index = 2;
+            var expectedDate = new DateTime(2011, 11, 11).ToString();
+            var expectedLogin = "Login";
             ModelMock mockModel = new ModelMock { Date = expectedDate, Login = expectedLogin };
 
             controller.PasteAt(index, mockModel);
@@ -61,9 +61,9 @@ namespace SharpPasswordManager.IntegrationTests
         [Test]
         public void PasteAt_out_index_not_thrown_error()
         {
-            int index = modelsCount + 10;
-            string expectedDate = new DateTime(2011, 11, 11).ToString();
-            string expectedLogin = "Login";
+            var index = modelsCount + 10;
+            var expectedDate = new DateTime(2011, 11, 11).ToString();
+            var expectedLogin = "Login";
             ModelMock mockModel = new ModelMock { Date = expectedDate, Login = expectedLogin };
 
             controller.PasteAt(index, mockModel);
@@ -104,10 +104,10 @@ namespace SharpPasswordManager.IntegrationTests
         [Test]
         public void Count_is_increase_after_Adding()
         {
-            int expected = modelsCount + 1;
+            var expected = modelsCount + 1;
 
             controller.Add(new ModelMock { Login = "123", Date = DateTime.Now.ToString() });
-            int actual = controller.Count();
+            var actual = controller.Count();
 
             Assert.That(actual, Is.EqualTo(expected));
         }

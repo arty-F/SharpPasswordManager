@@ -22,7 +22,7 @@ namespace SharpPasswordManager.IntegrationTests
         {
             dataGenerator = new DataGenerator();
 
-            string key = "1234567890asdfghjkl";
+            var key = "1234567890asdfghjkl";
             cryptographer = new Cryptographer(key);
 
             initializer = new StorageInitializer<ModelMock>(dataGenerator, cryptographer);
@@ -31,10 +31,10 @@ namespace SharpPasswordManager.IntegrationTests
         [Test]
         public void GetData_returns_correct_data_count()
         {
-            int expected = 10;
+            var expected = 10;
 
             var result = initializer.GetData(expected);
-            int actual = result.Count();
+            var actual = result.Count();
 
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -64,10 +64,10 @@ namespace SharpPasswordManager.IntegrationTests
         [Test]
         public async Task GetDataAsync_returns_correct_data_count()
         {
-            int expected = 10;
+            var expected = 10;
 
             var result = await initializer.GetDataAsync(expected);
-            int actual = result.Count();
+            var actual = result.Count();
 
             Assert.That(actual, Is.EqualTo(expected));
         }
