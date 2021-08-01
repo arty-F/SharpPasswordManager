@@ -96,6 +96,25 @@ namespace SharpPasswordManager.ModuleTests
         }
 
         [Test]
+        public void GetIndexOf_is_not_thrown_ex_when_out_of_range()
+        {
+            secureHandler.SecretKey = int.MaxValue.ToString();
+
+            Assert.DoesNotThrow(() => _ = secureHandler.GetIndexOf(1));
+        }
+
+        [Test]
+        public void GetIndexOf_is_get_correct_index_when_out_of_range()
+        {
+            secureHandler.SecretKey = int.MaxValue.ToString();
+            var expected = int.MinValue;
+
+            var actual = secureHandler.GetIndexOf(1);
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
         public void CategoriesFileName_is_not_changed()
         {
             var expected = categoriesFileName;
