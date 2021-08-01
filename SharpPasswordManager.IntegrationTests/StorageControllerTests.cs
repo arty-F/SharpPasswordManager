@@ -44,7 +44,7 @@ namespace SharpPasswordManager.IntegrationTests
         public void PasteAt_model_pasted_at_right_index()
         {
             int index = 2;
-            DateTime expectedDate = new DateTime(2011, 11, 11);
+            string expectedDate = new DateTime(2011, 11, 11).ToString();
             string expectedLogin = "Login";
             ModelMock mockModel = new ModelMock { Date = expectedDate, Login = expectedLogin };
 
@@ -62,7 +62,7 @@ namespace SharpPasswordManager.IntegrationTests
         public void PasteAt_out_index_not_thrown_error()
         {
             int index = modelsCount + 10;
-            DateTime expectedDate = new DateTime(2011, 11, 11);
+            string expectedDate = new DateTime(2011, 11, 11).ToString();
             string expectedLogin = "Login";
             ModelMock mockModel = new ModelMock { Date = expectedDate, Login = expectedLogin };
 
@@ -91,7 +91,7 @@ namespace SharpPasswordManager.IntegrationTests
             var newModel = new ModelMock
             {
                 Login = "log1n",
-                Date = DateTime.Now
+                Date = DateTime.Now.ToString()
             };
             var expected = newModel.Login;
 
@@ -106,7 +106,7 @@ namespace SharpPasswordManager.IntegrationTests
         {
             int expected = modelsCount + 1;
 
-            controller.Add(new ModelMock { Login = "123", Date = DateTime.Now });
+            controller.Add(new ModelMock { Login = "123", Date = DateTime.Now.ToString() });
             int actual = controller.Count();
 
             Assert.That(actual, Is.EqualTo(expected));

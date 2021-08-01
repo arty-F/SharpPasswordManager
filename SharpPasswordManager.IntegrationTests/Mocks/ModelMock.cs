@@ -5,7 +5,7 @@ namespace SharpPasswordManager.IntegrationTests.Mocks
     public class ModelMock
     {
         public string Login { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         public override bool Equals(object obj)
         {

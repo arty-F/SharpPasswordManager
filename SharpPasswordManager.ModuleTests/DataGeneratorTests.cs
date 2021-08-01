@@ -14,7 +14,7 @@ namespace SharpPasswordManager.ModuleTests
             dataGenerator = new DataGenerator();
         }
 
-        [Test, Repeat(1000)]
+        [Test, Repeat(100)]
         public void GenerateRandomUrl_lenght_greater_than_zero()
         {
             string result = dataGenerator.GenerateRandomUrl();
@@ -22,7 +22,7 @@ namespace SharpPasswordManager.ModuleTests
             Assert.That(result.Length, Is.GreaterThan(0));
         }
 
-        [Test, Repeat(1000)]
+        [Test, Repeat(100)]
         public void GenerateRandomLogin_lenght_greater_than_zero()
         {
             string result = dataGenerator.GenerateRandomLogin();
@@ -30,7 +30,7 @@ namespace SharpPasswordManager.ModuleTests
             Assert.That(result.Length, Is.GreaterThan(0));
         }
 
-        [Test, Repeat(1000)]
+        [Test, Repeat(100)]
         public void GenerateRandomPassword_lenght_not_less_min_lenght()
         {
             int minLenght = 6;
@@ -39,7 +39,7 @@ namespace SharpPasswordManager.ModuleTests
             Assert.That(result.Length, Is.GreaterThanOrEqualTo(minLenght));
         }
 
-        [Test, Repeat(1000)]
+        [Test, Repeat(100)]
         public void GenerateRandomPassword_lenght_equal_to_parameter()
         {
             int lenght = 10;
@@ -48,7 +48,7 @@ namespace SharpPasswordManager.ModuleTests
             Assert.That(result.Length, Is.EqualTo(lenght));
         }
 
-        [Test, Repeat(1000)]
+        [Test, Repeat(100)]
         public void GenerateRandomDate_not_less_now()
         {
             DateTime now = DateTime.Now;
