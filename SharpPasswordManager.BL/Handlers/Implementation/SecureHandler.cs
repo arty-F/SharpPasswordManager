@@ -10,14 +10,14 @@
 		
 		private int startingIndex;
 
-		private string key;
-		public string Key
+		private string secretKey;
+		public string SecretKey
 		{
-			get { return key; }
+			get { return secretKey; }
 			set 
 			{ 
-				key = value;
-				startingIndex = int.Parse(key);
+				secretKey = value;
+				startingIndex = GetIntFromString(secretKey);
 			}
 		}
 
@@ -25,5 +25,22 @@
 		{
 			return i + startingIndex;
 		}
+
+		private int GetIntFromString(string str)
+        {
+            if (int.TryParse(str, out int result))
+            {
+				return result;
+            }
+            else
+            {
+				result = 0;
+
+                foreach (var c in str)
+					result += c;
+
+				return result;
+            }
+        }
 	}
 }

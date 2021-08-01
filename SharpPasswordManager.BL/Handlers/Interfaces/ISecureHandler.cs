@@ -23,7 +23,7 @@
 		/// <summary>
 		/// Current secret app key.
 		/// </summary>
-		public string Key { get; set; }
+		public string SecretKey { get; set; }
 
 		/// <summary>
 		/// Returns data cell index, whith given the secure key shift.

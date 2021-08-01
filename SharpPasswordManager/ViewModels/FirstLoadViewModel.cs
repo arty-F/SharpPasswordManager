@@ -64,11 +64,11 @@ namespace SharpPasswordManager.ViewModels
                 {
                     if (Regex.IsMatch(Password, @"^\d+$")) // Is digits only
                     {
-                        secureHandler.Key = Password;
+                        secureHandler.SecretKey = Password;
                         string value = Password;
                         if (cryptographer != null)
                         {
-                            cryptographer.ChangeKey(secureHandler.Key);
+                            cryptographer.ChangeKey(secureHandler.SecretKey);
                             value = cryptographer.Encypt(value);
                         }
                         setting.Write(secureHandler.PasswordKey, value);
@@ -113,7 +113,7 @@ namespace SharpPasswordManager.ViewModels
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             var dataController = new StorageController<DataModel>(Path.Combine(assemblyPath, secureHandler.DataFileName));
-            var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(secureHandler.Key));
+            var dataInitializer = new StorageInitializer<DataModel>(new DataGenerator(), new Cryptographer(secureHandler.SecretKey));
             try
             {
                 List<DataModel> dataList = await dataInitializer.GetDataAsync();

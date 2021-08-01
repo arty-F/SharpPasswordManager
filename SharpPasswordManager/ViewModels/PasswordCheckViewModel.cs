@@ -43,7 +43,7 @@ namespace SharpPasswordManager.ViewModels
 
             if (isAutenticate)
             {
-                secureHandler.Key = Password;
+                secureHandler.SecretKey = Password;
                 Views.MainView mainView = new Views.MainView();
                 foreach (Window item in Application.Current.Windows)
                     if (item.DataContext == this)

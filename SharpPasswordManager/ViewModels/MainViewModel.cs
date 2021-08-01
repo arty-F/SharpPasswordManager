@@ -29,7 +29,7 @@ namespace SharpPasswordManager.ViewModels
                 Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), secureHandler.CategoriesFileName));
 
             IStorageController<DataModel> dataController = new StorageController<DataModel>(
-                Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), secureHandler.DataFileName), new Cryptographer(secureHandler.Key));
+                Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), secureHandler.DataFileName), new Cryptographer(secureHandler.SecretKey));
 
             storageHandler = new MultipleStorageController(categoryController, dataController, secureHandler);
 
