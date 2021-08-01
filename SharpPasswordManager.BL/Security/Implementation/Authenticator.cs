@@ -43,7 +43,6 @@ namespace SharpPasswordManager.BL.Security
         /// Returns the result of an attempt of autenticate.
         /// </summary>
         /// <param name="password">Entered password.</param>
-        /// <returns></returns>
         public async Task<bool> Authenticate(string password, string encryptedPassword)
         {
             if (password == null || encryptedPassword == null)

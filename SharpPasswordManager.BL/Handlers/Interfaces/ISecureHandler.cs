@@ -11,12 +11,12 @@
 		public string PasswordKey { get; }
 
 		/// <summary>
-		/// File name with main data info.
+		/// Name of file with main data info.
 		/// </summary>
 		public string DataFileName { get; } 
 
 		/// <summary>
-		/// File name with categories info.
+		/// Name of file with categories info.
 		/// </summary>
 		public string CategoriesFileName { get; }
 

@@ -9,7 +9,6 @@
         /// Returns is there a key in app settings.
         /// </summary>
         /// <param name="key">Key of settings.</param>
-        /// <returns></returns>
         bool AlreadyExist(string key);
 
         /// <summary>
@@ -23,7 +22,6 @@
         /// Get value of recieved key.
         /// </summary>
         /// <param name="key">Key of app setting.</param>
-        /// <returns></returns>
         string GetByKey(string key);
 
         /// <summary>
