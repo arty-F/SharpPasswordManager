@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SharpPasswordManager.IntegrationTests.Mocks
+﻿namespace SharpPasswordManager.IntegrationTests.Mocks
 {
     public class ModelMock
     {

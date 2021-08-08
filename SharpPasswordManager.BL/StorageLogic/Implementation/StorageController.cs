@@ -152,7 +152,11 @@ namespace SharpPasswordManager.BL.StorageLogic
         public List<TModel> ToList()
         {
             CheckModelList();
-            return modelList;
+
+            if (cryptographer == null)
+                return modelList;
+            else
+                return ApplyCryptography(modelList, CryptographyMode.Decrypt);
         }
 
         /// <summary>
@@ -256,6 +260,18 @@ namespace SharpPasswordManager.BL.StorageLogic
                 }
             }
             return cryptedModel;
+        }
+
+        /*----------------------------------------------------------------------------------------------------
+         * Return a copy of List<TModel> with encrypted/decrypted string properties.
+        ----------------------------------------------------------------------------------------------------*/
+        private List<TModel> ApplyCryptography(List<TModel> models, CryptographyMode mode)
+        {
+            var result = new List<TModel>(models.Count);
+
+            models.ForEach(m => result.Add(ApplyCryptography(m, mode)));
+
+            return result;
         }
 
         /*----------------------------------------------------------------------------------------------------
