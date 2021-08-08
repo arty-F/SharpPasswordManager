@@ -25,9 +25,9 @@
                 <ColumnDefinition Width="140"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-
+            
             <TextBlock Grid.Row="1" Text="Url:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox  Grid.Row="1" Grid.Column="1" Text="{Binding Model.Description, Mode=TwoWay}" TextAlignment="Center" Width="180" VerticalAlignment="Center"/>
+            <TextBox  Grid.Row="1" Grid.Column="1" Text="{Binding Model.Url, Mode=TwoWay}" TextAlignment="Center" Width="180" VerticalAlignment="Center"/>
 
             <TextBlock Grid.Row="2" Text="Login:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Model.Login, Mode=TwoWay}" TextAlignment="Center" Width="180" VerticalAlignment="Center"/>
