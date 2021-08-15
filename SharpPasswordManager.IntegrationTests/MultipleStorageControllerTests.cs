@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SharpPasswordManager.IntegrationTests
 {
@@ -52,15 +53,6 @@ namespace SharpPasswordManager.IntegrationTests
             data = storageInitializer.GetData(modelsCount);
         }
 
-        private void ClearFiles()
-        {
-            if (File.Exists(categoryPath))
-                File.Delete(categoryPath);
-
-            if (File.Exists(modelPath))
-                File.Delete(modelPath);
-        }
-
         [SetUp]
         public void Setup()
         {
@@ -75,6 +67,15 @@ namespace SharpPasswordManager.IntegrationTests
             modelController.CreateStorage(data);
 
             multipleStorageController = new MultipleStorageController(categoryController, modelController, secureHandler);
+        }
+
+        private void ClearFiles()
+        {
+            if (File.Exists(categoryPath))
+                File.Delete(categoryPath);
+
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
         }
 
         [Test]
@@ -132,6 +133,14 @@ namespace SharpPasswordManager.IntegrationTests
                 Assert.That(categories.Contains(category), Is.True);
                 Assert.That(multipleStorageController.GetCategories().Count, Is.EqualTo(1));
             });
+        }
+
+        [Test]
+        public void RemoveCategory_unexisted_dont_throw_ex()
+        {
+            var category = new CategoryModel { Name = "1234", DataIndexes = new List<int>() };
+
+            Assert.DoesNotThrow(() => multipleStorageController.RemoveCategory(category));
         }
 
         [Test]
@@ -235,16 +244,219 @@ namespace SharpPasswordManager.IntegrationTests
             });
         }
 
-        /*[Test]
-        public void RemoveCategory_is_removing_one()
+        [Test]
+        public void RemoveData_is_removing_data()
         {
-            CategoryModel firstCategory = new CategoryModel { Name = "first", DataIndexes = new List<int>() };
-            CategoryModel secondCategory = new CategoryModel { Name = "second", DataIndexes = new List<int>() };
+            var category = new CategoryModel { Name = "cat", DataIndexes = new List<int>() };
+            multipleStorageController.AddCategory(category);
 
+            var data = new DataModel { Date = DateTime.Now.ToString(), Login = "Log", Password = "Pass", Url = "Url" };
+            multipleStorageController.AddData(data, category);
+
+            multipleStorageController.RemoveData(data);
+
+            category = multipleStorageController.GetCategories().First(c => c.Name == category.Name);
+            var actualData = multipleStorageController.GetData(category);
+
+            Assert.That(actualData.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void RemoveData_unexisted_data_dont_throw_ex()
+        {
+            var category = new CategoryModel { Name = "cat", DataIndexes = new List<int>() };
+            multipleStorageController.AddCategory(category);
+
+            var data = new DataModel { Date = DateTime.Now.ToString(), Login = "Log", Password = "Pass", Url = "Url" };
+
+            Assert.DoesNotThrow(() => multipleStorageController.RemoveData(data));
+        }
+
+        [Test]
+        public void RemoveData_unexisted_data_unexisted_category_dont_throw_ex()
+        {
+            var data = new DataModel { Date = DateTime.Now.ToString(), Login = "Log", Password = "Pass", Url = "Url" };
+
+            Assert.DoesNotThrow(() => multipleStorageController.RemoveData(data));
+        }
+
+        [Test]
+        public void ReplaceCategory_is_correctly_replace()
+        {
+            var category = new CategoryModel { Name = "1234", DataIndexes = new List<int>() };
+            var categoryToRep = new CategoryModel { Name = "abcd", DataIndexes = new List<int>() };
+
+            multipleStorageController.AddCategory(category);
+            multipleStorageController.ReplaceCategory(category, categoryToRep);
+
+            var categories = multipleStorageController.GetCategories();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(categories.Count, Is.EqualTo(1));
+                Assert.That(categories.Contains(categoryToRep), Is.True);
+            });
+        }
+
+        [Test]
+        public void ReplaceCategory_unexisted_dont_change_anything()
+        {
+            var category = new CategoryModel { Name = "1234", DataIndexes = new List<int>() };
+            var categoryToRep = new CategoryModel { Name = "abcd", DataIndexes = new List<int>() };
+            var unexistedCategory = new CategoryModel { Name = "abcd1234", DataIndexes = new List<int>() };
+
+            multipleStorageController.AddCategory(category);
+            multipleStorageController.ReplaceCategory(unexistedCategory, categoryToRep);
+
+            var categories = multipleStorageController.GetCategories();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(categories.Count, Is.EqualTo(1));
+                Assert.That(categories.Contains(category), Is.True);
+            });
+        }
+
+        [Test]
+        public void ReplaceCategory_enexisted_dont_throw_ex()
+        {
+            var category = new CategoryModel { Name = "1234", DataIndexes = new List<int>() };
+            var categoryToRep = new CategoryModel { Name = "abcd", DataIndexes = new List<int>() };
+
+            Assert.DoesNotThrow(() => multipleStorageController.ReplaceCategory(category, categoryToRep));
+        }
+
+        [Test]
+        public void ReplaceData_is_correctly_replace()
+        {
+            var category = new CategoryModel { Name = "cat", DataIndexes = new List<int>() };
+            multipleStorageController.AddCategory(category);
+
+            var data = new DataModel { Date = DateTime.Now.ToString(), Login = "fLog", Password = "fPass", Url = "fUrl" };
+            multipleStorageController.AddData(data, category);
+
+            var newData = new DataModel { Date = DateTime.Now.ToString(), Login = "newLog", Password = "newPass", Url = "newUrl" };
+            multipleStorageController.ReplaceData(data, newData);
+
+            category = multipleStorageController.GetCategories().First(c => c.Name == category.Name);
+            var actualData = multipleStorageController.GetData(category);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(actualData.Count, Is.EqualTo(1));
+                Assert.That(actualData.Contains(newData), Is.True);
+            });
+        }
+
+        [Test]
+        public void ReplaceData_is_change_correct_category_and_data()
+        {
+            var category = new CategoryModel { Name = "cat", DataIndexes = new List<int>() };
+            multipleStorageController.AddCategory(category);
+            var categoryUnchanged = new CategoryModel { Name = "catUnchanged", DataIndexes = new List<int>() };
+            multipleStorageController.AddCategory(categoryUnchanged);
+
+            var dataUnchanged1 = new DataModel { Date = DateTime.Now.ToString(), Login = "fLogUnc1", Password = "fPassUnc1", Url = "fUrlUnc1" };
+            multipleStorageController.AddData(dataUnchanged1, categoryUnchanged);
+            categoryUnchanged = multipleStorageController.GetCategories().First(c => c.Name == categoryUnchanged.Name);
+            var dataUnchanged2 = new DataModel { Date = DateTime.Now.ToString(), Login = "fLogUnc2", Password = "fPassUnc2", Url = "fUrlUnc2" };
+            multipleStorageController.AddData(dataUnchanged2, categoryUnchanged);
+
+            var data1 = new DataModel { Date = DateTime.Now.ToString(), Login = "Log1", Password = "Pass1", Url = "Url1" };
+            multipleStorageController.AddData(data1, category);
+            category = multipleStorageController.GetCategories().First(c => c.Name == category.Name);
+            var data2 = new DataModel { Date = DateTime.Now.ToString(), Login = "Log2", Password = "Pass2", Url = "Url2" };
+            multipleStorageController.AddData(data2, category);
+
+            var newData = new DataModel { Date = DateTime.Now.ToString(), Login = "newLog", Password = "newPass", Url = "newUrl" };
+            multipleStorageController.ReplaceData(data1, newData);
+
+            var categories = multipleStorageController.GetCategories();
+            categoryUnchanged = multipleStorageController.GetCategories().First(c => c.Name == categoryUnchanged.Name);
+            category = multipleStorageController.GetCategories().First(c => c.Name == category.Name);
+
+            var actualDataUnchanged = multipleStorageController.GetData(categoryUnchanged);
+            var actualData = multipleStorageController.GetData(category);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(categories.Count, Is.EqualTo(2));
+
+                Assert.That(actualDataUnchanged.Count, Is.EqualTo(2));
+                Assert.That(actualDataUnchanged.Contains(dataUnchanged1), Is.True);
+                Assert.That(actualDataUnchanged.Contains(dataUnchanged2), Is.True);
+
+                Assert.That(actualData.Count, Is.EqualTo(2));
+                Assert.That(actualData.Contains(newData), Is.True);
+                Assert.That(actualData.Contains(data2), Is.True);
+            });
+        }
+
+        [Test]
+        public void ReplaceData_unexisted_dont_throw()
+        {
+            var category = new CategoryModel { Name = "cat", DataIndexes = new List<int>() };
+            multipleStorageController.AddCategory(category);
+
+            var data = new DataModel { Date = DateTime.Now.ToString(), Login = "fLog", Password = "fPass", Url = "fUrl" };
+            var newData = new DataModel { Date = DateTime.Now.ToString(), Login = "newLog", Password = "newPass", Url = "newUrl" };
+
+            Assert.DoesNotThrow(() => multipleStorageController.ReplaceData(data, newData));
+        }
+
+        [Test]
+        public void SecureDataAsync_is_not_throw_ex()
+        {
+            var category = new CategoryModel { Name = "cat1", DataIndexes = new List<int>() };
+            multipleStorageController.AddCategory(category);
+           
+            var data = new DataModel { Date = DateTime.Now.ToString(), Login = "fLogUnc1", Password = "fPassUnc1", Url = "fUrlUnc1" };
+            multipleStorageController.AddData(data, category);
+
+            Assert.DoesNotThrowAsync(async () => await multipleStorageController.SecureStorageAsync());
+        }
+
+        [Test]
+        public async Task SecureDataAsync_dont_broke_data()
+        {
+            var firstCategory = new CategoryModel { Name = "cat1", DataIndexes = new List<int>() };
             multipleStorageController.AddCategory(firstCategory);
+            var secondCategory = new CategoryModel { Name = "cat2", DataIndexes = new List<int>() };
             multipleStorageController.AddCategory(secondCategory);
 
-            Assert.That(multipleStorageController.GetCategories().Count, Is.EqualTo(0));
-        }*/
+            var firstData1 = new DataModel { Date = DateTime.Now.ToString(), Login = "fLogUnc1", Password = "fPassUnc1", Url = "fUrlUnc1" };
+            multipleStorageController.AddData(firstData1, firstCategory);
+            firstCategory = multipleStorageController.GetCategories().First(c => c.Name == firstCategory.Name);
+            var firstData2 = new DataModel { Date = DateTime.Now.ToString(), Login = "fLogUnc2", Password = "fPassUnc2", Url = "fUrlUnc2" };
+            multipleStorageController.AddData(firstData2, firstCategory);
+
+            var secondData1 = new DataModel { Date = DateTime.Now.ToString(), Login = "Log1", Password = "Pass1", Url = "Url1" };
+            multipleStorageController.AddData(secondData1, secondCategory);
+            secondCategory = multipleStorageController.GetCategories().First(c => c.Name == secondCategory.Name);
+            var secondData2 = new DataModel { Date = DateTime.Now.ToString(), Login = "Log2", Password = "Pass2", Url = "Url2" };
+            multipleStorageController.AddData(secondData2, secondCategory);
+
+            await multipleStorageController.SecureStorageAsync();
+
+            var categories = multipleStorageController.GetCategories();
+            firstCategory = multipleStorageController.GetCategories().First(c => c.Name == firstCategory.Name);
+            secondCategory = multipleStorageController.GetCategories().First(c => c.Name == secondCategory.Name);
+
+            var firstCategoryData = multipleStorageController.GetData(firstCategory);
+            var secondCategoryData = multipleStorageController.GetData(secondCategory);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(categories.Count, Is.EqualTo(2));
+
+                Assert.That(firstCategoryData.Count, Is.EqualTo(2));
+                Assert.That(firstCategoryData.Contains(firstData1), Is.True);
+                Assert.That(firstCategoryData.Contains(firstData2), Is.True);
+
+                Assert.That(secondCategoryData.Count, Is.EqualTo(2));
+                Assert.That(secondCategoryData.Contains(secondData1), Is.True);
+                Assert.That(secondCategoryData.Contains(secondData2), Is.True);
+            });
+        }
     }
 }
