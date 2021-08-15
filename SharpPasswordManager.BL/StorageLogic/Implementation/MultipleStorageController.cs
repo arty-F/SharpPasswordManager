@@ -12,11 +12,11 @@ namespace SharpPasswordManager.BL.StorageLogic
     /// </summary>
     public class MultipleStorageController : IMultipleStorageController<CategoryModel, DataModel>
     {
-        private IStorageController<CategoryModel> categoryController;
-        private IStorageController<DataModel> dataController;
-        private ISecureHandler secureHandler;
+        private readonly IStorageController<CategoryModel> categoryController;
+        private readonly IStorageController<DataModel> dataController;
+        private readonly ISecureHandler secureHandler;
 
-        private Random random = new Random();
+        private readonly Random random = new();
 
         /// <summary>
         /// Create a new class instance.
@@ -60,7 +60,7 @@ namespace SharpPasswordManager.BL.StorageLogic
             {
                 if (categories[i].Equals(toCategory))
                 {
-                    CategoryModel newCategory = new CategoryModel { DataIndexes = new List<int>(toCategory.DataIndexes), Name = toCategory.Name };
+                    var newCategory = new CategoryModel { DataIndexes = new List<int>(toCategory.DataIndexes), Name = toCategory.Name };
                     newCategory.DataIndexes.Add(newIndex);
                     categoryController.PasteAt(i, newCategory);
                     break;
@@ -83,7 +83,7 @@ namespace SharpPasswordManager.BL.StorageLogic
         /// <returns></returns>
         public List<DataModel> GetData(CategoryModel ofCategory)
         {
-            List<DataModel> dataList = new List<DataModel>();
+            List<DataModel> dataList = new();
 
             if (ofCategory.DataIndexes.Count == 0)
                 return dataList;
@@ -119,7 +119,7 @@ namespace SharpPasswordManager.BL.StorageLogic
                 {
                     if (dataController.Get(secureHandler.GetIndexOf(dataIndex)).Equals(data))
                     {
-                        CategoryModel newCategory = new CategoryModel { DataIndexes = new List<int>(categories[i].DataIndexes), Name = categories[i].Name };
+                        var newCategory = new CategoryModel { DataIndexes = new List<int>(categories[i].DataIndexes), Name = categories[i].Name };
                         newCategory.DataIndexes.Remove(dataIndex);
                         categoryController.PasteAt(i, newCategory);
                         return;
@@ -171,12 +171,12 @@ namespace SharpPasswordManager.BL.StorageLogic
             if (dataIndexes.Count == 0)
                 return;
 
-            List<DataModel> data = new List<DataModel>();
+            var data = new List<DataModel>();
             foreach (var index in dataIndexes)
                 data.Add(dataController.Get(secureHandler.GetIndexOf(index)));
 
-            Random rng = new Random();
-            DataGenerator generator = new DataGenerator();
+            var rng = new Random();
+            var generator = new DataGenerator();
             int storageLength = dataController.Count();
             foreach (var item in data)
             {
@@ -202,8 +202,8 @@ namespace SharpPasswordManager.BL.StorageLogic
 
         private List<int> GetUsingDataIndexes()
         {
-            List<int> usingIndexes = new List<int>();
-            List<CategoryModel> categories = categoryController.ToList();
+            var usingIndexes = new List<int>();
+            var categories = categoryController.ToList();
             foreach (var category in categories)
             {
                 foreach (var index in category.DataIndexes)

@@ -17,9 +17,9 @@ namespace SharpPasswordManager.IntegrationTests
     {
         const int modelsCount = 100;
 
-        string categoryPath;
+        readonly string categoryPath;
 
-        string modelPath;
+        readonly string modelPath;
 
         IMultipleStorageController<CategoryModel, DataModel> multipleStorageController;
 
@@ -27,11 +27,11 @@ namespace SharpPasswordManager.IntegrationTests
 
         IStorageController<CategoryModel> categoryController;
 
-        List<DataModel> data;
+        readonly List<DataModel> data;
 
-        ICryptographer cryptographer;
+        readonly ICryptographer cryptographer;
 
-        ISecureHandler secureHandler;
+        readonly ISecureHandler secureHandler;
 
         public MultipleStorageControllerTests()
         {
