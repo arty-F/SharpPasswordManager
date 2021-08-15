@@ -38,9 +38,10 @@ namespace SharpPasswordManager.IntegrationTests
             var key = "1234567890asdfghjkl";
             cryptographer = new Cryptographer(key);
 
-            secureHandler = new SecureHandler();
-
-            secureHandler.SecretKey = "55";
+            secureHandler = new SecureHandler
+            {
+                SecretKey = "55"
+            };
 
             var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 

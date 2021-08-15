@@ -6,6 +6,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using SharpPasswordManager.BL.Enums;
 using System.Threading.Tasks;
 using SharpPasswordManager.BL.Security;
+using System.Text.Json;
+using System.Linq;
+using System.Text;
 
 namespace SharpPasswordManager.BL.StorageLogic
 {
@@ -175,20 +178,19 @@ namespace SharpPasswordManager.BL.StorageLogic
         /// <param name="models">Writed to file models.</param>
         public void CreateStorage(IEnumerable<TModel> models = null)
         {
-            IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+            if (models == null)
+                return;
+
+            using var writer = new BinaryWriter(File.Open(path, FileMode.Create), Encoding.UTF8);
             try
             {
-                if (models != null)
-                    formatter.Serialize(stream, models);
+                var serializedData = JsonSerializer.Serialize(models);
+                var bytes = Encoding.UTF8.GetBytes(serializedData);
+                writer.Write(bytes);
             }
             catch (Exception)
             {
                 throw new InvalidOperationException(path);
-            }
-            finally
-            {
-                stream.Close();
             }
         }
 
@@ -202,26 +204,23 @@ namespace SharpPasswordManager.BL.StorageLogic
         }
 
         /*----------------------------------------------------------------------------------------------------
-         * Deserealize file from <path> using binary formatter in to List<TModel>.
+         * Deserealize file from <path> using binary deserialization in to List<TModel>.
         ----------------------------------------------------------------------------------------------------*/
         private void ReceiveModels()
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException(path);
 
-            IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var reader = new BinaryReader(File.Open(path, FileMode.Open), Encoding.UTF8);
             try
             {
-                modelList = (List<TModel>)formatter.Deserialize(stream);
+                var bytes = reader.ReadBytes((int)reader.BaseStream.Length);
+                var deserializedData = Encoding.UTF8.GetString(bytes);
+                modelList = JsonSerializer.Deserialize<List<TModel>>(deserializedData);
             }
             catch (Exception)
             {
                 throw new InvalidOperationException(path);
-            }
-            finally
-            {
-                stream.Close();
             }
         }
 
@@ -275,7 +274,7 @@ namespace SharpPasswordManager.BL.StorageLogic
         }
 
         /*----------------------------------------------------------------------------------------------------
-         * Serealize <modelList> to <path> file by binary formatter.
+         * Serealize <modelList> to <path> file by binary serialization.
         ----------------------------------------------------------------------------------------------------*/
         private void SaveChanges()
         {
@@ -285,19 +284,16 @@ namespace SharpPasswordManager.BL.StorageLogic
             if (!File.Exists(path))
                 throw new FileNotFoundException(path);
 
-            IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream(path, FileMode.Open, FileAccess.Write, FileShare.Read);
+            using var writer = new BinaryWriter(File.Open(path, FileMode.Open), Encoding.UTF8);
             try
             {
-                formatter.Serialize(stream, modelList);
+                var serializedData = JsonSerializer.Serialize(modelList);
+                var bytes = Encoding.UTF8.GetBytes(serializedData);
+                writer.Write(bytes);
             }
             catch (Exception)
             {
                 throw new InvalidOperationException(path);
-            }
-            finally
-            {
-                stream.Close();
             }
         }
     }
